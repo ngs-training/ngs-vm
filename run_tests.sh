@@ -1,3 +1,5 @@
+#!/bin/bash
+
 samtools --help
 bcftools --help
 bwa
