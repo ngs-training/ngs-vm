@@ -15,7 +15,7 @@ MINICONDA_BIN_LOCATION="${MINICONDA_LOCATION}/bin"
 
 # Install miniconda (for python2.7) to /miniconda
 wget ${MINICONDA_DOWNLOAD_URL}
-bash Miniconda2-latest-Linux-x86_64.sh -p ${MINICONDA_LOCATION} -b
+source Miniconda2-latest-Linux-x86_64.sh -p ${MINICONDA_LOCATION} -b
 rm Miniconda2-latest-Linux-x86_64.sh
 
 # Update conda
