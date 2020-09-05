@@ -7,11 +7,11 @@ start_dir=$(pwd)
 
 GENOMESCOPE_DOWNLOAD_URL="https://raw.githubusercontent.com/schatzlab/genomescope/d2aefddd32ce48aa1144d9fbd80ed6b37785cd8d/genomescope.R"
 MINICONDA_DOWNLOAD_URL="https://repo.anaconda.com/miniconda/Miniconda2-latest-Linux-x86_64.sh"
-MINICONDA_LOCATION="/miniconda"
+MINICONDA_LOCATION="{start_dir}/miniconda"
 MINICONDA_BIN_LOCATION="${MINICONDA_LOCATION}/bin"
 
 # System packages
-apt-get update && apt-get install -y wget && apt-get clean
+#apt-get update && apt-get install -y wget && apt-get clean
 
 # Install miniconda (for python2.7) to /miniconda
 wget ${MINICONDA_DOWNLOAD_URL}
