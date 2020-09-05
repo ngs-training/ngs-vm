@@ -6,7 +6,7 @@ set -eu
 start_dir=$(pwd)
 
 GENOMESCOPE_DOWNLOAD_URL="https://raw.githubusercontent.com/schatzlab/genomescope/d2aefddd32ce48aa1144d9fbd80ed6b37785cd8d/genomescope.R"
-$MINICONDA_BIN_LOCATION="${HOME}/miniconda/bin"
+MINICONDA_BIN_LOCATION="${HOME}/miniconda/bin"
 
 # Set the conda channels
 conda config --add channels default
