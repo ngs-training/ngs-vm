@@ -5,6 +5,5 @@ sudo: true
 before_install:
   - sudo apt-get update
   - sudo apt-get -y install wget
-  - apt-get clean
 install:
 - source ./install_dependencies.sh
