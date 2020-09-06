@@ -11,9 +11,8 @@ igv
 
 picard
 
-breakdancer
 breakdancer-max
-
+bam2cfg.pl -h
 sniffles --help
 lumpy --help
 lumpyexpress -h
