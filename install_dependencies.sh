@@ -24,7 +24,7 @@ conda install picard
 conda install bwa
 # SV module
 conda install breakdancer
-conda install lumpy-sv
+#conda install lumpy-sv
 conda install ngmlr
 conda install sniffles
 # RNA-Seq module

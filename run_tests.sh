@@ -14,8 +14,8 @@ picard
 breakdancer-max
 bam2cfg.pl -h
 sniffles --help
-lumpy --help
-lumpyexpress -h
+#lumpy --help
+#lumpyexpress -h
 ngmlr --help
 
 hisat2 -h
