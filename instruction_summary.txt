@@ -1,0 +1,80 @@
+1) Install python 2.7
+
+sudo apt install python2.7
+
+2) Download miniconda (https://docs.conda.io/en/latest/miniconda.html#linux-installers)
+
+3) Install miniconda
+
+bash Miniconda2-latest-Linux-x86_64.sh
+
+4) Add the bioconda channel
+
+conda config --add channels r
+conda config --add channels defaults
+conda config --add channels conda-forge
+conda config --add channels bioconda
+
+5) Install the core software
+	
+conda install r-essentials
+conda install samtools
+conda install bcftools
+conda install bedtools
+conda install igv
+
+6) Install the software for QC module
+
+conda install picard
+
+7) Install the software for read alignment module
+
+conda install bwa
+
+8) Install the software for SV module
+
+conda install breakdancer
+conda install lumpy-sv
+conda install ngmlr
+conda install sniffles
+
+9) Install the software for RNA-seq module
+
+conda install hisat2
+conda install kallisto
+conda install r-sleuth
+
+10) Install the software for CHiP-seq module
+
+conda install bowtie2
+conda install macs2
+conda install meme
+
+11) Install the software for assembly module
+
+conda install assembly-stats
+conda install canu
+conda install kmer-jellyfish
+conda install seqtk
+conda install velvet
+conda install wtdbg2
+
+12) Install git
+
+conda install git
+
+13) Install the course modules
+	
+git clone <repo> 
+
+14) Run a test script to check installs
+
+15)Issues to address:
+
+Remaining software to install firefox/chrome
+Issues with lumpy-sv (requires python 2.7)
+Issues with picard, commandline is not consistent picard versus PicardCommandLine
+Rendering a remote desktop, needed only for 
+	Viewing graphs in firefox/chrome
+	IGV
+	Other?
