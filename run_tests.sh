@@ -16,6 +16,7 @@ breakdancer-max
 
 sniffles --help
 lumpy --help
+lumpyexpress -h
 ngmlr --help
 
 hisat2 -h
