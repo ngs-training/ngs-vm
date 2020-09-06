@@ -3,10 +3,35 @@
 echo $MINICONDA
 echo $PATH
 
-samtools --help
+samtools
 bcftools --help
+bedtools --help
 bwa
 igv
+
+picard
+
 breakdancer
-sniffles
-lumpy-sv
+breakdancer-max
+
+sniffles --help
+lumpy --help
+ngmlr --help
+
+hisat2 -h
+kallisto 
+
+bowtie2
+macs2 -h
+meme
+tomtom
+bedGraphToBigWig
+
+assembly-stats
+canu
+jellyfish --help
+seqtk
+velveth
+velvetg
+wtdbg2 --help
+genomescope.R
