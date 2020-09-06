@@ -3,12 +3,10 @@
 set -x
 set -eu
 
-start_dir=$(pwd)
-
 GENOMESCOPE_DOWNLOAD_URL="https://raw.githubusercontent.com/schatzlab/genomescope/d2aefddd32ce48aa1144d9fbd80ed6b37785cd8d/genomescope.R"
-MINICONDA_BIN_LOCATION="${HOME}/miniconda/bin"
+MINICONDA_BIN_LOCATION="${MINICONDA}/bin"
 
-# Set the conda channels
+# Set the conda channels - move to .travis.yml?
 conda config --add channels default
 conda config --add channels r
 conda config --add channels conda-forge

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+echo $MINICONDA
+echo $PATH
+
 samtools --help
 bcftools --help
 bwa
