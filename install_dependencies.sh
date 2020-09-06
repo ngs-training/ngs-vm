@@ -14,7 +14,7 @@ conda config --add channels bioconda
 
 # Install software using miniconda
 # Core tools
-conda install samtools
+conda install samtools=1.10
 conda install bcftools
 conda install bedtools
 conda install igv
