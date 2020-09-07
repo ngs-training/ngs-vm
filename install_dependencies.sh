@@ -14,7 +14,7 @@ conda config --add channels bioconda
 
 # Install software using miniconda
 # Core tools
-conda install samtools=1.10
+#conda install samtools=1.10
 conda install bcftools
 conda install bedtools
 conda install igv
@@ -47,6 +47,9 @@ conda install wtdbg
 wget ${GENOMESCOPE_DOWNLOAD_URL}
 mv genomescope.R ${MINICONDA_BIN_LOCATION}
 chmod 754 ${MINICONDA_BIN_LOCATION}/genomescope.R
+
+#Install last to see if resolves issue with latest version
+conda install samtools=1.10
 
 # Install git
 conda install git

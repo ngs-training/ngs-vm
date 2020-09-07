@@ -10,6 +10,7 @@ bwa
 igv
 
 picard
+PicardCommandLine -h
 
 breakdancer-max
 bam2cfg.pl -h
