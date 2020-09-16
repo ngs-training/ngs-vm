@@ -36,3 +36,5 @@ velveth
 velvetg
 wtdbg2 --help
 genomescope.R
+
+du -h $HOME/miniconda
