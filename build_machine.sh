@@ -3,9 +3,10 @@
 set -x
 set -eu
 
+export MINICONDA="$HOME/miniconda"
+export MINICONDA_BIN_LOCATION="$MINICONDA/bin"
+export PATH="$MINICONDA_BIN_LOCATION:$PATH"
 GENOMESCOPE_DOWNLOAD_URL="https://raw.githubusercontent.com/schatzlab/genomescope/d2aefddd32ce48aa1144d9fbd80ed6b37785cd8d/genomescope.R"
-MINICONDA="{$HOME}/miniconda"
-MINICONDA_BIN_LOCATION="${MINICONDA}/bin"
 
 # Update system packages 
 sudo apt-get update && sudo apt-get install -y git && sudo apt-get install -y wget && sudo apt-get clean
@@ -13,11 +14,11 @@ sudo apt-get update && sudo apt-get install -y git && sudo apt-get install -y wg
 #Install python
 sudo apt install python2.7
 
-if [[ "$PYTHON_VERSION" == "2.7" ]]; then
-   wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
-else
-   wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
-fi
+#if [[ "$PYTHON_VERSION" == "2.7" ]]; then
+wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
+#else
+#wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+#fi
 bash miniconda.sh -b -p $MINICONDA
 
 #Set conda for autoinstalls and update conda
