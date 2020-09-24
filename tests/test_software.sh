@@ -7,7 +7,7 @@ samtools
 bcftools --help
 bedtools --help
 bwa
-igv
+igv &
 
 picard
 PicardCommandLine -h
@@ -21,12 +21,14 @@ ngmlr --help
 
 hisat2 -h
 kallisto 
+sleuth.R
 
 bowtie2
 macs2 -h
 meme
 tomtom
 bedGraphToBigWig
+fetchChromSizes
 
 assembly-stats
 canu

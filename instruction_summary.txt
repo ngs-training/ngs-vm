@@ -1,3 +1,5 @@
+These instructions assume you are working from a up to date base Ubuntu image
+
 1) Install python 2.7
 
 sudo apt install python2.7
@@ -8,47 +10,52 @@ sudo apt install python2.7
 
 bash Miniconda2-latest-Linux-x86_64.sh
 
-4) Add the bioconda channel
+4) Update conda
+
+5) Add the bioconda channel
 
 conda config --add channels r
 conda config --add channels defaults
 conda config --add channels conda-forge
 conda config --add channels bioconda
 
-5) Install the core software
+6) Install the core software
 	
 conda install bcftools
 conda install bedtools
 conda install igv
 
-6) Install the software for QC module
+7) Install the software for QC module
 
 conda install picard
 
-7) Install the software for read alignment module
+8) Install the software for read alignment module
 
 conda install bwa
 
-8) Install the software for SV module
+9) Install the software for SV module
 
 conda install breakdancer
 conda install lumpy-sv
 conda install ngmlr
 conda install sniffles
 
-9) Install the software for RNA-seq module
+10) Install the software for RNA-seq module
 
 conda install hisat2
 conda install kallisto
 conda install r-sleuth
 
-10) Install the software for CHiP-seq module
+11) Install the software for CHiP-seq module
 
 conda install bowtie2
 conda install macs2
 conda install meme
+conda install ucsc-fetchchromsizes
+conda install ucsc-bedgraphtobigwig
 
-11) Install the software for assembly module
+
+12) Install the software for assembly module
 
 conda install assembly-stats
 conda install canu
@@ -76,11 +83,13 @@ conda install git
 	
 git clone <repo> 
 
-16) Run a test script to check installs (run_tests.sh)
+16) Run a test script to check installs (tests/test_software.sh)
 
-17)Issues to address:
+17) Run the module test scripts (tests/test_unix.sh etc.)
 
-Install the webbrowsers firefox and chrome
+18)Issues to address:
+
+Install the web browsers firefox and chrome
 Install a pdfviewer
 Add a shortcut to the take screenshot application
 Issues with lumpy-sv (only software that still requires python 2.7)

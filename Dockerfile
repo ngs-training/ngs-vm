@@ -45,6 +45,7 @@ RUN conda install bowtie2
 RUN conda install macs2
 RUN conda install meme
 RUN conda install ucsc-bedgraphtobigwig
+RUN conda install ucsc-fetchchromsizes
 # Asembly module
 RUN conda install assembly-stats
 RUN conda install canu

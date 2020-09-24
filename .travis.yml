@@ -27,4 +27,4 @@ install:
   # Install software via conda
   - source ./install_dependencies.sh
 script:
-  - source ./run_tests.sh
+  - source ./tests/test_software.sh

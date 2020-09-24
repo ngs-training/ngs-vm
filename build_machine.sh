@@ -4,9 +4,30 @@ set -x
 set -eu
 
 GENOMESCOPE_DOWNLOAD_URL="https://raw.githubusercontent.com/schatzlab/genomescope/d2aefddd32ce48aa1144d9fbd80ed6b37785cd8d/genomescope.R"
+MINICONDA="{$HOME}/miniconda"
 MINICONDA_BIN_LOCATION="${MINICONDA}/bin"
 
-# Set the conda channels - move to .travis.yml?
+# Update system packages 
+RUN apt-get update && apt-get install -y wget && apt-get clean
+
+#Install python
+sudo apt install python2.7
+
+if [[ "$PYTHON_VERSION" == "2.7" ]]; then
+   wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
+else
+   wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+fi
+bash miniconda.sh -b -p $MINICONDA
+
+#Set conda for autoinstalls and update conda
+conda config --set always_yes yes --set changeps1 no
+conda update -q conda
+
+# Useful for debugging any issues with conda
+conda info -a
+
+# Set the conda channels
 conda config --add channels default
 conda config --add channels r
 conda config --add channels conda-forge
@@ -57,6 +78,10 @@ conda install git
 
 # Install the course modules from github
 # git clone <add link to git repo once finalised>
+
+#Set path
+export PATH=$MINICONDA_BIN_LOCATION:$PATH
+echo $PATH
 
 set +eu
 set +x

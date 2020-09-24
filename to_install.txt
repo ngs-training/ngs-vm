@@ -15,6 +15,7 @@ bowtie2
 MACS2
 meme
 ucsc-bedgraphtobigwig
+ucsc-fetchchromsizes
 assembly-stats
 canu
 kmer-jellyfish
@@ -24,3 +25,4 @@ wtdbg
 genomescope
 git
 firefox
+pdfviewer
