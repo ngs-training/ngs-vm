@@ -8,7 +8,7 @@ MINICONDA="{$HOME}/miniconda"
 MINICONDA_BIN_LOCATION="${MINICONDA}/bin"
 
 # Update system packages 
-RUN apt-get update && apt-get install -y wget && apt-get clean
+sudo apt-get update && sudo apt-get install -y git && sudo apt-get install -y wget && sudo apt-get clean
 
 #Install python
 sudo apt install python2.7
