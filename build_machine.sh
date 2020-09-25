@@ -6,7 +6,6 @@ set -eu
 export MINICONDA="$HOME/miniconda"
 export MINICONDA_BIN_LOCATION="$MINICONDA/bin"
 export PATH="$MINICONDA_BIN_LOCATION:$PATH"
-GENOMESCOPE_DOWNLOAD_URL="https://raw.githubusercontent.com/schatzlab/genomescope/d2aefddd32ce48aa1144d9fbd80ed6b37785cd8d/genomescope.R"
 
 # Update system packages 
 sudo apt-get update && sudo apt-get install -y git && sudo apt-get install -y wget && sudo apt-get clean
@@ -66,10 +65,6 @@ conda install kmer-jellyfish
 conda install seqtk
 conda install velvet
 conda install wtdbg
-#Install genomescope.R (not available via bioconda)
-wget ${GENOMESCOPE_DOWNLOAD_URL}
-mv genomescope.R ${MINICONDA_BIN_LOCATION}
-chmod 754 ${MINICONDA_BIN_LOCATION}/genomescope.R
 
 #Install last to see if resolves issue with latest version
 conda install samtools=1.10
@@ -92,7 +87,7 @@ git clone http://www.github.com/WTAC-NGS/assembly
 git clone http://www.github.com/WTAC-NGS/igv
 
 #Set path
-export PATH=$MINICONDA_BIN_LOCATION:$PATH
+export set PATH=$MINICONDA_BIN_LOCATION:$PATH
 echo $PATH
 
 set +eu
