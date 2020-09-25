@@ -46,7 +46,7 @@ conda install picard
 conda install bwa
 # SV module
 conda install breakdancer
-#conda install lumpy-sv
+conda install lumpy-sv
 conda install ngmlr
 conda install sniffles
 # RNA-Seq module
@@ -78,7 +78,18 @@ conda install samtools=1.10
 conda install git
 
 # Install the course modules from github
-# git clone <add link to git repo once finalised>
+cd /home/manager
+mkdir course_data
+cd course_data
+git clone http://www.github.com/WTAC-NGS/unix
+git clone http://www.github.com/WTAC-NGS/data_formats
+git clone http://www.github.com/WTAC-NGS/read_alignment
+git clone http://www.github.com/WTAC-NGS/variant_calling
+git clone http://www.github.com/WTAC-NGS/structural_variation
+git clone http://www.github.com/WTAC-NGS/rna_seq
+git clone http://www.github.com/WTAC-NGS/chip_seq
+git clone http://www.github.com/WTAC-NGS/assembly
+git clone http://www.github.com/WTAC-NGS/igv
 
 #Set path
 export PATH=$MINICONDA_BIN_LOCATION:$PATH
