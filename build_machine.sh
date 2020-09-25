@@ -75,7 +75,7 @@ chmod 754 ${MINICONDA_BIN_LOCATION}/genomescope.R
 conda install samtools=1.10
 
 # Install git
-conda install git
+#conda install git
 
 # Install the course modules from github
 cd /home/manager
