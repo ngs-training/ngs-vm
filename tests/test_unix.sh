@@ -1,4 +1,4 @@
-cd /home/manager/course_data/unix/Notebooks
+cd /home/manager/course_data/unix/practical/Notebooks
 cd basic
 ls /home/manager/course_data/unix/Notebooks/index.ipynb
 pwd
@@ -17,10 +17,10 @@ pwd
 cp Styphi.gff StyphiCT18.gff
 ls
 cd ..
-mv Styphi/Styphi.CT18 .
+mv Styphi/StyphiCT18.gff .
 ls Styphi
 ls
-rm StypgiCT18.gff
+rm StyphiCT18.gff
 ls
 find . -name *.gff
 find . -type d
@@ -52,4 +52,5 @@ awk '{ print $1 }' Pfalciparum.bed | sort | uniq
 #awk '{ print $1 }' Pfalciparum.bed | sort | less
 #awk '{ print $1 }' Pfalciparum.bed | sort | uniq | less
 #Solutions to exercises
+echo "done"
 cd ../grep

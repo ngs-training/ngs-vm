@@ -24,20 +24,21 @@ picard MarkDuplicates I=md5638.sorted.bam O=md5638.markdup.bam M=md5638.metrics.
 less md5638.metrics.txt
 samtools index md5638.markdup.bam
 samtools stats md5638.markdup.bam > md5638.markdup.stats
-plot-bamstats -p md5638_plot/md5638.markdup.stats
+plot-bamstats -p md5638_plot/ md5638.markdup.stats
 
 #Alignment Visualisation
 #Tests need to be performed manually
 
 #Alignment Workflows
-cd /home/manager/course_data/read_alignment/Exercise2/60A_SC_D13VPG6044/library1
+cd /home/manager/course_data/read_alignment/data/Exercise2/60A_Sc_DBVPG6044/library1
 cd lane1
-bwa mem -M -R '@RG\tID:lane1\tSM:60A_Sc_DBVPG6044' ../../../../ref/ Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa.gz s_7_1.fastq s_7_2.fastq | samtools view -bS - | samtools sort -T temp -O bam -o lane1.sorted.bam -
+bwa index ../../../../ref/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa.gz
+bwa mem -M -R '@RG\tID:lane1\tSM:60A_Sc_DBVPG6044' ../../../../ref/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa.gz s_7_1.fastq.gz s_7_2.fastq.gz | samtools view -bS - | samtools sort -T temp -O bam -o lane1.sorted.bam -
 samtools index lane1.sorted.bam
 samtools stats lane1.sorted.bam > lane1.stats.txt
 plot-bamstats -p plot/ lane1.stats.txt
 cd ../lane2
-bwa mem -M -R '@RG\tID:lane2\tSM:60A_Sc_DBVPG6044' ../../../../ref/ Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa.gz s_7_1.fastq s_7_2.fastq | samtools view -bS - | samtools sort -T temp -O bam -o lane2.sorted.bam -
+bwa mem -M -R '@RG\tID:lane2\tSM:60A_Sc_DBVPG6044' ../../../../ref/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa.gz s_7_1.fastq.gz s_7_2.fastq.gz | samtools view -bS - | samtools sort -T temp -O bam -o lane2.sorted.bam -
 samtools index lane2.sorted.bam
 samtools stats lane2.sorted.bam > lane2.stats.txt
 plot-bamstats -p plot2/ lane2.stats.txt

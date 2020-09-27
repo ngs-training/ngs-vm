@@ -20,15 +20,14 @@ bcftools view -H -r 20:24042765-24043073 1kg.bcf | less -S
 bcftools query -l 1kg.bcf | wc -l
 bcftools query -r 20:24019472 -s HG00107,HG00108 -f '%POS [ %GT]\n' 1kg.bcf
 bcftools query -i 'AC>10' -f '%POS\n' 1kg | wc -l
-bcftools query -s HG00107 -i 'FORMAT/DP>10' & FORMAT/GT="alt"' -f '%POS [%GT %DP]\n' 1kg.bcf | head
+bcftools query -s HG00107 -i 'FORMAT/DP>10 & FORMAT/GT="alt"' -f '%POS [%GT %DP]\n' 1kg.bcf | head
 head 60A_Sc_DBVPG6044/lane1/s_7_1.fastq | grep ^@
 head 60A_Sc_DBVPG6044/lane1/s_7_2.fastq | grep ^@
 wc -l 60A_Sc_DBVPG6044/lane1/*.fastq
 ./align.sh
 grep ^SN lane*.sorted.bam.bchk | awk -F'\t' '$2=="raw rotal sequences:"'
 grep ^SN lane*.sorted.bam.bchk | awk -F'\t' '$2=="reads mapped:"'
-grep ^SN lane*.sorted.bam.bchk | awk -F'\t' '$2=="pairs on different cromosomes::'"
+grep ^SN lane*.sorted.bam.bchk | awk -F'\t' '$2=="pairs on different cromosomes:"'
 samtools stats -F SECONDARY lane1.sorted.bam > lane1.sorted.bam.bchk
 plot-bamstats -p lane1-plots/ lane1.sorted.bam.bchk
 firefox lane1-plots/*.html &
-

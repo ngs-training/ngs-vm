@@ -1,4 +1,4 @@
-cd rna_seq/data
+cd /home/manager/course_data/rna_seq/data
 ls *.fastq.gz
 hisat2-build -h
 hisat2-build PccAS_v3_genome.fa PccAS_v3_hisat2.idx

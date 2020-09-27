@@ -1,7 +1,7 @@
-cd assembly/data/
+cd /home/manager/course_data/assembly/data/
 
 #Start PacBio assembly 
-canu -p PB -d Pacbio -s file.specs -pacbio-raw PBReads.fastq.gz &> canu_log.txt
+canu -p PB -d Pacbio -s file.specs -pacbio-raw PBReads.fastq.gz &> canu_log.txt &
 
 #Make an illumina assembly
 velveth k.assembly.41 41 -shortPaired -fastq IT.Chr5_1.fastq IT.Chr5_2.fastq
@@ -18,14 +18,14 @@ seqtk cutN -n1 k.assembly.49/contigs.fa > tmp.contigs.fasta
 assembly-stats tmp.contigs.fasta
 
 #What to expect from a genome assembly
-jellyfish count -C -m21 -s2G -t4 -o IT.jf <(cat IT.Chr5_1.fastq IT.Chr5_2.fastq)
+jellyfish count -C -m21 -s1G -t4 -o IT.jf <(cat IT.Chr5_1.fastq IT.Chr5_2.fastq)
 jellyfish histo IT.jf > IT.histo
-genomescope.R IT.histo 21 76 IT.jf21
+Rscript genomescope.R IT.histo 21 76 IT.jf21
 
-genomescope.R fAnaTest.histo 21 76 fAnaTest.jf21
-genomescope.R fDreSAT1.histo 21 76 fDreSAT1.jf21
-genomescope.R fMasArm1.histo 21 76 fMasArm1.jf21
-genomescope.R fSalTru1.histo 21 76 fSalTru1.jf21
+Rscript genomescope.R fAnaTest.jf21.histo 21 76 fAnaTest.jf21
+Rscript genomescope.R fDreSAT1.jf21.histo 21 76 fDreSAT1.jf21
+Rscript genomescope.R fMasArm1.jf21.histo 21 76 fMasArm1.jf21
+Rscript genomescope.R fSalTru1.jf21.histo 21 76 fSalTru1.jf21
 
 #Back to PacBio assembly
 wtdbg2 -t4 -i PBReads.fastq.gz -o wtdbg
