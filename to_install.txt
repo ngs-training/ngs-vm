@@ -6,7 +6,7 @@ picard
 bwa
 breakdancer
 lumpy-sv
-ngmlr
+minimap2
 sniffles
 hisat2
 kallisto

@@ -34,7 +34,7 @@ RUN conda install bwa
 # SV module
 RUN conda install breakdancer
 RUN conda install lumpy-sv
-RUN conda install ngmlr
+RUN conda install minimap2
 RUN conda install sniffles
 # RNA-Seq module
 RUN conda install hisat2

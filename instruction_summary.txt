@@ -37,7 +37,7 @@ conda install bwa
 
 conda install breakdancer
 conda install lumpy-sv
-conda install ngmlr
+conda install minimap2
 conda install sniffles
 
 10) Install the software for RNA-seq module

@@ -22,7 +22,7 @@ bash miniconda.sh -b -p $MINICONDA
 
 #Set conda for autoinstalls and update conda
 conda config --set always_yes yes --set changeps1 no
-conda update -q conda
+conda update -y conda
 
 # Useful for debugging any issues with conda
 conda info -a
@@ -46,7 +46,7 @@ conda install bwa
 # SV module
 conda install breakdancer
 conda install lumpy-sv
-conda install ngmlr
+conda install minimap2
 conda install sniffles
 # RNA-Seq module
 conda install hisat2
@@ -66,11 +66,13 @@ conda install seqtk
 conda install velvet
 conda install wtdbg
 
+#Install genomescope.R (not available via bioconda)
+wget https://raw.githubusercontent.com/schatzlab/genomescope/d2aefddd32ce48aa1144d9fbd80ed6b37785cd8d/genomescope.R
+mv genomescope.R $MINICONDA_BIN_LOCATION
+chmod 754 $MINICONDA_BIN_LOCATION/genomescope.R
+
 #Install last to see if resolves issue with latest version
 conda install samtools=1.10
-
-# Install git
-#conda install git
 
 # Install the course modules from github
 cd /home/manager
