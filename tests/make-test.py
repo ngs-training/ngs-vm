@@ -3,7 +3,7 @@
 import os,sys,json,re
 
 def usage():
-    print('Usage: make-test.py [OPTIONS] index.ipynb')
+    print('Usage: make-test.py [OPTIONS] index.ipynb answers.ipynb')
     print('Options:')
     print('   -o, --output FILE     Output file')
     sys.exit(1)
@@ -30,20 +30,28 @@ def process_file(opts,file):
     nb = json.load(open(file))
     opts['fh'].write("\n# "+file+"\n")
     next_file = None
+    lines = []
     for cell in nb['cells']:
         if cell['cell_type'] == 'markdown':
             for line in cell['source']:
                 m = re.search(r'\(([^(]+\.ipynb)\)',line); 
                 if m!=None: next_file = m.group(1)
+                m = re.search(r'^\s*`(.+)`\s*$',line)
+                if m!=None and m.group(1)!='`' : lines.append(m.group(1))
         if cell['cell_type'] == 'code':
             for line in cell['source']:
                 line = line.rstrip('\n')
-                if line[-1]=='\\':
-                    line = line.rstrip('\\')
-                    opts['fh'].write(line)
+                if len(lines)>0 and lines[-1][-1]=='\\':
+                    lines[-1] = lines[-1].rstrip('\\')
+                    lines[-1] += line
                 else:
-                    opts['fh'].write(line)
-                    opts['fh'].write("\n")
+                    lines.append(line)
+    for line in lines:
+        line = re.sub(r'\|\s*less -S\s*$', '| head',line)
+        line = re.sub(r'\|\s*less\s*$', '| head',line)
+        line = re.sub(r'less\s+-S\s+', 'tail ',line)
+        line = re.sub(r'less\s+', 'tail ',line)
+        opts['fh'].write(line+"\n")
     opts['fh'].write("\n")
     if next_file!=None:
         dir = '.'
@@ -55,7 +63,6 @@ def main(opts):
     opts['fh'].write("#!/bin/bash\n")
     opts['fh'].write("set -e\n")
     opts['fh'].write("set -x\n")
-    opts['fh'].write("set -o pipefail\n")
 
     for file in opts['files']:
         process_file(opts,file)
