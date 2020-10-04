@@ -1,33 +1,50 @@
-cd /home/manager/course_data/data_formats/data
+#!/bin/bash
+set -e
+set -x
 
-#samtools view -H NA20538.bam | less -S
-#samtools view -H NA20538.bam
-samtools view -H NA20538.bam | grep -c ^@RG
-samtools view -H NA20538.bam | grep ^@PG | less -S
-samtools view -H NA20538.bam | cut -f1,4
+# /home/manager/course_data/data_formats/practical/Notebooks/index.ipynb
+cd ~/course_data/data_formats/
+samtools --help
+bcftools --help
+#picard -h      # returns non-zero status, commenting out
 
-samtools view NA20538.bam | head -1 | cut -f1
-samtools view NA20538.bam | head -1 | cut -f3,4
-samtools view NA20538.bam | head -1 | cut -f5
-samtools view -C -T Saccaromyces_cerevisiae.EF4.68.dna.toplevel.fa -o yeast.cram yeast.bam
-ls -lh yeast.bam yeast.cram
-bcftools
-bcftools view
-bcftools view -h 1kg.bcf | less
-bcftools view -O z -o 1kg.vcf.gz 1kg.bcf
-bcftools index 1kg.bcf
-bcftools view -H -r 20:24042765-24043073 1kg.bcf | less -S
-bcftools query -l 1kg.bcf | wc -l
-bcftools query -r 20:24019472 -s HG00107,HG00108 -f '%POS [ %GT]\n' 1kg.bcf
-bcftools query -i 'AC>10' -f '%POS\n' 1kg | wc -l
-bcftools query -s HG00107 -i 'FORMAT/DP>10 & FORMAT/GT="alt"' -f '%POS [%GT %DP]\n' 1kg.bcf | head
-head 60A_Sc_DBVPG6044/lane1/s_7_1.fastq | grep ^@
-head 60A_Sc_DBVPG6044/lane1/s_7_2.fastq | grep ^@
-wc -l 60A_Sc_DBVPG6044/lane1/*.fastq
-./align.sh
-grep ^SN lane*.sorted.bam.bchk | awk -F'\t' '$2=="raw rotal sequences:"'
-grep ^SN lane*.sorted.bam.bchk | awk -F'\t' '$2=="reads mapped:"'
-grep ^SN lane*.sorted.bam.bchk | awk -F'\t' '$2=="pairs on different cromosomes:"'
-samtools stats -F SECONDARY lane1.sorted.bam > lane1.sorted.bam.bchk
-plot-bamstats -p lane1-plots/ lane1.sorted.bam.bchk
-firefox lane1-plots/*.html &
+
+# /home/manager/course_data/data_formats/practical/Notebooks/formats.ipynb
+pwd
+perl -e 'printf "%d\n",ord("A")-33;'
+cat data/example.sam
+samtools view -H data/NA20538.bam
+samtools view data/NA20538.bam | head -n 1
+samtools sort -o data/NA20538_sorted.bam data/NA20538.bam
+samtools index data/NA20538_sorted.bam
+bcftools view -h data/1kg.bcf
+bcftools index data/1kg.bcf
+bcftools view -H -r 20:24042765-24043073 data/1kg.bcf
+#bcftools query -h      # non-zero status
+bcftools query -l data/1kg.bcf
+bcftools view -s HG00131 data/1kg.bcf | head -n 50
+bcftools query -f'%POS\t%REF\t%ALT\n' -s HG00131 data/1kg.bcf | head
+bcftools query -f'%CHROM\t%POS\n' -i 'AC[0]>2' data/1kg.bcf | head
+
+
+# /home/manager/course_data/data_formats/practical/Notebooks/conversion.ipynb
+samtools view -h data/NA20538.bam > data/NA20538.sam
+head data/NA20538.sam
+samtools view -b data/NA20538.sam > data/NA20538_2.bam
+samtools view -C     -T data/Saccharomyces_cerevisiae.EF4.68.dna.toplevel.fa     -o data/yeast.cram data/yeast.bam
+ls -l data
+picard FastqToSam F1=data/13681_1#18_1.fastq.gz     F2=data/13681_1#18_2.fastq.gz     O=data/13681_1#18.sam SM=13681_1#18
+#picard FastqToSam -h       # non-zero status
+samtools collate data/yeast.cram data/yeast.collated
+samtools fastq -1 data/yeast.collated_1.fastq     -2 data/yeast.collated_2.fastq data/yeast.collated.bam
+bcftools view -O z -o data/1kg.vcf.gz data/1kg.bcf
+ls -lrt data
+bcftools view -O b -o data/1kg_2.bcf data/1kg.vcf.gz
+
+
+# /home/manager/course_data/data_formats/practical/Notebooks/assessment.ipynb
+samtools stats -F SECONDARY data/lane1.sorted.bam     > data/lane1.sorted.bam.bchk
+head -n 47 data/lane1.sorted.bam.bchk
+grep ^'#' data/lane1.sorted.bam.bchk | grep 'Use'
+plot-bamstats -p data/lane1-plots/ data/lane1.sorted.bam.bchk
+
