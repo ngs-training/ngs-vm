@@ -57,6 +57,9 @@ RUN conda install wtdbg
 RUN wget https://raw.githubusercontent.com/schatzlab/genomescope/d2aefddd32ce48aa1144d9fbd80ed6b37785cd8d/genomescope.R
 RUN mv genomescope.R /miniconda/bin
 RUN chmod 754 /miniconda/bin/genomescope.R
+#Group projects
+RUN conda install freebayes
+RUN conda install gatk4
 
 # Install git
 RUN conda install git

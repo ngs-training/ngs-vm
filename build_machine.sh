@@ -58,13 +58,16 @@ conda install macs2
 conda install meme
 conda install ucsc-bedgraphtobigwig
 conda install ucsc-fetchchromsizes
-# Asembly module
+# Assembly module
 conda install assembly-stats
 conda install canu
 conda install kmer-jellyfish
 conda install seqtk
 conda install velvet
 conda install wtdbg
+# Group projects
+conda install freebayes
+conda install gatk4
 
 #Install genomescope.R (not available via bioconda)
 wget https://raw.githubusercontent.com/schatzlab/genomescope/d2aefddd32ce48aa1144d9fbd80ed6b37785cd8d/genomescope.R

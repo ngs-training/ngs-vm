@@ -22,6 +22,8 @@ kmer-jellyfish
 seqtk
 velvet
 wtdbg
+freebayes
+gatk
 genomescope
 git
 firefox
