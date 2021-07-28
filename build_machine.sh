@@ -22,7 +22,8 @@ bash miniconda.sh -b -p $MINICONDA
 
 #Set conda for autoinstalls and update conda
 conda config --set always_yes yes --set changeps1 no
-conda update -y conda
+#conda update -y conda
+conda update -n base -c defaults conda
 
 # Useful for debugging any issues with conda
 conda info -a
