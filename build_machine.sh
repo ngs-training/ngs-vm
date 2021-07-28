@@ -11,7 +11,7 @@ export PATH="$MINICONDA_BIN_LOCATION:$PATH"
 sudo apt-get update && sudo apt-get install -y git && sudo apt-get install -y wget && sudo apt-get clean
 
 #Install python
-sudo apt install python2.7
+sudo apt install python3
 
 #if [[ "$PYTHON_VERSION" == "2.7" ]]; then
 wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
@@ -22,7 +22,8 @@ bash miniconda.sh -b -p $MINICONDA
 
 #Set conda for autoinstalls and update conda
 conda config --set always_yes yes --set changeps1 no
-conda update -y conda
+#conda update -y conda
+conda update -n base -c defaults conda
 
 # Useful for debugging any issues with conda
 conda info -a
@@ -45,7 +46,7 @@ conda install picard
 conda install bwa
 # SV module
 conda install breakdancer
-conda install lumpy-sv
+#conda install lumpy-sv
 conda install minimap2
 conda install sniffles
 # RNA-Seq module
