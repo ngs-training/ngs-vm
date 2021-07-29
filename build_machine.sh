@@ -13,11 +13,11 @@ sudo apt-get update && sudo apt-get install -y git && sudo apt-get install -y wg
 #Install python
 sudo apt install python3
 
-#if [[ "$PYTHON_VERSION" == "2.7" ]]; then
-#wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
-#else
+if [[ "$PYTHON_VERSION" == "2.7" ]]; then
+wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
+else
 wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
-#fi
+fi
 bash miniconda.sh -b -p $MINICONDA
 
 #Set conda for autoinstalls and update conda
