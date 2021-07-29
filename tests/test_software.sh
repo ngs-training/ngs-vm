@@ -15,8 +15,8 @@ PicardCommandLine -h
 breakdancer-max
 bam2cfg.pl -h
 sniffles --help
-lumpy --help
-lumpyexpress -h
+#lumpy --help
+#lumpyexpress -h
 minimap2
 
 hisat2 -h
