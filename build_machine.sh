@@ -33,8 +33,8 @@ conda config --set channel_priority true
 
 # Install software using miniconda
 # Core tools
-conda install samtools=1.15
-conda install bcftools=1.15
+conda install samtools=1.14
+conda install bcftools=1.14
 conda install bedtools=2.30
 conda install igv=2.13
 # QC module
@@ -44,9 +44,10 @@ conda install bwa=0.7.17
 # SV module
 conda install breakdancer=1.4.5
 #!!!!pip install numpy dysgu
-conda install minimap2=2.24.1
+conda install minimap2=2.24
 conda install sniffles=2.0.6
 # RNA-Seq module
+conda install r-base=4.1.3
 conda install hisat2=2.2.1
 conda install kallisto=0.48.0
 conda install r-sleuth=0.30.0
