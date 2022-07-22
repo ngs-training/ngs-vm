@@ -27,8 +27,9 @@ conda info -a
 # Set the conda channels
 conda config --add channels defaults
 conda config --add channels r
-conda config --add channels conda-forge
 conda config --add channels bioconda
+conda config --add channels conda-forge
+conda config --set channel_priority true
 
 # Install software using miniconda
 # Core tools
