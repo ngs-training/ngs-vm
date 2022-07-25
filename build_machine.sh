@@ -40,7 +40,6 @@ conda install bedtools=2.30
 conda install bwa=0.7.17
 # SV module
 conda install breakdancer=1.4.5
-#!!!!pip install numpy dysgu
 conda install minimap2=2.24
 conda install sniffles=2.0.6
 # RNA-Seq module
@@ -67,6 +66,8 @@ conda install gatk4=4.2.6.1
 # Finally install picard and IGV last to avoid downgrade of certain dependencies
 conda install picard-slim=2.27.4
 conda install igv=2.13
+# Now install software via pip that is not available with conda
+pip install dysgu
 
 # Install genomescope.R (not available via bioconda)
 #wget https://raw.githubusercontent.com/schatzlab/genomescope/d2aefddd32ce48aa1144d9fbd80ed6b37785cd8d/genomescope.R
