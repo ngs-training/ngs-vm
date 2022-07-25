@@ -29,16 +29,13 @@ conda config --add channels defaults
 conda config --add channels r
 conda config --add channels bioconda
 conda config --add channels conda-forge
-conda config --set channel_priority true
+conda config --set channel_priority strict
 
 # Install software using miniconda
 # Core tools
 conda install samtools=1.14
 conda install bcftools=1.14
 conda install bedtools=2.30
-conda install igv=2.13
-# QC module
-conda install picard-slim=2.27.4
 # Read alignment module
 conda install bwa=0.7.17
 # SV module
@@ -47,7 +44,6 @@ conda install breakdancer=1.4.5
 conda install minimap2=2.24
 conda install sniffles=2.0.6
 # RNA-Seq module
-conda install r-base=4.1.3
 conda install hisat2=2.2.1
 conda install kallisto=0.48.0
 conda install r-sleuth=0.30.0
@@ -68,6 +64,9 @@ conda install genomescope2=2.0
 # Group projects
 conda install freebayes=1.3.6
 conda install gatk4=4.2.6.1
+# Finally install picard and IGV last to avoid downgrade of certain dependencies
+conda install picard-slim=2.27.4
+conda install igv=2.13
 
 # Install genomescope.R (not available via bioconda)
 #wget https://raw.githubusercontent.com/schatzlab/genomescope/d2aefddd32ce48aa1144d9fbd80ed6b37785cd8d/genomescope.R
