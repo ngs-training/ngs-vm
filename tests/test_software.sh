@@ -1,42 +1,42 @@
 #!/bin/bash
 
-echo $MINICONDA
+set -x
+#set -eu
+
 echo $PATH
 
 samtools
-bcftools --help
-bedtools --help
+bcftools --version
+bedtools --version
 bwa
 igv &
 
-picard
-PicardCommandLine -h
+picard -h
 
 breakdancer-max
 bam2cfg.pl -h
-sniffles --help
-#lumpy --help
-#lumpyexpress -h
-minimap2
+sniffles --version
+minimap2 --version
 
-hisat2 -h
-kallisto 
-sleuth.R
+hisat2 --version
+kallisto version
+#sleuth.R
 
-bowtie2
-macs2 -h
-meme
-tomtom
+bowtie2 --version
+macs2 --version
+meme -version
+tomtom -version
 bedGraphToBigWig
 fetchChromSizes
 
-assembly-stats
-canu
-jellyfish --help
+assembly-stats -v
+canu -version
+jellyfish --version
 seqtk
 velveth
 velvetg
-wtdbg2 --help
-genomescope.R
+wtdbg2 -V
+genomescope2 --version
 
-du -h $HOME/miniconda
+#set +eu
+set +x

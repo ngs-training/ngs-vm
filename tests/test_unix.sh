@@ -30,7 +30,7 @@ cd ../files
 head Styphi.gff
 tail Styphi.gff
 tail -n 25 Styphi.gff
-#man tail 
+#man tail
 head -1 Styphi.gff > first_Styphi_line.txt
 cat first_Styphi_line.txt
 rm first_Styphi_line.txt
