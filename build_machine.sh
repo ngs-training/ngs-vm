@@ -4,7 +4,7 @@
 # Author: Jacqui Keane <drjkeane at gmail.com>
 # URL:    https://www.cambridgebioinformatics.com
 #
-# Usage: install_conda_profules.sh
+# Usage: build_machine.sh
 #
 
 set -x
