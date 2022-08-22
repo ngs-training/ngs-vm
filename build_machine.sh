@@ -40,8 +40,8 @@ conda config --add channels conda-forge
 # Special case, install breakdancer first as it silently replaces samtools with an older version
 conda install breakdancer=1.4.5
 # Core tools
-conda install samtools=1.15
-conda install bcftools=1.15
+conda install samtools=1.14
+conda install bcftools=1.14
 conda install bedtools=2.30
 # Read alignment module
 conda install bwa=0.7.17
