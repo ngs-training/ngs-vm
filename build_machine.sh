@@ -20,7 +20,7 @@ export PATH="$MINICONDA_BIN_LOCATION:$PATH"
 sudo apt-get update && sudo apt-get install -y git && sudo apt-get install -y wget && sudo apt-get clean
 
 # Download and install miniconda
-wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
 bash miniconda.sh -b -p $MINICONDA
 
 # Set conda for autoinstalls and update conda
@@ -38,6 +38,8 @@ conda config --add channels conda-forge
 conda config --set channel_priority strict
 
 # Install software using miniconda
+# Special case, install breakdancer first as it silently replaces samtools with an older version
+conda install breakdancer=1.4.5
 # Core tools
 conda install samtools=1.14
 conda install bcftools=1.14
@@ -45,7 +47,6 @@ conda install bedtools=2.30
 # Read alignment module
 conda install bwa=0.7.17
 # SV module
-conda install breakdancer=1.4.5
 conda install minimap2=2.24
 conda install sniffles=2.0.6
 # RNA-Seq module
