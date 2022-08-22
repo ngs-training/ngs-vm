@@ -35,14 +35,13 @@ conda config --add channels defaults
 conda config --add channels r
 conda config --add channels bioconda
 conda config --add channels conda-forge
-conda config --set channel_priority strict
 
 # Install software using miniconda
 # Special case, install breakdancer first as it silently replaces samtools with an older version
 conda install breakdancer=1.4.5
 # Core tools
-conda install samtools=1.14
-conda install bcftools=1.14
+conda install samtools=1.15
+conda install bcftools=1.15
 conda install bedtools=2.30
 # Read alignment module
 conda install bwa=0.7.17
