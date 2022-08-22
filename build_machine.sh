@@ -1,7 +1,16 @@
+
 #!/bin/bash
+#
+# Author: Jacqui Keane <drjkeane at gmail.com>
+# URL:    https://www.cambridgebioinformatics.com
+#
+# Usage: install_conda_profules.sh
+#
 
 set -x
 set -eu
+
+# Script to build vm for wac ngs bioinformatics course, assumes run as user manager
 
 export MINICONDA="$HOME/miniconda"
 export MINICONDA_BIN_LOCATION="$MINICONDA/bin"
@@ -9,9 +18,6 @@ export PATH="$MINICONDA_BIN_LOCATION:$PATH"
 
 # Update system packages
 sudo apt-get update && sudo apt-get install -y git && sudo apt-get install -y wget && sudo apt-get clean
-
-# Install python
-# sudo apt install python3
 
 # Download and install miniconda
 wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
