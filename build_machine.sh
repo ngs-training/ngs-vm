@@ -33,8 +33,8 @@ conda info -a
 # Set the conda channels
 conda config --add channels defaults
 conda config --add channels r
-conda config --add channels bioconda
 conda config --add channels conda-forge
+conda config --add channels bioconda
 
 # Install software using miniconda
 # Special case, install breakdancer first as it silently replaces samtools with an older version
@@ -81,7 +81,7 @@ pip install dysgu
 #chmod 754 $MINICONDA_BIN_LOCATION/genomescope.R
 
 # Install the course modules from github
-cd /home/manager
+cd /home/vagrant
 mkdir course_data
 cd course_data
 git clone http://www.github.com/WTAC-NGS/unix

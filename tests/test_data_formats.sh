@@ -1,14 +1,14 @@
 #!/bin/bash
-set -e
 set -x
+set -eu
 
-# /home/manager/course_data/data_formats/practical/Notebooks/index.ipynb
+### Section 1 - Introduction 
 cd ~/course_data/data_formats/
 samtools --help
 bcftools --help
 #picard -h      # returns non-zero status, commenting out
 
-
+# Section 2 Data format for NGS data
 # /home/manager/course_data/data_formats/practical/Notebooks/formats.ipynb
 pwd
 perl -e 'printf "%d\n",ord("A")-33;'
