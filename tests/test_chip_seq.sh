@@ -14,8 +14,8 @@ zcat PAX5.fastq.gz | head
 
 ### Section 3 Aligning the PAX5 sample to the genome
 bowtie2 --help
-mkdir bowtie_index
-bowtie2-build genome/HS19.fa.gz bowtie_index/hs19
+######mkdir bowtie_index
+######bowtie2-build genome/HS19.fa.gz bowtie_index/hs19
 ls -l bowtie_index
 bowtie2 -k 1 -x bowtie_index/hs19 PAX5.fastq.gz -S PAX5.sam
 head -n 10 PAX5.sam
@@ -83,7 +83,7 @@ awk 'BEGIN{FS=OFS="\t"}; NR < 301 { print $1, $2-30, $3+29 }' PAX5_summits.sorte
 gunzip genome/HS19.fa.gz
 samtools faidx genome/HS19.fa
 bedtools getfasta -fi genome/HS19.fa -bed PAX5_top300_summits.bed -fo PAX5_top300_summits.fa
-meme
+#meme
 meme PAX5_top300_summits.fa -o meme_out -dna -nmotifs 1 -minw 6 -maxw 20
 firefox meme_out/meme.html &
 tomtom -o tomtom_out meme_out/meme.html motif_databases/JASPAR/JASPAR_CORE_2016_vertebrates.meme motif_databases/MOUSE/uniprobe_mouse.meme
