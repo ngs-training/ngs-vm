@@ -37,8 +37,7 @@
     
 ### 10) To enable shared folders
 
-    sudo add to a unix group
-    
+    sudo usermod -a -G vboxsf manager
   
 ### 11) Add terminal and screenshot to the menu
 
