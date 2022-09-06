@@ -14,8 +14,8 @@ zcat PAX5.fastq.gz | head
 
 ### Section 3 Aligning the PAX5 sample to the genome
 bowtie2 --help
-######mkdir bowtie_index
-######bowtie2-build genome/HS19.fa.gz bowtie_index/hs19
+mkdir bowtie_index
+bowtie2-build genome/HS19.fa.gz bowtie_index/hs19
 ls -l bowtie_index
 bowtie2 -k 1 -x bowtie_index/hs19 PAX5.fastq.gz -S PAX5.sam
 head -n 10 PAX5.sam

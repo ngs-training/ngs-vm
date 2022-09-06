@@ -13,7 +13,7 @@ samtools view -b -o MT1.bam MT1.sam
 samtools sort -o MT1_sorted.bam MT1.bam
 samtools index MT1_sorted.bam
 
-ls SBP*bam*
+#ls SBP*bam*
 cd ..
 ./data/map_SBP_samples.sh
 cd data

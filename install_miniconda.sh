@@ -38,17 +38,17 @@ conda config --add channels conda-forge
 
 # Install the course modules from github
 cd $HOME
-#mkdir course_data
-#cd course_data
-#git clone http://www.github.com/WTAC-NGS/unix
-#git clone http://www.github.com/WTAC-NGS/data_formats
-#git clone http://www.github.com/WTAC-NGS/read_alignment
-#git clone http://www.github.com/WTAC-NGS/variant_calling
-#git clone http://www.github.com/WTAC-NGS/structural_variation
-#git clone http://www.github.com/WTAC-NGS/rna_seq
-#git clone http://www.github.com/WTAC-NGS/chip_seq
-#git clone http://www.github.com/WTAC-NGS/assembly
-#git clone http://www.github.com/WTAC-NGS/igv
+mkdir course_data
+cd course_data
+git clone http://www.github.com/WTAC-NGS/unix
+git clone http://www.github.com/WTAC-NGS/data_formats
+git clone http://www.github.com/WTAC-NGS/read_alignment
+git clone http://www.github.com/WTAC-NGS/variant_calling
+git clone http://www.github.com/WTAC-NGS/structural_variation
+git clone http://www.github.com/WTAC-NGS/rna_seq
+git clone http://www.github.com/WTAC-NGS/chip_seq
+git clone http://www.github.com/WTAC-NGS/assembly
+git clone http://www.github.com/WTAC-NGS/igv
 
 # Initialise conda so it persists in the .bashrc
 conda init bash

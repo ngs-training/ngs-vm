@@ -52,8 +52,7 @@ ls
 picard MergeSamFiles I=lane1/lane1.sorted.bam I=lane2/lane2.sorted.bam O=library1.bam
 picard MarkDuplicates I=library1.bam O=library1.markdup.bam M=library1.metrics.txt
 #Visualise with IGV needs manually testing
-cd ../../../ref
-gunzip Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa.gz
+gunzip ../../../ref/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa.gz
 
 samtools view -C -T ../../../ref/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa -o library1.markdup.cram library1.markdup.bam
 
