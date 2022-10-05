@@ -15,7 +15,7 @@
     sudo apt-get install gcc make git
 
 ### 5) Install guest additions
-<p>Insert and run the guest additions. Set the Shared Clipboard and Drag and Drop to be bidirectional. Restart the machine.Don't forget to eject the Gues Addions disk.</p>
+<p>Insert and run the guest additions. Set the Shared Clipboard and Drag and Drop to be bidirectional. Restart the machine. Don't forget to eject the Guest Additions disk.</p>
 
 ### 6) Clone the repo for installing the software
 
@@ -24,9 +24,13 @@
 
 ### 7) Install miniconda
 
+<p>Install latest version of miniconda for Python 3</p> 
+
     ./install_miniconda.sh
     
 ### 8) Install the software
+
+<p>Install the softare in a specific conda environment and add a line to the bashrc to activate that environment.</p>
 
     ./install_software.sh
     
@@ -40,7 +44,3 @@
     sudo usermod -a -G vboxsf manager
   
 ### 11) Add terminal and screenshot to the menu
-
-
-    
-
