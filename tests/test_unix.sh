@@ -1,6 +1,9 @@
-cd /home/manager/course_data/unix/practical/Notebooks
+set -x
+set -eu
+
+cd ~/course_data/unix/practical/Notebooks
 cd basic
-ls /home/manager/course_data/unix/Notebooks/index.ipynb
+ls ~/course_data/unix/practical/Notebooks/index.ipynb
 pwd
 ls
 ls -l
@@ -30,7 +33,7 @@ cd ../files
 head Styphi.gff
 tail Styphi.gff
 tail -n 25 Styphi.gff
-#man tail 
+#man tail
 head -1 Styphi.gff > first_Styphi_line.txt
 cat first_Styphi_line.txt
 rm first_Styphi_line.txt
@@ -54,3 +57,6 @@ awk '{ print $1 }' Pfalciparum.bed | sort | uniq
 #Solutions to exercises
 echo "done"
 cd ../grep
+
+set +eu
+set +x
