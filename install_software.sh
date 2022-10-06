@@ -20,7 +20,7 @@ source $MINICONDA/etc/profile.d/conda.sh
 conda create -n ngsbio breakdancer=1.4.5 
 
 # Activate the environment
-conda activate ngsbio6
+conda activate ngsbio
 
 # Core, RNA-Seq and CHiP-Seq modules
 conda install samtools=1.15.1 bcftools=1.15.1 bedtools=2.30.0 openmpi=4.1.4 r-base=4.0.5 bowtie2=2.4.5 macs2=2.2.7.1 meme=5.4.1 ucsc-bedgraphtobigwig=377 ucsc-fetchchromsizes=377 r-sleuth=0.30.0 bioconductor-rhdf5=2.34.0 bioconductor-rhdf5filters=1.2.0 bioconductor-rhdf5lib=1.12.0 hdf5=1.10.5 hisat2=2.2.1 kallisto=0.46.2
