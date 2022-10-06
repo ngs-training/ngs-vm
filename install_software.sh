@@ -47,9 +47,17 @@ conda deactivate
 
 # Chipseq project
 <TODO>
+conda create -n chipseq-project r-ngsplot=n.m
 
 # Install igv outside conda
 <TODO>
+
+# Create a jupyter environment to allow instructors to run, edit and convert notebooks
+conda create -n jupyter jupyter=1.0.0 pandoc=2.12 texlive-core
+conda activate jupyter
+pip install bash_kernel
+python -m bash_kernel.install
+conda deactivate
 
 # Activate ngsbio environment by default by adding to .bashrc
 
