@@ -1,43 +1,40 @@
 #!/bin/bash
 
-set -x
-set -eu
-
 echo $PATH
+
+breakdancer-max
 
 samtools --help
 bcftools --version
 bedtools --version
-#bwa --help
-#igv &
+bowtie2 --version
+bwa --help
+gatk4
+freebayes
+igv &
 
-#picard -h
+picard -h
 
-#breakdancer-max
-#bam2cfg.pl -h
 sniffles --version
 minimap2 --version
 dysgu
 
 hisat2 --version
 kallisto version
-#sleuth.R
+sleuth.R
 
-bowtie2 --version
 macs2 --version
-#meme -version
+meme -version
 tomtom -version
-#bedGraphToBigWig
-#fetchChromSizes
+bedGraphToBigWig
+fetchChromSizes
+r-ngsplot
 
 assembly-stats -v
 canu -version
 jellyfish --version
-#seqtk
+seqtk
 velveth
-#velvetg
+velvetg
 wtdbg2 -V
 genomescope2 --version
-
-set +eu
-set +x
