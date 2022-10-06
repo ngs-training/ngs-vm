@@ -4,6 +4,8 @@
 
 ### 2) Configure the VM
 
+<p>Follow instructions as directed on screen.</p>
+
 ### 3) Run an update
 
     sudo apt-get update
@@ -29,7 +31,8 @@
 ### 8) Install the software
 
     ./install_software.sh
-    
+    ### 11) Add terminal and screenshot to the menu
+
 ### 9) Run the tests
 
     cd tests
@@ -41,6 +44,6 @@
   
 ### 11) Add terminal and screenshot to the menu
 
+### 11) Tag the repo
 
-    
-
+<p>Tag a version of the repo used to make the VM using the name of the course as the tag name. Historically, this has not ben done. </p>
