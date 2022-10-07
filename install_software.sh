@@ -49,6 +49,7 @@ conda deactivate
 conda create -n chipseq-project r-ngsplot
 
 # Install igv outside conda
+cd ..
 wget https://data.broadinstitute.org/igv/projects/downloads/2.14/IGV_Linux_2.14.1_WithJava.zip
 unzip IGV_Linux_2.14.1_WithJava.zip
 rm IGV_Linux_2.14.1_WithJava.zip
