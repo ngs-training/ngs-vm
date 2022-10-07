@@ -2,9 +2,9 @@
 
 <p>Create a new virtual machine, selecting Linux and Ubuntu64 as the Type and Version. Select sufficient memory (i.e. in green zone just before the redzone). For the hard disk, select the 'Create a virtial hard disk now' option. Choose VDI and dynamically allocated. Choose 1TB as the size.</p>
 
-### 2) Configure the VM
+### 2) Install Ubuntu
 
-<p>Follow instructions as directed on screen.</p>
+<p>Follow instructions as directed on screen to install Ubuntu. Choose minimal installation. Restart when prompted.</p>
 
 ### 3) Run an update
 
@@ -31,7 +31,6 @@
 ### 8) Install the software
 
     ./install_software.sh
-    ### 11) Add terminal and screenshot to the menu
 
 ### 9) Run the tests
 
@@ -44,6 +43,6 @@
   
 ### 11) Add terminal and screenshot to the menu
 
-### 11) Tag the repo
+### 12) Tag the repo
 
 <p>Tag a version of the repo used to make the VM using the name of the course as the tag name. Historically, this has not ben done. </p>
