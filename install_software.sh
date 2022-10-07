@@ -46,11 +46,11 @@ pip install dysgu
 conda deactivate
 
 # Chipseq project
-<TODO>
-conda create -n chipseq-project r-ngsplot=n.m
+conda create -n chipseq-project r-ngsplot
 
 # Install igv outside conda
-<TODO>
+wget https://data.broadinstitute.org/igv/projects/downloads/2.14/IGV_Linux_2.14.1_WithJava.zip
+unzip IGV_Linux_2.14.1_WithJava.zip 
 
 # Create a jupyter environment to allow instructors to run, edit and convert notebooks
 conda create -n jupyter jupyter=1.0.0 pandoc=2.12 texlive-core
@@ -60,8 +60,11 @@ python -m bash_kernel.install
 conda deactivate
 
 # Activate ngsbio environment by default by adding to .bashrc
-
 echo "source $MINICONDA/etc/profile.d/conda.sh" >> ~/.bashrc
 echo "conda activate ngsbio" >> ~/.bashrc
+
+# Add igv to the path
+echo 'alias igv="igv.sh"' >> ~/.bashrc 
+echo 'export PATH="~/IGV_Linux_2.14.1:$PATH"' >> ~/.bashrc 
 
 set +x
