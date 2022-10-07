@@ -1,48 +1,66 @@
-
+#!/bin/bash
 set -x
 set -eu
 
-cd ~/course_data/rna_seq/data
-ls *.fastq.gz
-hisat2-build -h
-hisat2-build PccAS_v3_genome.fa PccAS_v3_hisat2.idx
-ls PccAS_v3_hisat2.idx.*
-hisat2 -h
-hisat2 --max-intronlen 10000 -x PccAS_v3_hisat2.idx -1 MT1_1.fastq.gz -2 MT1_2.fastq.gz -S MT1.sam
-samtools view -b -o MT1.bam MT1.sam
-samtools sort -o MT1_sorted.bam MT1.bam
-samtools index MT1_sorted.bam
+### Section 1 - Introduction 
+cd ~/course_data/rna_seq/
 
-#ls SBP*bam*
-cd ..
-./data/map_SBP_samples.sh
-cd data
-ls *.bam
+### Section 2 - Introducing the tutorial dataset
+ls data/*.fastq.gz
+zcat data/MT1_1.fastq.gz | head
+#Questions
+
+### Section 3 - Mapping RNA-Seq reads to the genome using HISAT
+hisat2-build -h
+hisat2-build data/PccAS_v3_genome.fa data/PccAS_v3_hisat2.idx
+ls data/PccAS_v3_hisat2.idx.*
+hisat2 -h
+hisat2 --max-intronlen 10000 -x data/PccAS_v3_hisat2.idx -1 data/MT1_1.fastq.gz -2 data/MT1_2.fastq.gz -S data/MT1.sam
+samtools view -b -o data/MT1.bam data/MT1.sam
+samtools sort -o data/MT1_sorted.bam data/MT1.bam
+samtools index data/MT1_sorted.bam
+ls -al data/SBP*bam
+#Questions
+
+### Section 4 - Visualising transcriptomics with IGV
+samtools faidx data/PccAS_v3_genome.fa
+#Questions
+
+### Section 5 - Transcript quantification with Kallisto
+
+!./data/map_SBP_samples.sh
+
 kallisto index
 kallisto quant
 kallisto index -i PccAS_v3_kallisto PccAS_v3_transcripts.fa
 kallisto quant -i PccAS_v3_kallisto -o MT1 -b 100 MT1_1.fastq.gz MT1_2.fastq.gz
-head MT1/abundance.tsv
-grep PCHAS_0100100 MT1/abundance.tsv
-awk -F"\t" '$1=="PCHAS_0100100" {print $5}' MT1/abundance.tsv
+ls data/MT1
+head data/MT1/abundance.tsv
+grep PCHAS_0100100 data/MT1/abundance.tsv
+awk -F"\t" '$1=="PCHAS_0100100" {print $5}' data/MT1/abundance.tsv
 kallisto quant -i PccAS_v3_kallisto -o MT2 -b 100 MT2_1.fastq.gz MT2_2.fastq.gz
 kallisto quant -i PccAS_v3_kallisto -o SBP1 -b 100 SBP1_1.fastq.gz SBP1_2.fastq.gz
 kallisto quant -i PccAS_v3_kallisto -o SBP2 -b 100 SBP2_1.fastq.gz SBP2_2.fastq.gz
 kallisto quant -i PccAS_v3_kallisto -o SBP3 -b 100 SBP3_1.fastq.gz SBP3_2.fastq.gz
-cat sleuth.R
-cat hiseq_info.txt
-cd ..
+#Questions
+
+### Section 6 - Identifying differentially expressed genes with Sleuth
+cat data/sleuth.R
+cat data/hiseq_info.txt
 Rscript data/sleuth.R
-cd data
-awk -F "\t" '$4 < 0.01 && $5 > 0' kallisto.results | cut -f1,2,3,4,5 | head
-awk -F "\t" '$4 < 0.01 && $5 < 0' kallisto.results | cut -f1,2,3,4,5 | head
-awk -F "\t" '$4 < 0.01 && $5 < 0 {print $2}' kallisto.results | sort | uniq
-awk -F "\t" '$4 < 0.01 && $5 < 0 {print $2}' kallisto.results | sort | uniq -c
-awk -F "\t" '$4 < 0.01 && $5 < 0 {print $2}' kallisto.results | sort | uniq -c | sort
-awk -F "\t" '$4 < 0.01 && $5 < 0 {print $2}' kallisto.results | sort | uniq -c | sort -n
-awk -F "\t" '$4 < 0.01 && $5 < 0 {print $2}' kallisto.results | grep -c CIR
-awk -F "\t" '$4 < 0.01 && $5 < 0 {print $2}' kallisto.results | sort | uniq -c | grep -c CIR
-awk -F "\t" '$4 < 0.01 && $5 < 0 {print $2}' kallisto.results | sort | uniq -c | grep CIR
+#Questions
+
+### Section 7 - Interpreting the results
+awk -F "\t" '$4 < 0.01 && $5 > 0' data/kallisto.results | cut -f1,2,3,4,5 | head
+awk -F "\t" '$4 < 0.01 && $5 < 0' data/kallisto.results | cut -f1,2,3,4,5 | head
+awk -F "\t" '$4 < 0.01 && $5 < 0 {print $2}' data/kallisto.results | sort | uniq
+awk -F "\t" '$4 < 0.01 && $5 < 0 {print $2}' data/kallisto.results | sort | uniq -c
+awk -F "\t" '$4 < 0.01 && $5 < 0 {print $2}' data/kallisto.results | sort | uniq -c | sort
+awk -F "\t" '$4 < 0.01 && $5 < 0 {print $2}' data/kallisto.results | sort | uniq -c | sort -n
+awk -F "\t" '$4 < 0.01 && $5 < 0 {print $2}' data/kallisto.results | grep -c CIR
+awk -F "\t" '$4 < 0.01 && $5 < 0 {print $2}' data/kallisto.results | sort | uniq -c | grep -c CIR
+awk -F "\t" '$4 < 0.01 && $5 < 0 {print $2}' data/kallisto.results | sort | uniq -c | grep CIR
+#Questions
 
 set +eu
 set +x
