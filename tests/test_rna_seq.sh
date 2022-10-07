@@ -20,6 +20,8 @@ samtools view -b -o data/MT1.bam data/MT1.sam
 samtools sort -o data/MT1_sorted.bam data/MT1.bam
 samtools index data/MT1_sorted.bam
 ls -al data/SBP*bam
+./data/map_SBP_samples.sh
+ls -al data/SBP*bam
 #Questions
 
 ### Section 4 - Visualising transcriptomics with IGV
@@ -27,9 +29,6 @@ samtools faidx data/PccAS_v3_genome.fa
 #Questions
 
 ### Section 5 - Transcript quantification with Kallisto
-
-!./data/map_SBP_samples.sh
-
 kallisto index
 kallisto quant
 kallisto index -i PccAS_v3_kallisto PccAS_v3_transcripts.fa
