@@ -17,7 +17,7 @@
     sudo apt-get install gcc make git
 
 ### 5) Install guest additions
-<p>Insert and run the guest additions. Set the Shared Clipboard and Drag and Drop to be bidirectional. Restart the machine.Don't forget to eject the Gues Addions disk.</p>
+<p>Insert and run the guest additions. Set the Shared Clipboard and Drag and Drop to be bidirectional. Restart the machine.Don't forget to eject the Guest Additons disk.</p>
 
 ### 6) Clone the repo for installing the software
 
