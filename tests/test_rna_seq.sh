@@ -19,7 +19,7 @@ hisat2 --max-intronlen 10000 -x data/PccAS_v3_hisat2.idx -1 data/MT1_1.fastq.gz 
 samtools view -b -o data/MT1.bam data/MT1.sam
 samtools sort -o data/MT1_sorted.bam data/MT1.bam
 samtools index data/MT1_sorted.bam
-ls -al data/SBP*bam
+#ls -al data/SBP*bam
 ./data/map_SBP_samples.sh
 ls -al data/SBP*bam
 #Questions
@@ -29,24 +29,24 @@ samtools faidx data/PccAS_v3_genome.fa
 #Questions
 
 ### Section 5 - Transcript quantification with Kallisto
-kallisto index
-kallisto quant
-kallisto index -i PccAS_v3_kallisto PccAS_v3_transcripts.fa
-kallisto quant -i PccAS_v3_kallisto -o MT1 -b 100 MT1_1.fastq.gz MT1_2.fastq.gz
+#kallisto index
+#kallisto quant
+kallisto index -i data/PccAS_v3_kallisto data/PccAS_v3_transcripts.fa
+kallisto quant -i data/PccAS_v3_kallisto -o data/MT1 -b 100 data/MT1_1.fastq.gz data/MT1_2.fastq.gz
 ls data/MT1
 head data/MT1/abundance.tsv
 grep PCHAS_0100100 data/MT1/abundance.tsv
 awk -F"\t" '$1=="PCHAS_0100100" {print $5}' data/MT1/abundance.tsv
-kallisto quant -i PccAS_v3_kallisto -o MT2 -b 100 MT2_1.fastq.gz MT2_2.fastq.gz
-kallisto quant -i PccAS_v3_kallisto -o SBP1 -b 100 SBP1_1.fastq.gz SBP1_2.fastq.gz
-kallisto quant -i PccAS_v3_kallisto -o SBP2 -b 100 SBP2_1.fastq.gz SBP2_2.fastq.gz
-kallisto quant -i PccAS_v3_kallisto -o SBP3 -b 100 SBP3_1.fastq.gz SBP3_2.fastq.gz
+kallisto quant -i data/PccAS_v3_kallisto -o data/MT2 -b 100 data/MT2_1.fastq.gz data/MT2_2.fastq.gz
+kallisto quant -i data/PccAS_v3_kallisto -o data/SBP1 -b 100 data/SBP1_1.fastq.gz data/SBP1_2.fastq.gz
+kallisto quant -i data/PccAS_v3_kallisto -o data/SBP2 -b 100 data/SBP2_1.fastq.gz data/SBP2_2.fastq.gz
+kallisto quant -i data/PccAS_v3_kallisto -o data/SBP3 -b 100 data/SBP3_1.fastq.gz data/SBP3_2.fastq.gz
 #Questions
 
 ### Section 6 - Identifying differentially expressed genes with Sleuth
 cat data/sleuth.R
 cat data/hiseq_info.txt
-Rscript data/sleuth.R
+Rscript data/sleuth.R &
 #Questions
 
 ### Section 7 - Interpreting the results
