@@ -15,8 +15,6 @@ zcat PAX5.fastq.gz | head
 
 ### Section 3 - Aligning the PAX5 sample to the genome
 bowtie2 --help
-cd data
-ls bowtie_index
 mkdir bowtie_index
 bowtie2-build genome/HS19.fa.gz bowtie_index/hs19
 ls -l bowtie_index
@@ -43,6 +41,11 @@ bedGraphToBigWig PAX5.bedgraph genome/hg19.chrom.sizes PAX5.bw
 
 ### Section 6 Aligning the control sample to the genome
 zcat Control.fastq.gz | head
+bowtie2 -k 1 -x bowtie_index/hs19 Control.fastq.gz -S Control.sam
+samtools view -bSo Control.bam Control.sam
+samtools sort -T Control.temp.bam -o Control.sorted.bam Control.bam
+samtools index Control.sorted.bam
+
 
 ### Section 7 Finding enriched areas using MACS
 macs2 --help
