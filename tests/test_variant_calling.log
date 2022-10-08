@@ -2,7 +2,7 @@
 + samtools --help
 
 Program: samtools (Tools for alignments in the SAM format)
-Version: 1.10 (using htslib 1.10.2)
+Version: 1.15.1 (using htslib 1.16)
 
 Usage:   samtools <command> [options]
 
@@ -20,10 +20,12 @@ Commands:
      targetcut      cut fosmid regions (for fosmid pool only)
      addreplacerg   adds or replaces RG tags
      markdup        mark duplicates
+     ampliconclip   clip oligos from the end of reads
 
   -- File operations
      collate        shuffle and group alignments by name
      cat            concatenate BAMs
+     consensus      produce a consensus Pileup/FASTA/FASTQ
      merge          merge sorted alignments
      mpileup        multi-way pileup
      sort           sort alignment file
@@ -31,6 +33,7 @@ Commands:
      quickcheck     quickly check if SAM/BAM/CRAM file appears intact
      fastq          converts a BAM to a FASTQ
      fasta          converts a BAM to a FASTA
+     import         Converts FASTA or FASTQ files to SAM/BAM/CRAM
 
   -- Statistics
      bedcov         read depth per BED region
@@ -40,18 +43,25 @@ Commands:
      idxstats       BAM index stats
      phase          phase heterozygotes
      stats          generate stats (former bamcheck)
+     ampliconstats  generate amplicon specific stats
 
   -- Viewing
      flags          explain BAM flags
+     head           header viewer
      tview          text alignment viewer
      view           SAM<->BAM<->CRAM conversion
      depad          convert padded BAM to unpadded BAM
+     samples        list the samples in a set of SAM/BAM/CRAM files
+
+  -- Misc
+     help [cmd]     display this help message or help for [cmd]
+     version        detailed version information
 
 + bcftools --help
 
 Program: bcftools (Tools for variant calling and manipulating VCFs and BCFs)
 License: GNU GPLv3+, due to use of the GNU Scientific Library
-Version: 1.10.2 (using htslib 1.10.2)
+Version: 1.15.1 (using htslib 1.16)
 
 Usage:   bcftools [--version|--version-only] [--help] <command> <argument>
 
@@ -64,6 +74,7 @@ Commands:
     annotate     annotate and edit VCF/BCF files
     concat       concatenate VCF/BCF files from the same set of samples
     convert      convert VCF/BCF files to different formats and back
+    head         view VCF/BCF file headers
     isec         intersections of VCF/BCF files
     merge        merge VCF/BCF files files from non-overlapping sample sets
     norm         left-align and normalize indels
@@ -85,6 +96,9 @@ Commands:
     roh          identify runs of autozygosity (HMM)
     stats        produce VCF/BCF stats
 
+ -- Plugins (collection of programs for calling, file manipulation & analysis)
+    38 plugins available, run "bcftools plugin -lv" to see a complete list
+
  Most commands accept VCF, bgzipped VCF, and BCF with the file type detected
  automatically even when streaming from a pipe. Indexed VCF and BCF will work
  in all situations. Un-indexed VCF and BCF and streams will work in most but
@@ -94,7 +108,9 @@ Commands:
 + samtools stats -r GRCm38_68.19.fa NZO.bam
 + plot-bamstats -s GRCm38_68.19.fa
 + plot-bamstats -r GRCm38_68.19.fa.gc -p A_J.graphs/ A_J.stats
+"A_J.graphs/quals2.gp" line 626: warning: y2 axis range undefined or overflow
 + plot-bamstats -r GRCm38_68.19.fa.gc -p NZO.graphs/ NZO.stats
+"NZO.graphs/quals2.gp" line 626: warning: y2 axis range undefined or overflow
 + head
 + samtools mpileup -f GRCm38_68.19.fa A_J.bam
 [mpileup] 1 samples in 1 input files
@@ -113,7 +129,7 @@ Commands:
 [mpileup] 1 samples in 1 input files
 ##fileformat=VCFv4.2
 ##FILTER=<ID=PASS,Description="All filters passed">
-##bcftoolsVersion=1.10.2+htslib-1.10.2
+##bcftoolsVersion=1.15.1+htslib-1.16
 ##bcftoolsCommand=mpileup -f GRCm38_68.19.fa A_J.bam
 ##reference=file://GRCm38_68.19.fa
 ##contig=<ID=1,length=195471971>
@@ -125,11 +141,11 @@ Commands:
 + head
 + bcftools call -m
 + bcftools mpileup -f GRCm38_68.19.fa A_J.bam
-Note: none of --samples-file, --ploidy or --ploidy-file given, assuming all sites are diploid
 [mpileup] 1 samples in 1 input files
+Note: none of --samples-file, --ploidy or --ploidy-file given, assuming all sites are diploid
 ##fileformat=VCFv4.2
 ##FILTER=<ID=PASS,Description="All filters passed">
-##bcftoolsVersion=1.10.2+htslib-1.10.2
+##bcftoolsVersion=1.15.1+htslib-1.16
 ##bcftoolsCommand=mpileup -f GRCm38_68.19.fa A_J.bam
 ##reference=file://GRCm38_68.19.fa
 ##contig=<ID=1,length=195471971>
@@ -139,84 +155,84 @@ Note: none of --samples-file, --ploidy or --ploidy-file given, assuming all site
 ##contig=<ID=13,length=120421639>
 [mpileup] maximum number of reads per input file set to -d 250
 + bcftools call -mv -o out.vcf
-+ bcftools mpileup -a AD -f GRCm38_68.19.fa A_J.bam -Ou
 Note: none of --samples-file, --ploidy or --ploidy-file given, assuming all sites are diploid
++ bcftools mpileup -a AD -f GRCm38_68.19.fa A_J.bam -Ou
 [mpileup] 1 samples in 1 input files
 [mpileup] maximum number of reads per input file set to -d 250
 + tail out.vcf
-19	10995336	.	T	C	225	.	DP=48;VDB=0.232734;SGB=-0.693147;MQSB=0.939086;MQ0F=0;AC=2;AN=2;DP4=0,0,26,20;MQ=59	GT:PL:AD	1/1:255,138,0:0,46
-19	10995346	.	C	A	225	.	DP=50;VDB=0.278885;SGB=-0.693147;MQSB=0.867582;MQ0F=0;AC=2;AN=2;DP4=0,0,25,22;MQ=59	GT:PL:AD	1/1:255,141,0:0,47
-19	10995463	.	A	C	225	.	DP=57;VDB=0.531446;SGB=-0.693147;MQSB=1;MQ0F=0;AC=2;AN=2;DP4=0,0,27,28;MQ=60	GT:PL:AD	1/1:255,166,0:0,55
-19	10995508	.	T	C	225	.	DP=51;VDB=0.110544;SGB=-0.693147;MQSB=0.971871;MQ0F=0;AC=2;AN=2;DP4=0,0,24,21;MQ=59	GT:PL:AD	1/1:255,135,0:0,45
-19	10995587	.	T	C	225	.	DP=36;VDB=0.572009;SGB=-0.693139;MQSB=1;MQ0F=0;AC=2;AN=2;DP4=0,0,13,23;MQ=60	GT:PL:AD	1/1:255,108,0:0,36
-19	10995605	.	A	AGCAG	178	.	INDEL;IDV=23;IMF=0.741935;DP=31;VDB=0.363991;SGB=-0.691153;MQSB=1;MQ0F=0;ICB=1;HOB=0.5;AC=1;AN=2;DP4=6,7,6,12;MQ=60	GT:PL:AD	0/1:211,0,56:13,18
-19	10995938	.	C	T	225	.	DP=55;VDB=0.800278;SGB=-0.693147;MQSB=1;MQ0F=0;AC=2;AN=2;DP4=0,0,31,21;MQ=60	GT:PL:AD	1/1:255,157,0:0,52
-19	10996876	.	C	T	225	.	DP=55;VDB=0.27595;SGB=-0.693147;MQSB=1;MQ0F=0;AC=2;AN=2;DP4=0,0,31,23;MQ=60	GT:PL:AD	1/1:255,163,0:0,54
-19	10999808	.	C	A	225	.	DP=58;VDB=0.350828;SGB=-0.693147;MQSB=1;MQ0F=0;AC=2;AN=2;DP4=0,0,31,25;MQ=60	GT:PL:AD	1/1:255,169,0:0,56
-19	10999916	.	T	G	225	.	DP=71;VDB=0.969235;SGB=-0.693147;MQSB=1;MQ0F=0;AC=2;AN=2;DP4=0,0,35,35;MQ=60	GT:PL:AD	1/1:255,211,0:0,70
+19	10995508	.	T	C	225.417	.	DP=51;VDB=0.656201;SGB=-0.693147;MQSBZ=0.960769;FS=0;MQ0F=0;AC=2;AN=2;DP4=0,0,26,24;MQ=59	GT:PL:AD	1/1:255,151,0:0,50
+19	10995587	.	T	C	225.417	.	DP=36;VDB=0.572009;SGB=-0.693139;MQSBZ=0;FS=0;MQ0F=0;AC=2;AN=2;DP4=0,0,13,23;MQ=60	GT:PL:AD	1/1:255,108,0:0,36
+19	10995605	.	A	AGCAG	228.407	.	INDEL;IDV=23;IMF=0.741935;DP=31;VDB=0.00615819;SGB=-0.692352;RPBZ=-3.06386;MQBZ=0;MQSBZ=0;SCBZ=-4.97188;FS=0;MQ0F=0;AC=2;AN=2;DP4=1,0,7,14;MQ=60	GT:PL:AD	1/1:255,53,0:1,21
+19	10995606	.	T	G	123.415	.	DP=22;VDB=0.00296109;SGB=-0.590765;MQSBZ=0;FS=0;MQ0F=0;AC=2;AN=2;DP4=0,0,2,3;MQ=60	GT:PL:AD	1/1:153,15,0:0,5
+19	10995608	.	A	G	116.415	.	DP=22;VDB=0.00296109;SGB=-0.590765;MQSBZ=0;FS=0;MQ0F=0;AC=2;AN=2;DP4=0,0,2,3;MQ=60	GT:PL:AD	1/1:146,15,0:0,5
+19	10995609	.	T	C	121.415	.	DP=22;VDB=0.0134537;SGB=-0.689466;MQSBZ=0;FS=0;MQ0F=0;AC=2;AN=2;DP4=0,0,6,10;MQ=60	GT:PL:AD	1/1:151,48,0:0,16
+19	10995938	.	C	T	225.417	.	DP=55;VDB=0.724804;SGB=-0.693147;MQSBZ=0;FS=0;MQ0F=0;AC=2;AN=2;DP4=0,0,31,22;MQ=60	GT:PL:AD	1/1:255,160,0:0,53
+19	10996876	.	C	T	225.417	.	DP=55;VDB=0.382165;SGB=-0.693147;MQSBZ=0;FS=0;MQ0F=0;AC=2;AN=2;DP4=0,0,32,23;MQ=60	GT:PL:AD	1/1:255,166,0:0,55
+19	10999808	.	C	A	225.417	.	DP=58;VDB=0.409226;SGB=-0.693147;MQSBZ=0;FS=0;MQ0F=0;AC=2;AN=2;DP4=0,0,33,25;MQ=60	GT:PL:AD	1/1:255,175,0:0,58
+19	10999916	.	T	G	225.417	.	DP=71;VDB=0.977212;SGB=-0.693147;MQSBZ=0;FS=0;MQ0F=0;AC=2;AN=2;DP4=0,0,35,36;MQ=60	GT:PL:AD	1/1:255,214,0:0,71
 + head
 + bcftools query --format 'POS=%POS\n' out.vcf
 POS=10000104
 POS=10000105
-POS=10000139
-POS=10000141
-POS=10000143
 POS=10001946
 POS=10001994
 POS=10002249
 POS=10002281
 POS=10002676
+POS=10002682
+POS=10002723
+POS=10002815
 + head
 + bcftools query '-f%POS %REF,%ALT\n' out.vcf
 10000104 TTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTC,TTCTCTCTCTCTCTCTCTCTCTC
 10000105 T,G
-10000139 T,A
-10000141 T,A
-10000143 T,A
 10001946 A,G
 10001994 A,G
 10002249 C,T
 10002281 TTGTATGTATGTATGTATGTATGTATGTATGTATGTAT,TTGTATGTATGTATGTATGTATGTATGTATGTATGTATGTATGTATGTAT
 10002676 C,T
+10002682 C,T
+10002723 GCACACACACACACACAC,GCACACACACACAC
+10002815 ATTTTTTTTTTTTT,ATTTTTTTTTTTTTT
 + head
 + bcftools query '-f%POS %QUAL [%GT %AD] %REF %ALT\n' out.vcf
-10000104 222 0/1 26,15 TTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTC TTCTCTCTCTCTCTCTCTCTCTC
-10000105 104 1/1 0,14 T G
-10000139 3.7766 1/1 0,2 T A
-10000141 4.38466 1/1 0,2 T A
-10000143 6.51248 1/1 0,2 T A
-10001946 225 1/1 0,71 A G
-10001994 225 1/1 0,66 A G
-10002249 225 1/1 0,72 C T
-10002281 222 0/1 50,22 TTGTATGTATGTATGTATGTATGTATGTATGTATGTAT TTGTATGTATGTATGTATGTATGTATGTATGTATGTATGTATGTATGTAT
-10002676 225 1/1 0,34 C T
+10000104 228.287 1/1 1,12 TTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTC TTCTCTCTCTCTCTCTCTCTCTC
+10000105 103.415 1/1 0,26 T G
+10001946 225.417 1/1 0,74 A G
+10001994 228.411 1/1 1,68 A G
+10002249 225.422 1/1 0,73 C T
+10002281 225.417 1/1 0,22 TTGTATGTATGTATGTATGTATGTATGTATGTATGTAT TTGTATGTATGTATGTATGTATGTATGTATGTATGTATGTATGTATGTAT
+10002676 225.417 1/1 0,37 C T
+10002682 228.373 1/1 1,30 C T
+10002723 228.347 1/1 1,31 GCACACACACACACACAC GCACACACACACAC
+10002815 196.068 1/1 6,22 ATTTTTTTTTTTTT ATTTTTTTTTTTTTT
 + head
 + bcftools query '-f%POS %QUAL [%GT %AD] %REF %ALT\n' '-iQUAL>=30' out.vcf
-10000104 222 0/1 26,15 TTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTC TTCTCTCTCTCTCTCTCTCTCTC
-10000105 104 1/1 0,14 T G
-10001946 225 1/1 0,71 A G
-10001994 225 1/1 0,66 A G
-10002249 225 1/1 0,72 C T
-10002281 222 0/1 50,22 TTGTATGTATGTATGTATGTATGTATGTATGTATGTAT TTGTATGTATGTATGTATGTATGTATGTATGTATGTATGTATGTATGTAT
-10002676 225 1/1 0,34 C T
-10002682 225 1/1 0,28 C T
-10002723 228 1/1 2,30 GCACACACACACACACAC GCACACACACACAC
-10002846 185 0/1 25,9 GGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTG GGTGTGTGTGTGTGTG
+10000104 228.287 1/1 1,12 TTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTCTC TTCTCTCTCTCTCTCTCTCTCTC
+10000105 103.415 1/1 0,26 T G
+10001946 225.417 1/1 0,74 A G
+10001994 228.411 1/1 1,68 A G
+10002249 225.422 1/1 0,73 C T
+10002281 225.417 1/1 0,22 TTGTATGTATGTATGTATGTATGTATGTATGTATGTAT TTGTATGTATGTATGTATGTATGTATGTATGTATGTATGTATGTATGTAT
+10002676 225.417 1/1 0,37 C T
+10002682 228.373 1/1 1,30 C T
+10002723 228.347 1/1 1,31 GCACACACACACACACAC GCACACACACACAC
+10002815 196.068 1/1 6,22 ATTTTTTTTTTTTT ATTTTTTTTTTTTTT
 + head
 + bcftools query '-f%POS %QUAL [%GT %AD] %REF %ALT\n' '-iQUAL>=30 && type="snp"' out.vcf
-10000105 104 1/1 0,14 T G
-10001946 225 1/1 0,71 A G
-10001994 225 1/1 0,66 A G
-10002249 225 1/1 0,72 C T
-10002676 225 1/1 0,34 C T
-10002682 225 1/1 0,28 C T
-10003232 225 1/1 0,50 G A
-10003248 225 1/1 0,56 T C
-10003440 225 1/1 0,45 A C
-10003441 225 1/1 0,44 G A
+10000105 103.415 1/1 0,26 T G
+10001946 225.417 1/1 0,74 A G
+10001994 228.411 1/1 1,68 A G
+10002249 225.422 1/1 0,73 C T
+10002676 225.417 1/1 0,37 C T
+10002682 228.373 1/1 1,30 C T
+10003232 225.417 1/1 0,55 G A
+10003248 228.417 1/1 1,59 T C
+10003440 225.417 1/1 0,45 A C
+10003441 225.417 1/1 0,46 G A
 + head
 + bcftools stats out.vcf
-# This file was produced by bcftools stats (1.10.2+htslib-1.10.2) and can be plotted using plot-vcfstats.
+# This file was produced by bcftools stats (1.15.1+htslib-1.16) and can be plotted using plot-vcfstats.
 # The command line was:	bcftools stats  out.vcf
 #
 # Definition of sets:
@@ -230,30 +246,29 @@ ID	0	out.vcf
 + bcftools stats out.vcf
 # TSTV, transitions/transversions:
 # TSTV	[2]id	[3]ts	[4]tv	[5]ts/tv	[6]ts (1st ALT)	[7]tv (1st ALT)	[8]ts/tv (1st ALT)
-TSTV	0	1583	667	2.37	1583	667	2.37
+TSTV	0	1631	700	2.33	1631	700	2.33
 + cut -f5
 + grep TSTV
 + bcftools stats out.vcf
 # TSTV, transitions/transversions:
 [5]ts/tv
-2.37
+2.33
 + bcftools filter -s LowQual '-iQUAL>=30 && AD[*:1]>=25' -g8 -G10 out.vcf -o out.flt.vcf
 + ls A_J.bam NZO.bam
 A_J.bam
 NZO.bam
 + bcftools call -mv -Ob -o multi.bcf
 + bcftools mpileup -a AD -f GRCm38_68.19.fa A_J.bam NZO.bam -Ou
-Note: none of --samples-file, --ploidy or --ploidy-file given, assuming all sites are diploid
 [mpileup] 2 samples in 2 input files
+Note: none of --samples-file, --ploidy or --ploidy-file given, assuming all sites are diploid
 [mpileup] maximum number of reads per input file set to -d 250
 + bcftools index multi.bcf
 + bcftools filter -s LowQual '-iQUAL>=30 && AD[*:1]>=25' -g8 -G10 multi.bcf -Ob -o multi.filt.bcf
 + bcftools index multi.filt.bcf
 + bcftools view -H -r 19:10001946 multi.filt.bcf
-19	10001946	.	A	G	216	PASS	DP=144;VDB=0.0854312;SGB=47.6573;RPB=0.820043;MQB=1;MQSB=1;BQB=0.650746;MQ0F=0;ICB=0.5;HOB=0.5;AC=2;AN=4;DP4=33,35,37,34;MQ=60	GT:PL:AD	1/1:255,214,0:0,71	0/0:0,205,255:68,0
+19	10001946	.	A	G	216.008	PASS	DP=144;VDB=0.175868;SGB=49.7367;RPBZ=-0.58609;MQBZ=-0.958603;MQSBZ=0.986013;BQBZ=-0.629651;SCBZ=-1.43238;FS=0;MQ0F=0;AC=2;AN=4;DP4=33,35,39,35;MQ=59	GT:PL:AD	1/1:255,223,0:0,74	0/0:0,205,255:68,0
 + bcftools view -H -r 19:10072443 multi.filt.bcf
-19	10072430	.	ATAAATCTAAATCTAAA	ATAAATCTAAA	52	LowQual	INDEL;IDV=12;IMF=0.461538;DP=77;VDB=0.90634;SGB=4.00342;MQSB=1;MQ0F=0;ICB=0.3;HOB=0.125;AC=1;AN=4;DP4=36,33,2,6;MQ=60	GT:PL:AD	0/1:86,0,208:18,8	0/0:0,154,255:51,0
-19	10072443	.	T	A	46.1636	LowQual;SnpGap	DP=80;VDB=0.000527421;SGB=2.63044;RPB=0.00100984;MQB=1;MQSB=1;BQB=0.00120386;MQ0F=0;ICB=0.3;HOB=0.125;AC=1;AN=4;DP4=34,22,2,4;MQ=60	GT:PL:AD	0/1:80,0,124:6,6	0/0:0,151,255:50,0
+19	10072443	.	T	A	25.093	LowQual	DP=80;VDB=1.97212e-05;SGB=4.00342;RPBZ=4.35645;MQBZ=0;MQSBZ=0;BQBZ=-2.45202;SCBZ=5.03379;FS=0;MQ0F=0;AC=1;AN=4;DP4=42,29,3,5;MQ=60	GT:PL:AD	0/1:59,0,107:18,8	0/0:0,160,255:53,0
 + bcftools csq -p m -f GRCm38_68.19.fa -g Mus_musculus.part.gff3.gz -Ob -o multi.filt.annot.bcf
 + bcftools view -i 'FILTER="PASS"' multi.filt.bcf
 Parsing Mus_musculus.part.gff3.gz ...
@@ -263,12 +278,12 @@ Calling...
 + bcftools query -f %BCSQ -r 19:10088937 multi.filt.annot.bcf
 missense|Fads2|ENSMUST00000025567|protein_coding|-|163V>163I|10088937C>T+ head
 + bcftools call -mv
+Note: none of --samples-file, --ploidy or --ploidy-file given, assuming all sites are diploid
 + bcftools mpileup -f GRCm38_68.19.fa A_J.bam
 [mpileup] 1 samples in 1 input files
-Note: none of --samples-file, --ploidy or --ploidy-file given, assuming all sites are diploid
 ##fileformat=VCFv4.2
 ##FILTER=<ID=PASS,Description="All filters passed">
-##bcftoolsVersion=1.10.2+htslib-1.10.2
+##bcftoolsVersion=1.15.1+htslib-1.16
 ##bcftoolsCommand=mpileup -f GRCm38_68.19.fa A_J.bam
 ##reference=file://GRCm38_68.19.fa
 ##contig=<ID=1,length=195471971>
@@ -279,39 +294,39 @@ Note: none of --samples-file, --ploidy or --ploidy-file given, assuming all site
 [mpileup] maximum number of reads per input file set to -d 250
 + head
 + bcftools query '-f%POS %QUAL [%GT %AD] %REF %ALT\n' '-iQUAL>=30 && type="snp" && AD[*:1]>=25' out.vcf
-10001946 225 1/1 0,71 A G
-10001994 225 1/1 0,66 A G
-10002249 225 1/1 0,72 C T
-10002676 225 1/1 0,34 C T
-10002682 225 1/1 0,28 C T
-10003232 225 1/1 0,50 G A
-10003248 225 1/1 0,56 T C
-10003440 225 1/1 0,45 A C
-10003441 225 1/1 0,44 G A
-10003529 225 1/1 0,58 T C
+10000105 103.415 1/1 0,26 T G
+10001946 225.417 1/1 0,74 A G
+10001994 228.411 1/1 1,68 A G
+10002249 225.422 1/1 0,73 C T
+10002676 225.417 1/1 0,37 C T
+10002682 228.373 1/1 1,30 C T
+10003232 225.417 1/1 0,55 G A
+10003248 228.417 1/1 1,59 T C
+10003440 225.417 1/1 0,45 A C
+10003441 225.417 1/1 0,46 G A
 + cut -f5
 + grep TSTV
 + bcftools stats '-iQUAL>=30 && AD[*:1]>=25' out.vcf
 # TSTV, transitions/transversions:
 [5]ts/tv
-2.50
+2.47
 + cut -f5
 + grep TSTV
 + bcftools stats '-eQUAL>=30 && AD[*:1]>=25' out.vcf
 # TSTV, transitions/transversions:
 [5]ts/tv
-1.75
-+ cut -f5
+1.71
 + grep TSTV
++ cut -f5
 + bcftools stats -i 'GT="het"' out.vcf
 # TSTV, transitions/transversions:
 [5]ts/tv
-1.50
+1.15
 + bcftools norm -f GRCm38_68.19.fa out.flt.vcf -o out.flt.norm.vcf
-Lines   total/split/realigned/skipped:	2907/0/577/0
+Lines   total/split/realigned/skipped:	2941/0/548/0
 + bcftools call -mv -Ob -o multi.bcf
-+ bcftools mpileup -a AD -f GRCm38_68.19.fa A_J.bam NZO.bam -Ou
 Note: none of --samples-file, --ploidy or --ploidy-file given, assuming all sites are diploid
++ bcftools mpileup -a AD -f GRCm38_68.19.fa A_J.bam NZO.bam -Ou
 [mpileup] 2 samples in 2 input files
 [mpileup] maximum number of reads per input file set to -d 250
 + bcftools index multi.bcf
@@ -324,9 +339,8 @@ Note: none of --samples-file, --ploidy or --ploidy-file given, assuming all site
 [5]ts/tv
 1.73
 + bcftools view -H -r 19:10001946 multi.filt.bcf
-19	10001946	.	A	G	216	PASS	DP=144;VDB=0.0854312;SGB=47.6573;RPB=0.820043;MQB=1;MQSB=1;BQB=0.650746;MQ0F=0;ICB=0.5;HOB=0.5;AC=2;AN=4;DP4=33,35,37,34;MQ=60	GT:PL:AD	1/1:255,214,0:0,71	0/0:0,205,255:68,0
+19	10001946	.	A	G	216.008	PASS	DP=144;VDB=0.175868;SGB=49.7367;RPBZ=-0.58609;MQBZ=-0.958603;MQSBZ=0.986013;BQBZ=-0.629651;SCBZ=-1.43238;FS=0;MQ0F=0;AC=2;AN=4;DP4=33,35,39,35;MQ=59	GT:PL:AD	1/1:255,223,0:0,74	0/0:0,205,255:68,0
 + bcftools view -H -r 19:10072443 multi.filt.bcf
-19	10072430	.	ATAAATCTAAATCTAAA	ATAAATCTAAA	52	LowQual	INDEL;IDV=12;IMF=0.461538;DP=77;VDB=0.90634;SGB=4.00342;MQSB=1;MQ0F=0;ICB=0.3;HOB=0.125;AC=1;AN=4;DP4=36,33,2,6;MQ=60	GT:PL:AD	0/1:86,0,208:18,8	0/0:0,154,255:51,0
-19	10072443	.	T	A	46.1636	LowQual;SnpGap	DP=80;VDB=0.000527421;SGB=2.63044;RPB=0.00100984;MQB=1;MQSB=1;BQB=0.00120386;MQ0F=0;ICB=0.3;HOB=0.125;AC=1;AN=4;DP4=34,22,2,4;MQ=60	GT:PL:AD	0/1:80,0,124:6,6	0/0:0,151,255:50,0
+19	10072443	.	T	A	25.093	LowQual	DP=80;VDB=1.97212e-05;SGB=4.00342;RPBZ=4.35645;MQBZ=0;MQSBZ=0;BQBZ=-2.45202;SCBZ=5.03379;FS=0;MQ0F=0;AC=1;AN=4;DP4=42,29,3,5;MQ=60	GT:PL:AD	0/1:59,0,107:18,8	0/0:0,160,255:53,0
 + bcftools query -f %BCSQ -r 19:10088937 multi.filt.annot.bcf
 missense|Fads2|ENSMUST00000025567|protein_coding|-|163V>163I|10088937C>T
