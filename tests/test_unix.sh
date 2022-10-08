@@ -35,19 +35,19 @@ find . -name *.gff
 find . -type d
 ### Exercises
 cd ../basic
-ls 
+ls
 ls | wc -l
 ls -alhrt
 cd Pfalciparum
-ls fasta | wc -l
-cp Pfalciparim.bed annotation
-mv Pfalciparum/*.fa* fasta
+ls -a fasta | wc -l
+cp Pfalciparum.bed annotation
+mv *.fa* fasta
 ls -a fasta | wc -l
 find ~/course_data/unix -name "*.gff" | wc -l
 find ~/course_data/unix -name "*.fa*" | wc -l
 
 ### Section 3 - Looking inside files
-cd ../files
+cd ../../files
 #less Styphi.gff
 head Styphi.gff
 head Styphi.gff
