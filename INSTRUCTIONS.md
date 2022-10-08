@@ -26,9 +26,13 @@
 
 ### 7) Install miniconda
 
+<p>Install latest version of miniconda for Python 3</p> 
+
     ./install_miniconda.sh
     
 ### 8) Install the software
+
+<p>Install the softare in a specific conda environment and add a line to the bashrc to activate that environment.</p>
 
     ./install_software.sh
 
