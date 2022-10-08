@@ -6,17 +6,18 @@ set -eu
 ### Section 1 - Introduction
 cd ~/course_data/assembly/data/
 canu
-jellyfish
-velvetg
+#jellyfish
+#velvetg
 velveth
-assembly-stats
-wtdbg2
+#assembly-stats
+#wtdbg2
 
 ### Section 2 - PacBio Genome Assembly
 pwd
 ls
 zless -S PBReads.fastq.gz | head
 canu -p PB -d Pacbio -s file.specs -pacbio-raw PBReads.fastq.gz &> canu_log.txt &
+sleep 10
 head canu_log.txt
 
 ### Section 3 - Assembly algorithms
@@ -25,7 +26,7 @@ head canu_log.txt
 velveth k.assembly.49 49 -shortPaired -fastq IT.Chr5_1.fastq IT.Chr5_2.fastq
 velveth
 velvetg k.assembly.49 -exp_cov auto -ins_length 350
-velvetg
+#velvetg
 
 velvetg k.assembly.49 -exp_cov auto -ins_length 350 -min_contig_lgth 200 -cov_cutoff 5
 
@@ -35,7 +36,7 @@ velvetg k.assembly.55 -exp_cov auto -ins_length 350 -min_contig_lgth 200 -cov_cu
 velveth k.assembly.41 41 -shortPaired -fastq IT.Chr5_1.fastq IT.Chr5_2.fastq
 velvetg k.assembly.41 -exp_cov auto -ins_length 350 -min_contig_lgth 200 -cov_cutoff 5
 
-ls ~/course_data/assembly/data/assembly_backup
+ls ~/course_data/assembly/data/assembly_backups
 assembly-stats k.assembly*/*.fa
 
 seqtk cutN -n1 k.assembly.41/contigs.fa > assembly.41.contigs.fasta
@@ -47,9 +48,9 @@ assembly-stats assembly.55.contigs.fasta
 
 
 ### Section 5 - Assembly estimation
-jellyfish count -C -m 21 -s 1G -t 2 -o IT.jf <(cat IT.Chr5_1.fastq IT.Chr5_2.fastq)
+jellyfish count -C -m 21 -s 1G -t 1 -o IT.jf <(cat IT.Chr5_1.fastq IT.Chr5_2.fastq)
 jellyfish histo IT.jf > IT.histo
-less IT.histo
+less IT.histo | head
 Rscript genomescope.R IT.histo 21 76 IT.jf21
 head IT.jf21/summary.txt
 firefox IT.jf21/plot.png &
@@ -61,12 +62,13 @@ Rscript genomescope.R fMasArm1.jf21.histo 21 150 fMasArm1.jf21
 Rscript genomescope.R fSalTru1.jf21.histo 21 150 fSalTru1.jf21
 
 ### Section 6 - PacBio Genome Assembly contd.
-ls ~/course_data/assembly/data/backup/pacbio_assemblies
+ls ~/course_data/assembly/data/assembly_backups/
 
 wtdbg2 -t2 -i PBReads.fastq.gz -o wtdbg
 wtpoa-cns -t2 -i wtdbg.ctg.lay.gz -fo wtdbg.ctg.lay.fasta
 assembly-stats wtdbg.ctg.lay.fasta
 
+sleep 20m
 assembly-stats canu-assembly/PB.contigs.fasta
 
 bwa index canu-assembly/PB.contigs.fasta
@@ -88,7 +90,6 @@ bgzip -c wtdbg.vcf > wtdbg.vcf.gz
 tabix wtdbg.vcf.gz
 bcftools consensus -i'QUAL>1 && (GT="AA" || GT="Aa")' -Hla -f wtdbg.ctg.lay.fasta wtdbg.vcf.gz > wtdbg.contigs.polished.fasta
 
-#Insert commands to polish again
 bwa index canu-assembly/PB.contigs.polished.fasta
 samtools faidx canu-assembly/PB.contigs.polished.fasta
 bwa mem -t2 canu-assembly/PB.contigs.polished.fasta IT.Chr5_1.fastq IT.Chr5_2.fastq | samtools sort -@2 - | samtools mpileup -f canu-assembly/PB.contigs.polished.fasta -ug - | bcftools call -mv > canu.polished.vcf
