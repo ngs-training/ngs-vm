@@ -55,11 +55,12 @@ unzip IGV_Linux_2.14.1_WithJava.zip
 rm IGV_Linux_2.14.1_WithJava.zip
 
 # Create a jupyter environment to allow instructors to run, edit and convert notebooks
-conda create -n jupyter jupyter=1.0.0 pandoc=2.12 texlive-core
+conda create -n jupyter jupyter=1.0.0 pandoc=2.12
 conda activate jupyter
 pip install bash_kernel
 python -m bash_kernel.install
 conda deactivate
+apt-get install texlive-base texlive-xetex texlive-formats-extra texlive-fonts-extra texlive-luatex
 
 # Activate ngsbio environment by default by adding to .bashrc
 echo "source $MINICONDA/etc/profile.d/conda.sh" >> ~/.bashrc
