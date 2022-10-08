@@ -36,7 +36,7 @@ plot-bamstats -p md5638_plot/ md5638.markdup.stats
 
 ### Section 4 - Alignment Workflows
 cd ~/course_data/read_alignment/data/Exercise2/60A_Sc_DBVPG6044/library1
-bwa index ../../../../ref/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa.gz
+bwa index ../../../ref/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa.gz
 cd lane1
 bwa mem -M -R '@RG\tID:lane1\tSM:60A_Sc_DBVPG6044' ../../../../ref/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa.gz s_7_1.fastq.gz s_7_2.fastq.gz | samtools view -bS - | samtools sort -T temp -O bam -o lane1.sorted.bam -
 samtools index lane1.sorted.bam
@@ -56,6 +56,7 @@ picard MarkDuplicates I=library1.bam O=library1.markdup.bam M=library1.metrics.t
 cd /home/manager/course_data/read_alignment/data/ref
 gunzip Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa.gz
 #Visualising with IGV requires manually testing
+cd ~/course_data/read_alignment/data/Exercise2/60A_Sc_DBVPG6044/library1
 samtools view -C -T ../../../ref/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa -o library1.markdup.cram library1.markdup.bam
 
 set +eu
