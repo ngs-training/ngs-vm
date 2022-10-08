@@ -1,8 +1,9 @@
++ set -eu
 + cd /home/manager/course_data/data_formats/
 + samtools --help
 
 Program: samtools (Tools for alignments in the SAM format)
-Version: 1.10 (using htslib 1.10.2)
+Version: 1.15.1 (using htslib 1.16)
 
 Usage:   samtools <command> [options]
 
@@ -20,10 +21,12 @@ Commands:
      targetcut      cut fosmid regions (for fosmid pool only)
      addreplacerg   adds or replaces RG tags
      markdup        mark duplicates
+     ampliconclip   clip oligos from the end of reads
 
   -- File operations
      collate        shuffle and group alignments by name
      cat            concatenate BAMs
+     consensus      produce a consensus Pileup/FASTA/FASTQ
      merge          merge sorted alignments
      mpileup        multi-way pileup
      sort           sort alignment file
@@ -31,6 +34,7 @@ Commands:
      quickcheck     quickly check if SAM/BAM/CRAM file appears intact
      fastq          converts a BAM to a FASTQ
      fasta          converts a BAM to a FASTA
+     import         Converts FASTA or FASTQ files to SAM/BAM/CRAM
 
   -- Statistics
      bedcov         read depth per BED region
@@ -40,18 +44,25 @@ Commands:
      idxstats       BAM index stats
      phase          phase heterozygotes
      stats          generate stats (former bamcheck)
+     ampliconstats  generate amplicon specific stats
 
   -- Viewing
      flags          explain BAM flags
+     head           header viewer
      tview          text alignment viewer
      view           SAM<->BAM<->CRAM conversion
      depad          convert padded BAM to unpadded BAM
+     samples        list the samples in a set of SAM/BAM/CRAM files
+
+  -- Misc
+     help [cmd]     display this help message or help for [cmd]
+     version        detailed version information
 
 + bcftools --help
 
 Program: bcftools (Tools for variant calling and manipulating VCFs and BCFs)
 License: GNU GPLv3+, due to use of the GNU Scientific Library
-Version: 1.10.2 (using htslib 1.10.2)
+Version: 1.15.1 (using htslib 1.16)
 
 Usage:   bcftools [--version|--version-only] [--help] <command> <argument>
 
@@ -64,6 +75,7 @@ Commands:
     annotate     annotate and edit VCF/BCF files
     concat       concatenate VCF/BCF files from the same set of samples
     convert      convert VCF/BCF files to different formats and back
+    head         view VCF/BCF file headers
     isec         intersections of VCF/BCF files
     merge        merge VCF/BCF files files from non-overlapping sample sets
     norm         left-align and normalize indels
@@ -84,6 +96,9 @@ Commands:
     polysomy     detect number of chromosomal copies
     roh          identify runs of autozygosity (HMM)
     stats        produce VCF/BCF stats
+
+ -- Plugins (collection of programs for calling, file manipulation & analysis)
+    38 plugins available, run "bcftools plugin -lv" to see a complete list
 
  Most commands accept VCF, bgzipped VCF, and BCF with the file type detected
  automatically even when streaming from a pipe. Indexed VCF and BCF will work
@@ -205,9 +220,7 @@ ERR003814.6979522	147	1	20000095	29	37M	=	19999855	-276	GCAGGAGAATCGCTTGAACCCGGG
 @PG	ID:GATK IndelRealigner	VN:1.0.4487	CL:SNPsFileForDebugging=null targetIntervals=/lustre/scratch105/projects/g1k/ref/broad_recal_data/pilot_data/indel.dbsnp_129_b37-vs-pilot.intervals output=null useOnlyKnownIndels=true maxReadsForConsensuses=120 maxConsensuses=30 entropyThreshold=0.15 indelsFileForDebugging=null noOriginalAlignmentTags=false realignReadsWithBadMates=false maxReadsForRealignment=20000 noPGTag=false LODThresholdForCleaning=0.4 maxReadsInRam=500000 targetIntervalsAreNotSorted=false sortInCoordinateOrderEvenThoughItIsHighlyUnsafe=false statisticsFileForDebugging=null
 @PG	ID:GATK TableRecalibration	VN:1.0.4487	CL:output_bam=null window_size_nqs=5 force_read_group=null smoothing=1 default_platform=ILLUMINA exception_if_no_tile=false homopolymer_nback=7 no_pg_tag=false skipUQUpdate=false default_read_group=RG max_quality_score=40 fail_with_no_eof_marker=true solid_recal_mode=SET_Q_ZERO solid_nocall_strategy=THROW_EXCEPTION force_platform=null preserve_qscores_less_than=5 Covariates=[ReadGroupCovariate, QualityScoreCovariate, CycleCovariate, DinucCovariate] pQ=5 maxQ=40 smoothing=1
 @PG	ID:bwa	VN:0.5.5
-@PG	ID:samtools	PN:samtools	PP:GATK IndelRealigner	VN:1.10	CL:samtools view -H data/NA20538.bam
-@PG	ID:samtools.1	PN:samtools	PP:GATK TableRecalibration	VN:1.10	CL:samtools view -H data/NA20538.bam
-@PG	ID:samtools.2	PN:samtools	PP:bwa	VN:1.10	CL:samtools view -H data/NA20538.bam
+@PG	ID:samtools	PN:samtools	PP:bwa	VN:1.15.1	CL:samtools view -H data/NA20538.bam
 + head -n 1
 + samtools view data/NA20538.bam
 ERR003814.1408899	163	1	19999970	23	37M	=	20000147	213	GGTGGGTGGATCACCTGAGATCGGGAGTTTGAGACTA	<=@A@??@=@A@A>@BAA@ABA:>@<>=BBB9@@2B3	X0:i:1	X1:i:20	MD:Z:37	RG:Z:ERR003814	AM:i:0	NM:i:0	SM:i:23	MQ:i:29	XT:A:U	BQ:Z:@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -254,8 +267,8 @@ ERR003814.1408899	163	1	19999970	23	37M	=	20000147	213	GGTGGGTGGATCACCTGAGATCGGG
 ##INFO=<ID=AC_Hom,Number=A,Type=Integer,Description="Allele counts in homozygous genotypes">
 ##INFO=<ID=AC_Het,Number=A,Type=Integer,Description="Allele counts in heterozygous genotypes">
 ##INFO=<ID=AC_Hemi,Number=A,Type=Integer,Description="Allele counts in hemizygous genotypes">
-##bcftools_viewVersion=1.10.2+htslib-1.10.2
-##bcftools_viewCommand=view -h data/1kg.bcf; Date=Sun Oct  4 11:31:01 2020
+##bcftools_viewVersion=1.15.1+htslib-1.16
+##bcftools_viewCommand=view -h data/1kg.bcf; Date=Sat Oct  8 12:18:50 2022
 #CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	HG00096	HG00097	HG00099	HG00100	HG00101	HG00102	HG00103	HG00105	HG00106	HG00107	HG00108	HG00109	HG00110	HG00111	HG00112	HG00113	HG00114	HG00115	HG00116	HG00117	HG00118	HG00119	HG00120	HG00121	HG00122	HG00123	HG00124	HG00125	HG00126	HG00127	HG00128	HG00129	HG00130	HG00131	HG00132	HG00133	HG00136	HG00137	HG00138	HG00139	HG00140	HG00141	HG00142	HG00143	HG00145	HG00146	HG00148	HG00149	HG00150	HG00151
 + bcftools index data/1kg.bcf
 + bcftools view -H -r 20:24042765-24043073 data/1kg.bcf
@@ -356,8 +369,8 @@ HG00151
 ##INFO=<ID=AC_Hom,Number=A,Type=Integer,Description="Allele counts in homozygous genotypes">
 ##INFO=<ID=AC_Het,Number=A,Type=Integer,Description="Allele counts in heterozygous genotypes">
 ##INFO=<ID=AC_Hemi,Number=A,Type=Integer,Description="Allele counts in hemizygous genotypes">
-##bcftools_viewVersion=1.10.2+htslib-1.10.2
-##bcftools_viewCommand=view -s HG00131 data/1kg.bcf; Date=Sun Oct  4 11:31:01 2020
+##bcftools_viewVersion=1.15.1+htslib-1.16
+##bcftools_viewCommand=view -s HG00131 data/1kg.bcf; Date=Sat Oct  8 12:18:50 2022
 #CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	HG00131
 20	23946362	.	G	A	84	.	AN=2;AC=0;AC_Het=2;AC_Hom=0;AC_Hemi=0	GT:PL:DP	0/0:0,12,95:4
 20	23946710	.	C	T	999	.	AN=2;AC=2;AC_Het=4;AC_Hom=90;AC_Hemi=0	GT:PL:DP	1/1:76,9,0:3
@@ -404,37 +417,37 @@ HG00151
 @SQ	SN:9	LN:141213431	AS:NCBI37	UR:ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/technical/reference/human_g1k_v37.fasta.gz	M5:3e273117f15e0a400f01055d9f393768	SP:Human
 + samtools view -b data/NA20538.sam
 + samtools view -C -T data/Saccharomyces_cerevisiae.EF4.68.dna.toplevel.fa -o data/yeast.cram data/yeast.bam
-[samfaipath] build FASTA index...
 + ls -l data
-total 464120
--rwxr-xr-x 1 manager manager 94866319 Oct  4 10:56 13681_1#18_1.fastq.gz
--rwxr-xr-x 1 manager manager 97223945 Oct  4 10:56 13681_1#18_2.fastq.gz
--rw-r--r-- 1 manager manager  1935292 Sep 25 21:02 1kg.bcf
--rw-r--r-- 1 manager manager     1647 Oct  4 11:31 1kg.bcf.csi
-drwxr-xr-x 3 manager manager     4096 Sep 25 21:02 60A_Sc_DBVPG6044
--rwxr-xr-x 1 manager manager      600 Sep 25 21:02 align.sh
--rw-r--r-- 1 manager manager     1413 Oct  4 10:56 example.fasta
--rw-r--r-- 1 manager manager     1197 Oct  4 10:56 example.fastq
--rw-r--r-- 1 manager manager     1673 Oct  4 10:56 example.sam
-drwxr-xr-x 2 manager manager     4096 Oct  4 10:56 lane1
--rw-r--r-- 1 manager manager 36178402 Oct  4 10:56 lane1.sorted.bam
--rw-r--r-- 1 manager manager    11184 Oct  4 10:56 lane1.sorted.bam.bai
--rw-r--r-- 1 manager manager 26273935 Oct  4 11:31 NA20538_2.bam
--rw-r--r-- 1 manager manager 26146846 Sep 25 21:02 NA20538.bam
--rw-r--r-- 1 manager manager 99669349 Oct  4 11:31 NA20538.sam
--rw-r--r-- 1 manager manager 26273907 Oct  4 11:31 NA20538_sorted.bam
--rw-r--r-- 1 manager manager    24304 Oct  4 11:31 NA20538_sorted.bam.bai
--rw-r--r-- 1 manager manager 12360636 Sep 25 21:02 Saccharomyces_cerevisiae.EF4.68.dna.toplevel.fa
--rw-r--r-- 1 manager manager      415 Oct  4 11:31 Saccharomyces_cerevisiae.EF4.68.dna.toplevel.fa.fai
--rw-r--r-- 1 manager manager 35619221 Sep 25 21:02 yeast.bam
--rw-r--r-- 1 manager manager 18618953 Oct  4 11:31 yeast.cram
+total 462932
+-rwxrwxr-x 1 manager manager 94866319 Oct  7 23:38 13681_1#18_1.fastq.gz
+-rwxrwxr-x 1 manager manager 97223945 Oct  7 23:38 13681_1#18_2.fastq.gz
+-rw-rw-r-- 1 manager manager  1935292 Oct  7 23:38 1kg.bcf
+-rw-rw-r-- 1 manager manager     1645 Oct  8 12:18 1kg.bcf.csi
+drwxrwxr-x 3 manager manager     4096 Oct  7 23:38 60A_Sc_DBVPG6044
+-rwxrwxr-x 1 manager manager      600 Oct  7 23:38 align.sh
+-rw-rw-r-- 1 manager manager     1413 Oct  7 23:38 example.fasta
+-rw-rw-r-- 1 manager manager     1196 Oct  7 23:38 example.fastq
+-rw-rw-r-- 1 manager manager     1673 Oct  7 23:38 example.sam
+drwxrwxr-x 2 manager manager     4096 Oct  7 23:39 lane1
+-rw-rw-r-- 1 manager manager 36178402 Oct  7 23:38 lane1.sorted.bam
+-rw-rw-r-- 1 manager manager    11184 Oct  7 23:38 lane1.sorted.bam.bai
+-rw-rw-r-- 1 manager manager 25943854 Oct  8 12:18 NA20538_2.bam
+-rw-rw-r-- 1 manager manager 26146846 Oct  7 23:38 NA20538.bam
+-rw-rw-r-- 1 manager manager 99669151 Oct  8 12:18 NA20538.sam
+-rw-rw-r-- 1 manager manager 25943835 Oct  8 12:18 NA20538_sorted.bam
+-rw-rw-r-- 1 manager manager    24224 Oct  8 12:18 NA20538_sorted.bam.bai
+-rw-rw-r-- 1 manager manager 12360636 Oct  7 23:38 Saccharomyces_cerevisiae.EF4.68.dna.toplevel.fa
+-rw-rw-r-- 1 manager manager      415 Oct  8 12:18 Saccharomyces_cerevisiae.EF4.68.dna.toplevel.fa.fai
+-rw-rw-r-- 1 manager manager 35619221 Oct  7 23:39 yeast.bam
+-rw-rw-r-- 1 manager manager 18062269 Oct  8 12:18 yeast.cram
 + picard FastqToSam F1=data/13681_1#18_1.fastq.gz F2=data/13681_1#18_2.fastq.gz O=data/13681_1#18.sam SM=13681_1#18
-INFO	2020-10-04 11:31:05	FastqToSam	
+INFO	2022-10-08 12:18:53	FastqToSam	
 
 ********** NOTE: Picard's command line syntax is changing.
 **********
 ********** For more information, please see:
-********** https://github.com/broadinstitute/picard/wiki/Command-Line-Syntax-Transition-For-Users-(Pre-Transition)
+********** 
+https://github.com/broadinstitute/picard/wiki/Command-Line-Syntax-Transition-For-Users-(Pre-Transition)
 **********
 ********** The command line looks like this in the new syntax:
 **********
@@ -442,60 +455,61 @@ INFO	2020-10-04 11:31:05	FastqToSam
 **********
 
 
-11:31:06.066 INFO  NativeLibraryLoader - Loading libgkl_compression.so from jar:file:/home/manager/miniconda/share/picard-2.23.4-0/picard.jar!/com/intel/gkl/native/libgkl_compression.so
-[Sun Oct 04 11:31:06 BST 2020] FastqToSam FASTQ=data/13681_1#18_1.fastq.gz FASTQ2=data/13681_1#18_2.fastq.gz OUTPUT=data/13681_1#18.sam SAMPLE_NAME=13681_1#18    USE_SEQUENTIAL_FASTQS=false READ_GROUP_NAME=A SORT_ORDER=queryname MIN_Q=0 MAX_Q=93 STRIP_UNPAIRED_MATE_NUMBER=false ALLOW_AND_IGNORE_EMPTY_LINES=false VERBOSITY=INFO QUIET=false VALIDATION_STRINGENCY=STRICT COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=500000 CREATE_INDEX=false CREATE_MD5_FILE=false GA4GH_CLIENT_SECRETS=client_secrets.json USE_JDK_DEFLATER=false USE_JDK_INFLATER=false
-[Sun Oct 04 11:31:06 BST 2020] Executing as manager@NGSBio2020 on Linux 5.4.0-48-generic amd64; OpenJDK 64-Bit Server VM 11.0.8-internal+0-adhoc..src; Deflater: Intel; Inflater: Intel; Provider GCS is not available; Picard version: 2.23.4
-INFO	2020-10-04 11:31:06	FastqToSam	Auto-detected quality format as: Standard.
-INFO	2020-10-04 11:31:10	FastqToSam	Processed     1,000,000 records.  Elapsed time: 00:00:04s.  Time for last 1,000,000:    4s.  Last read position: */*
-INFO	2020-10-04 11:31:16	FastqToSam	Processed     2,000,000 records.  Elapsed time: 00:00:09s.  Time for last 1,000,000:    5s.  Last read position: */*
-INFO	2020-10-04 11:31:20	FastqToSam	Processed 1313527 fastq reads
-[Sun Oct 04 11:31:26 BST 2020] picard.sam.FastqToSam done. Elapsed time: 0.35 minutes.
+12:18:54.816 INFO  NativeLibraryLoader - Loading libgkl_compression.so from jar:file:/home/manager/miniconda/envs/ngsbio/share/picard-slim-2.27.4-0/picard.jar!/com/intel/gkl/native/libgkl_compression.so
+[Sat Oct 08 12:18:54 BST 2022] FastqToSam FASTQ=data/13681_1#18_1.fastq.gz FASTQ2=data/13681_1#18_2.fastq.gz OUTPUT=data/13681_1#18.sam SAMPLE_NAME=13681_1#18    USE_SEQUENTIAL_FASTQS=false READ_GROUP_NAME=A SORT_ORDER=queryname MIN_Q=0 MAX_Q=93 STRIP_UNPAIRED_MATE_NUMBER=false ALLOW_AND_IGNORE_EMPTY_LINES=false VERBOSITY=INFO QUIET=false VALIDATION_STRINGENCY=STRICT COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=500000 CREATE_INDEX=false CREATE_MD5_FILE=false GA4GH_CLIENT_SECRETS=client_secrets.json USE_JDK_DEFLATER=false USE_JDK_INFLATER=false
+[Sat Oct 08 12:18:54 BST 2022] Executing as manager@ngs-vm on Linux 5.15.0-48-generic amd64; OpenJDK 64-Bit Server VM 11.0.1+13-LTS; Deflater: Intel; Inflater: Intel; Provider GCS is not available; Picard version: 2.27.4-SNAPSHOT
+INFO	2022-10-08 12:18:55	FastqToSam	Auto-detected quality format as: Standard.
+INFO	2022-10-08 12:18:58	FastqToSam	Processed     1,000,000 records.  Elapsed time: 00:00:03s.  Time for last 1,000,000:    3s.  Last read position: */*
+INFO	2022-10-08 12:19:02	FastqToSam	Processed     2,000,000 records.  Elapsed time: 00:00:07s.  Time for last 1,000,000:    4s.  Last read position: */*
+INFO	2022-10-08 12:19:06	FastqToSam	Processed 1313527 fastq reads
+[Sat Oct 08 12:19:12 BST 2022] picard.sam.FastqToSam done. Elapsed time: 0.29 minutes.
 Runtime.totalMemory()=519110656
 + samtools collate data/yeast.cram data/yeast.collated
-[W::find_file_url] Failed to read reference "https://www.ebi.ac.uk/ena/cram/md5/6681ac2f62509cfc220d78751b8dc524": Input/output error
+[W::cram_populate_ref] Creating reference cache directory /home/manager/.cache/hts-ref
+This may become large; see the samtools(1) manual page REF_CACHE discussion
 + samtools fastq -1 data/yeast.collated_1.fastq -2 data/yeast.collated_2.fastq data/yeast.collated.bam
 [M::bam2fq_mainloop] discarded 0 singletons
 [M::bam2fq_mainloop] processed 397506 reads
 + bcftools view -O z -o data/1kg.vcf.gz data/1kg.bcf
 + ls -lrt data
-total 1271476
-drwxr-xr-x 3 manager manager      4096 Sep 25 21:02 60A_Sc_DBVPG6044
--rw-r--r-- 1 manager manager   1935292 Sep 25 21:02 1kg.bcf
--rw-r--r-- 1 manager manager  26146846 Sep 25 21:02 NA20538.bam
--rw-r--r-- 1 manager manager  12360636 Sep 25 21:02 Saccharomyces_cerevisiae.EF4.68.dna.toplevel.fa
--rwxr-xr-x 1 manager manager       600 Sep 25 21:02 align.sh
--rw-r--r-- 1 manager manager  35619221 Sep 25 21:02 yeast.bam
--rwxr-xr-x 1 manager manager  94866319 Oct  4 10:56 13681_1#18_1.fastq.gz
--rw-r--r-- 1 manager manager      1673 Oct  4 10:56 example.sam
--rw-r--r-- 1 manager manager      1197 Oct  4 10:56 example.fastq
--rw-r--r-- 1 manager manager      1413 Oct  4 10:56 example.fasta
--rwxr-xr-x 1 manager manager  97223945 Oct  4 10:56 13681_1#18_2.fastq.gz
--rw-r--r-- 1 manager manager     11184 Oct  4 10:56 lane1.sorted.bam.bai
--rw-r--r-- 1 manager manager  36178402 Oct  4 10:56 lane1.sorted.bam
-drwxr-xr-x 2 manager manager      4096 Oct  4 10:56 lane1
--rw-r--r-- 1 manager manager  26273907 Oct  4 11:31 NA20538_sorted.bam
--rw-r--r-- 1 manager manager     24304 Oct  4 11:31 NA20538_sorted.bam.bai
--rw-r--r-- 1 manager manager      1647 Oct  4 11:31 1kg.bcf.csi
--rw-r--r-- 1 manager manager  99669349 Oct  4 11:31 NA20538.sam
--rw-r--r-- 1 manager manager  26273935 Oct  4 11:31 NA20538_2.bam
--rw-r--r-- 1 manager manager       415 Oct  4 11:31 Saccharomyces_cerevisiae.EF4.68.dna.toplevel.fa.fai
--rw-r--r-- 1 manager manager  18618953 Oct  4 11:31 yeast.cram
--rw-r--r-- 1 manager manager 680410400 Oct  4 11:31 13681_1#18.sam
--rw-r--r-- 1 manager manager  45374218 Oct  4 11:31 yeast.collated.bam
--rw-r--r-- 1 manager manager  49524074 Oct  4 11:31 yeast.collated_1.fastq
--rw-r--r-- 1 manager manager  49524074 Oct  4 11:31 yeast.collated_2.fastq
--rw-r--r-- 1 manager manager   1889651 Oct  4 11:31 1kg.vcf.gz
+total 1269492
+-rwxrwxr-x 1 manager manager  94866319 Oct  7 23:38 13681_1#18_1.fastq.gz
+-rwxrwxr-x 1 manager manager  97223945 Oct  7 23:38 13681_1#18_2.fastq.gz
+drwxrwxr-x 3 manager manager      4096 Oct  7 23:38 60A_Sc_DBVPG6044
+-rw-rw-r-- 1 manager manager   1935292 Oct  7 23:38 1kg.bcf
+-rw-rw-r-- 1 manager manager  26146846 Oct  7 23:38 NA20538.bam
+-rw-rw-r-- 1 manager manager  12360636 Oct  7 23:38 Saccharomyces_cerevisiae.EF4.68.dna.toplevel.fa
+-rw-rw-r-- 1 manager manager      1673 Oct  7 23:38 example.sam
+-rw-rw-r-- 1 manager manager      1196 Oct  7 23:38 example.fastq
+-rw-rw-r-- 1 manager manager      1413 Oct  7 23:38 example.fasta
+-rwxrwxr-x 1 manager manager       600 Oct  7 23:38 align.sh
+-rw-rw-r-- 1 manager manager     11184 Oct  7 23:38 lane1.sorted.bam.bai
+-rw-rw-r-- 1 manager manager  36178402 Oct  7 23:38 lane1.sorted.bam
+drwxrwxr-x 2 manager manager      4096 Oct  7 23:39 lane1
+-rw-rw-r-- 1 manager manager  35619221 Oct  7 23:39 yeast.bam
+-rw-rw-r-- 1 manager manager  25943835 Oct  8 12:18 NA20538_sorted.bam
+-rw-rw-r-- 1 manager manager     24224 Oct  8 12:18 NA20538_sorted.bam.bai
+-rw-rw-r-- 1 manager manager      1645 Oct  8 12:18 1kg.bcf.csi
+-rw-rw-r-- 1 manager manager  99669151 Oct  8 12:18 NA20538.sam
+-rw-rw-r-- 1 manager manager  25943854 Oct  8 12:18 NA20538_2.bam
+-rw-rw-r-- 1 manager manager       415 Oct  8 12:18 Saccharomyces_cerevisiae.EF4.68.dna.toplevel.fa.fai
+-rw-rw-r-- 1 manager manager  18062269 Oct  8 12:18 yeast.cram
+-rw-rw-r-- 1 manager manager 680410400 Oct  8 12:19 13681_1#18.sam
+-rw-rw-r-- 1 manager manager  44628511 Oct  8 12:19 yeast.collated.bam
+-rw-rw-r-- 1 manager manager  49524074 Oct  8 12:19 yeast.collated_1.fastq
+-rw-rw-r-- 1 manager manager  49524074 Oct  8 12:19 yeast.collated_2.fastq
+-rw-rw-r-- 1 manager manager   1821227 Oct  8 12:19 1kg.vcf.gz
 + bcftools view -O b -o data/1kg_2.bcf data/1kg.vcf.gz
 + samtools stats -F SECONDARY data/lane1.sorted.bam
 + head -n 47 data/lane1.sorted.bam.bchk
-# This file was produced by samtools stats (1.10+htslib-1.10.2) and can be plotted using plot-bamstats
+# This file was produced by samtools stats (1.15.1+htslib-1.16) and can be plotted using plot-bamstats
 # This file contains statistics for all reads.
 # The command line was:  stats -F SECONDARY data/lane1.sorted.bam
 # CHK, Checksum	[2]Read Names	[3]Sequences	[4]Qualities
 # CHK, CRC32 of reads which passed filtering followed by addition (32bit overflow)
 CHK	77e527fe	79a53d84	2332f404
 # Summary Numbers. Use `grep ^SN | cut -f 2-` to extract this part.
-SN	raw total sequences:	400252
+SN	raw total sequences:	400252	# excluding supplementary and secondary reads
 SN	filtered sequences:	2746
 SN	sequences:	397506
 SN	is sorted:	1
@@ -510,6 +524,7 @@ SN	reads duplicated:	0	# PCR or optical duplicate bit set
 SN	reads MQ0:	23803	# mapped and MQ=0
 SN	reads QC failed:	0
 SN	non-primary alignments:	0
+SN	supplementary alignments:	0
 SN	total length:	42930648	# ignores clipping
 SN	total first fragment length:	21465324	# ignores clipping
 SN	total last fragment length:	21465324	# ignores clipping
@@ -534,7 +549,6 @@ SN	pairs with other orientation:	874
 SN	pairs on different chromosomes:	2235
 SN	percentage of properly paired reads (%):	71.1
 # First Fragment Qualities. Use `grep ^FFQ | cut -f 2-` to extract this part.
-# Columns correspond to qualities and rows to cycles. First column is the cycle number.
 + grep Use
 + grep '^#' data/lane1.sorted.bam.bchk
 # Summary Numbers. Use `grep ^SN | cut -f 2-` to extract this part.
@@ -543,6 +557,7 @@ SN	percentage of properly paired reads (%):	71.1
 # GC Content of first fragments. Use `grep ^GCF | cut -f 2-` to extract this part.
 # GC Content of last fragments. Use `grep ^GCL | cut -f 2-` to extract this part.
 # ACGT content per cycle. Use `grep ^GCC | cut -f 2-` to extract this part. The columns are: cycle; A,C,G,T base counts as a percentage of all A/C/G/T bases [%]; and N and O counts as a percentage of all A/C/G/T bases [%]
+# ACGT content per cycle, read oriented. Use `grep ^GCT | cut -f 2-` to extract this part. The columns are: cycle; A,C,G,T base counts as a percentage of all A/C/G/T bases [%]
 # ACGT content per cycle for first fragments. Use `grep ^FBC | cut -f 2-` to extract this part. The columns are: cycle; A,C,G,T base counts as a percentage of all A/C/G/T bases [%]; and N and O counts as a percentage of all A/C/G/T bases [%]
 # ACGT raw counters for first fragments. Use `grep ^FTC | cut -f 2-` to extract this part. The columns are: A,C,G,T,N base counters
 # ACGT content per cycle for last fragments. Use `grep ^LBC | cut -f 2-` to extract this part. The columns are: cycle; A,C,G,T base counts as a percentage of all A/C/G/T bases [%]; and N and O counts as a percentage of all A/C/G/T bases [%]
@@ -556,3 +571,4 @@ SN	percentage of properly paired reads (%):	71.1
 # Coverage distribution. Use `grep ^COV | cut -f 2-` to extract this part.
 # GC-depth. Use `grep ^GCD | cut -f 2-` to extract this part. The columns are: GC%, unique sequence percentiles, 10th, 25th, 50th, 75th and 90th depth percentile
 + plot-bamstats -p data/lane1-plots/ data/lane1.sorted.bam.bchk
+"data/lane1-plots/quals2.gp" line 674: warning: y2 axis range undefined or overflow

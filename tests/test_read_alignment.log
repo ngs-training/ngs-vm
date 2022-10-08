@@ -1,0 +1,539 @@
++ set -eu
++ cd /home/manager/course_data/read_alignment
++ samtools --help
+
+Program: samtools (Tools for alignments in the SAM format)
+Version: 1.15.1 (using htslib 1.16)
+
+Usage:   samtools <command> [options]
+
+Commands:
+  -- Indexing
+     dict           create a sequence dictionary file
+     faidx          index/extract FASTA
+     fqidx          index/extract FASTQ
+     index          index alignment
+
+  -- Editing
+     calmd          recalculate MD/NM tags and '=' bases
+     fixmate        fix mate information
+     reheader       replace BAM header
+     targetcut      cut fosmid regions (for fosmid pool only)
+     addreplacerg   adds or replaces RG tags
+     markdup        mark duplicates
+     ampliconclip   clip oligos from the end of reads
+
+  -- File operations
+     collate        shuffle and group alignments by name
+     cat            concatenate BAMs
+     consensus      produce a consensus Pileup/FASTA/FASTQ
+     merge          merge sorted alignments
+     mpileup        multi-way pileup
+     sort           sort alignment file
+     split          splits a file by read group
+     quickcheck     quickly check if SAM/BAM/CRAM file appears intact
+     fastq          converts a BAM to a FASTQ
+     fasta          converts a BAM to a FASTA
+     import         Converts FASTA or FASTQ files to SAM/BAM/CRAM
+
+  -- Statistics
+     bedcov         read depth per BED region
+     coverage       alignment depth and percent coverage
+     depth          compute the depth
+     flagstat       simple stats
+     idxstats       BAM index stats
+     phase          phase heterozygotes
+     stats          generate stats (former bamcheck)
+     ampliconstats  generate amplicon specific stats
+
+  -- Viewing
+     flags          explain BAM flags
+     head           header viewer
+     tview          text alignment viewer
+     view           SAM<->BAM<->CRAM conversion
+     depad          convert padded BAM to unpadded BAM
+     samples        list the samples in a set of SAM/BAM/CRAM files
+
+  -- Misc
+     help [cmd]     display this help message or help for [cmd]
+     version        detailed version information
+
++ pwd
+/home/manager/course_data/read_alignment
++ cd /home/manager/course_data/read_alignment/data/ref
++ head
++ zless GRCm38.68.dna.toplevel.chr7.fa.gz
++ igv
+./test_read_alignment.sh: line 10: igv: command not found
+>7 dna:chromosome chromosome:GRCm38:7:1:145441459:1 REF
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
++ bwa index GRCm38.68.dna.toplevel.chr7.fa.gz
+[bwa_index] Pack FASTA... 1.59 sec
+[bwa_index] Construct BWT for the packed sequence...
+[BWTIncCreate] textLength=290882918, availableWord=32467568
+[BWTIncConstructFromPacked] 10 iterations done. 53556854 characters processed.
+[BWTIncConstructFromPacked] 20 iterations done. 98942294 characters processed.
+[BWTIncConstructFromPacked] 30 iterations done. 139276966 characters processed.
+[BWTIncConstructFromPacked] 40 iterations done. 175122486 characters processed.
+[BWTIncConstructFromPacked] 50 iterations done. 206978054 characters processed.
+[BWTIncConstructFromPacked] 60 iterations done. 235287318 characters processed.
+[BWTIncConstructFromPacked] 70 iterations done. 260444630 characters processed.
+[BWTIncConstructFromPacked] 80 iterations done. 282800486 characters processed.
+[bwt_gen] Finished constructing BWT in 84 iterations.
+[bwa_index] 93.08 seconds elapse.
+[bwa_index] Update BWT... 0.67 sec
+[bwa_index] Pack forward-only FASTA... 1.14 sec
+[bwa_index] Construct SA from BWT and Occ... 47.40 sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa index GRCm38.68.dna.toplevel.chr7.fa.gz
+[main] Real time: 161.523 sec; CPU: 143.882 sec
++ cd ../Exercise1/fastq
++ bwa mem ../../ref/GRCm38.68.dna.toplevel.chr7.fa.gz md5638a_7_87000000_R1.fastq.gz md5638a_7_87000000_R2.fastq.gz
+[M::bwa_idx_load_from_disk] read 0 ALT contigs
+[M::process] read 66226 sequences (10000126 bp)...
+[M::process] read 66226 sequences (10000126 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 27865, 0, 0)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (335, 398, 483)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (39, 779)
+[M::mem_pestat] mean and std.dev: (414.42, 110.12)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 927)
+[M::mem_pestat] skip orientation RF as there are not enough pairs
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_process_seqs] Processed 66226 reads in 10.754 CPU sec, 17.284 real sec
+[M::process] read 66226 sequences (10000126 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (1, 31379, 0, 0)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (336, 399, 485)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (38, 783)
+[M::mem_pestat] mean and std.dev: (416.24, 110.72)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 932)
+[M::mem_pestat] skip orientation RF as there are not enough pairs
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_process_seqs] Processed 66226 reads in 7.574 CPU sec, 8.420 real sec
+[M::process] read 66226 sequences (10000126 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 29199, 1, 0)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (335, 397, 480)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (45, 770)
+[M::mem_pestat] mean and std.dev: (412.96, 109.47)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 915)
+[M::mem_pestat] skip orientation RF as there are not enough pairs
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_process_seqs] Processed 66226 reads in 13.422 CPU sec, 14.379 real sec
+[M::process] read 66226 sequences (10000126 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 27442, 0, 1)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (334, 399, 483)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (36, 781)
+[M::mem_pestat] mean and std.dev: (414.46, 110.09)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 930)
+[M::mem_pestat] skip orientation RF as there are not enough pairs
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_process_seqs] Processed 66226 reads in 17.941 CPU sec, 20.516 real sec
+[M::process] read 61690 sequences (9315190 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 31414, 0, 0)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (336, 398, 483)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (42, 777)
+[M::mem_pestat] mean and std.dev: (415.21, 110.24)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 924)
+[M::mem_pestat] skip orientation RF as there are not enough pairs
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_process_seqs] Processed 66226 reads in 7.708 CPU sec, 8.308 real sec
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (1, 26628, 0, 0)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (336, 399, 482)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (44, 774)
+[M::mem_pestat] mean and std.dev: (414.99, 110.05)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 920)
+[M::mem_pestat] skip orientation RF as there are not enough pairs
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_process_seqs] Processed 61690 reads in 16.606 CPU sec, 18.628 real sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa mem ../../ref/GRCm38.68.dna.toplevel.chr7.fa.gz md5638a_7_87000000_R1.fastq.gz md5638a_7_87000000_R2.fastq.gz
+[main] Real time: 88.150 sec; CPU: 74.303 sec
++ samtools view -O BAM -o md5638.bam md5638.sam
++ ls -lh md5638.sam md5638.bam
+-rw-rw-r-- 1 manager manager  25M Oct  8 13:34 md5638.bam
+-rw-rw-r-- 1 manager manager 157M Oct  8 13:34 md5638.sam
++ samtools sort -T temp -O bam -o md5638.sorted.bam md5638.bam
++ samtools index md5638.sorted.bam
++ samtools sort -T temp -O bam -o md5638_2.sorted.bam -
++ samtools view -O BAM -
++ bwa mem ../../ref/GRCm38.68.dna.toplevel.chr7.fa.gz md5638a_7_87000000_R1.fastq.gz md5638a_7_87000000_R2.fastq.gz
+[M::bwa_idx_load_from_disk] read 0 ALT contigs
+[M::process] read 66226 sequences (10000126 bp)...
+[M::process] read 66226 sequences (10000126 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 27865, 0, 0)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (335, 398, 483)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (39, 779)
+[M::mem_pestat] mean and std.dev: (414.42, 110.12)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 927)
+[M::mem_pestat] skip orientation RF as there are not enough pairs
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_process_seqs] Processed 66226 reads in 10.158 CPU sec, 12.371 real sec
+[M::process] read 66226 sequences (10000126 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (1, 31379, 0, 0)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (336, 399, 485)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (38, 783)
+[M::mem_pestat] mean and std.dev: (416.24, 110.72)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 932)
+[M::mem_pestat] skip orientation RF as there are not enough pairs
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_process_seqs] Processed 66226 reads in 7.814 CPU sec, 8.632 real sec
+[M::process] read 66226 sequences (10000126 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 29199, 1, 0)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (335, 397, 480)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (45, 770)
+[M::mem_pestat] mean and std.dev: (412.96, 109.47)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 915)
+[M::mem_pestat] skip orientation RF as there are not enough pairs
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_process_seqs] Processed 66226 reads in 13.690 CPU sec, 17.131 real sec
+[M::process] read 66226 sequences (10000126 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 27442, 0, 1)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (334, 399, 483)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (36, 781)
+[M::mem_pestat] mean and std.dev: (414.46, 110.09)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 930)
+[M::mem_pestat] skip orientation RF as there are not enough pairs
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_process_seqs] Processed 66226 reads in 17.363 CPU sec, 20.331 real sec
+[M::process] read 61690 sequences (9315190 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 31414, 0, 0)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (336, 398, 483)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (42, 777)
+[M::mem_pestat] mean and std.dev: (415.21, 110.24)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 924)
+[M::mem_pestat] skip orientation RF as there are not enough pairs
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_process_seqs] Processed 66226 reads in 7.739 CPU sec, 9.288 real sec
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (1, 26628, 0, 0)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (336, 399, 482)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (44, 774)
+[M::mem_pestat] mean and std.dev: (414.99, 110.05)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 920)
+[M::mem_pestat] skip orientation RF as there are not enough pairs
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_process_seqs] Processed 61690 reads in 18.108 CPU sec, 23.182 real sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa mem ../../ref/GRCm38.68.dna.toplevel.chr7.fa.gz md5638a_7_87000000_R1.fastq.gz md5638a_7_87000000_R2.fastq.gz
+[main] Real time: 91.718 sec; CPU: 75.131 sec
++ samtools index md5638_2.sorted.bam
++ picard MarkDuplicates I=md5638.sorted.bam O=md5638.markdup.bam M=md5638.metrics.txt
+INFO	2022-10-08 13:36:13	MarkDuplicates	
+
+********** NOTE: Picard's command line syntax is changing.
+**********
+********** For more information, please see:
+********** 
+https://github.com/broadinstitute/picard/wiki/Command-Line-Syntax-Transition-For-Users-(Pre-Transition)
+**********
+********** The command line looks like this in the new syntax:
+**********
+**********    MarkDuplicates -I md5638.sorted.bam -O md5638.markdup.bam -M md5638.metrics.txt
+**********
+
+
+13:36:13.947 INFO  NativeLibraryLoader - Loading libgkl_compression.so from jar:file:/home/manager/miniconda/envs/ngsbio/share/picard-slim-2.27.4-0/picard.jar!/com/intel/gkl/native/libgkl_compression.so
+[Sat Oct 08 13:36:14 BST 2022] MarkDuplicates INPUT=[md5638.sorted.bam] OUTPUT=md5638.markdup.bam METRICS_FILE=md5638.metrics.txt    MAX_SEQUENCES_FOR_DISK_READ_ENDS_MAP=50000 MAX_FILE_HANDLES_FOR_READ_ENDS_MAP=8000 SORTING_COLLECTION_SIZE_RATIO=0.25 TAG_DUPLICATE_SET_MEMBERS=false REMOVE_SEQUENCING_DUPLICATES=false TAGGING_POLICY=DontTag CLEAR_DT=true DUPLEX_UMI=false FLOW_MODE=false FLOW_QUALITY_SUM_STRATEGY=false USE_END_IN_UNPAIRED_READS=false USE_UNPAIRED_CLIPPED_END=false UNPAIRED_END_UNCERTAINTY=0 FLOW_SKIP_FIRST_N_FLOWS=0 FLOW_Q_IS_KNOWN_END=false FLOW_EFFECTIVE_QUALITY_THRESHOLD=15 ADD_PG_TAG_TO_READS=true REMOVE_DUPLICATES=false ASSUME_SORTED=false DUPLICATE_SCORING_STRATEGY=SUM_OF_BASE_QUALITIES PROGRAM_RECORD_ID=MarkDuplicates PROGRAM_GROUP_NAME=MarkDuplicates READ_NAME_REGEX=<optimized capture of last three ':' separated fields as numeric values> OPTICAL_DUPLICATE_PIXEL_DISTANCE=100 MAX_OPTICAL_DUPLICATE_SET_SIZE=300000 VERBOSITY=INFO QUIET=false VALIDATION_STRINGENCY=STRICT COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=500000 CREATE_INDEX=false CREATE_MD5_FILE=false GA4GH_CLIENT_SECRETS=client_secrets.json USE_JDK_DEFLATER=false USE_JDK_INFLATER=false
+[Sat Oct 08 13:36:14 BST 2022] Executing as manager@ngs-vm on Linux 5.15.0-48-generic amd64; OpenJDK 64-Bit Server VM 11.0.1+13-LTS; Deflater: Intel; Inflater: Intel; Provider GCS is not available; Picard version: 2.27.4-SNAPSHOT
+INFO	2022-10-08 13:36:14	MarkDuplicates	Start of doWork freeMemory: 510257656; totalMemory: 519110656; maxMemory: 1037959168
+INFO	2022-10-08 13:36:14	MarkDuplicates	Reading input file and constructing read end information.
+INFO	2022-10-08 13:36:14	MarkDuplicates	Will retain up to 3760721 data points before spilling to disk.
+INFO	2022-10-08 13:36:19	MarkDuplicates	Read 393415 records. 0 pairs never matched.
+INFO	2022-10-08 13:36:19	MarkDuplicates	After buildSortedReadEndLists freeMemory: 437553328; totalMemory: 519110656; maxMemory: 1037959168
+INFO	2022-10-08 13:36:19	MarkDuplicates	Will retain up to 32436224 duplicate indices before spilling to disk.
+INFO	2022-10-08 13:36:20	MarkDuplicates	Traversing read pair information and detecting duplicates.
+INFO	2022-10-08 13:36:20	MarkDuplicates	Traversing fragment information and detecting duplicates.
+INFO	2022-10-08 13:36:21	MarkDuplicates	Sorting list of duplicate records.
+INFO	2022-10-08 13:36:21	MarkDuplicates	After generateDuplicateIndexes freeMemory: 372940480; totalMemory: 642154496; maxMemory: 1037959168
+INFO	2022-10-08 13:36:21	MarkDuplicates	Marking 67461 records as duplicates.
+INFO	2022-10-08 13:36:21	MarkDuplicates	Found 12830 optical duplicate clusters.
+INFO	2022-10-08 13:36:21	MarkDuplicates	Reads are assumed to be ordered by: coordinate
+INFO	2022-10-08 13:36:26	MarkDuplicates	Writing complete. Closing input iterator.
+INFO	2022-10-08 13:36:26	MarkDuplicates	Duplicate Index cleanup.
+INFO	2022-10-08 13:36:26	MarkDuplicates	Getting Memory Stats.
+INFO	2022-10-08 13:36:26	MarkDuplicates	Before output close freeMemory: 632106192; totalMemory: 642154496; maxMemory: 1037959168
+INFO	2022-10-08 13:36:26	MarkDuplicates	Closed outputs. Getting more Memory Stats.
+INFO	2022-10-08 13:36:26	MarkDuplicates	After output close freeMemory: 619825432; totalMemory: 629805056; maxMemory: 1037959168
+[Sat Oct 08 13:36:26 BST 2022] picard.sam.markduplicates.MarkDuplicates done. Elapsed time: 0.21 minutes.
+Runtime.totalMemory()=629805056
++ head -10 md5638.metrics.txt
+## htsjdk.samtools.metrics.StringHeader
+# MarkDuplicates INPUT=[md5638.sorted.bam] OUTPUT=md5638.markdup.bam METRICS_FILE=md5638.metrics.txt    MAX_SEQUENCES_FOR_DISK_READ_ENDS_MAP=50000 MAX_FILE_HANDLES_FOR_READ_ENDS_MAP=8000 SORTING_COLLECTION_SIZE_RATIO=0.25 TAG_DUPLICATE_SET_MEMBERS=false REMOVE_SEQUENCING_DUPLICATES=false TAGGING_POLICY=DontTag CLEAR_DT=true DUPLEX_UMI=false FLOW_MODE=false FLOW_QUALITY_SUM_STRATEGY=false USE_END_IN_UNPAIRED_READS=false USE_UNPAIRED_CLIPPED_END=false UNPAIRED_END_UNCERTAINTY=0 FLOW_SKIP_FIRST_N_FLOWS=0 FLOW_Q_IS_KNOWN_END=false FLOW_EFFECTIVE_QUALITY_THRESHOLD=15 ADD_PG_TAG_TO_READS=true REMOVE_DUPLICATES=false ASSUME_SORTED=false DUPLICATE_SCORING_STRATEGY=SUM_OF_BASE_QUALITIES PROGRAM_RECORD_ID=MarkDuplicates PROGRAM_GROUP_NAME=MarkDuplicates READ_NAME_REGEX=<optimized capture of last three ':' separated fields as numeric values> OPTICAL_DUPLICATE_PIXEL_DISTANCE=100 MAX_OPTICAL_DUPLICATE_SET_SIZE=300000 VERBOSITY=INFO QUIET=false VALIDATION_STRINGENCY=STRICT COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=500000 CREATE_INDEX=false CREATE_MD5_FILE=false GA4GH_CLIENT_SECRETS=client_secrets.json USE_JDK_DEFLATER=false USE_JDK_INFLATER=false
+## htsjdk.samtools.metrics.StringHeader
+# Started on: Sat Oct 08 13:36:13 BST 2022
+
+## METRICS CLASS	picard.sam.DuplicationMetrics
+LIBRARY	UNPAIRED_READS_EXAMINED	READ_PAIRS_EXAMINED	SECONDARY_OR_SUPPLEMENTARY_RDS	UNMAPPED_READS	UNPAIRED_READ_DUPLICATES	READ_PAIR_DUPLICATES	READ_PAIR_OPTICAL_DUPLICATES	PERCENT_DUPLICATION	ESTIMATED_LIBRARY_SIZE
+Unknown Library	1217	195193	595	1217	359	33551	12830	0.172269	740462
+
+## HISTOGRAM	java.lang.Double
++ samtools index md5638.markdup.bam
++ samtools stats md5638.markdup.bam
++ plot-bamstats -p md5638_plot/ md5638.markdup.stats
+"md5638_plot/quals2.gp" line 932: warning: y2 axis range undefined or overflow
++ cd /home/manager/course_data/read_alignment/data/Exercise2/60A_Sc_DBVPG6044/library1
++ bwa index ../../../ref/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa.gz
+[bwa_index] Pack FASTA... 0.10 sec
+[bwa_index] Construct BWT for the packed sequence...
+[bwa_index] 3.50 seconds elapse.
+[bwa_index] Update BWT... 0.06 sec
+[bwa_index] Pack forward-only FASTA... 0.09 sec
+[bwa_index] Construct SA from BWT and Occ... 1.71 sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa index ../../../ref/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa.gz
+[main] Real time: 8.021 sec; CPU: 5.459 sec
++ cd lane1
++ samtools sort -T temp -O bam -o lane1.sorted.bam -
++ samtools view -bS -
++ bwa mem -M -R '@RG\tID:lane1\tSM:60A_Sc_DBVPG6044' ../../../../ref/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa.gz s_7_1.fastq.gz s_7_2.fastq.gz
+[M::bwa_idx_load_from_disk] read 0 ALT contigs
+[M::process] read 92594 sequences (10000152 bp)...
+[M::process] read 92594 sequences (10000152 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (110, 40623, 0, 0)
+[M::mem_pestat] analyzing insert size distribution for orientation FF...
+[M::mem_pestat] (25, 50, 75) percentile: (75, 126, 173)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 369)
+[M::mem_pestat] mean and std.dev: (127.60, 65.93)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 467)
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (259, 283, 305)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (167, 397)
+[M::mem_pestat] mean and std.dev: (282.18, 36.20)
+[M::mem_pestat] low and high boundaries for proper pairs: (121, 443)
+[M::mem_pestat] skip orientation RF as there are not enough pairs
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation FF
+[M::mem_process_seqs] Processed 92594 reads in 5.425 CPU sec, 6.093 real sec
+[M::process] read 92594 sequences (10000152 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (87, 34254, 3, 6)
+[M::mem_pestat] analyzing insert size distribution for orientation FF...
+[M::mem_pestat] (25, 50, 75) percentile: (96, 142, 179)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 345)
+[M::mem_pestat] mean and std.dev: (137.64, 62.22)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 428)
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (260, 283, 306)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (168, 398)
+[M::mem_pestat] mean and std.dev: (282.81, 36.16)
+[M::mem_pestat] low and high boundaries for proper pairs: (122, 444)
+[M::mem_pestat] skip orientation RF as there are not enough pairs
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation FF
+[M::mem_process_seqs] Processed 92594 reads in 5.600 CPU sec, 6.944 real sec
+[M::process] read 92594 sequences (10000152 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (90, 40916, 0, 2)
+[M::mem_pestat] analyzing insert size distribution for orientation FF...
+[M::mem_pestat] (25, 50, 75) percentile: (82, 117, 157)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 307)
+[M::mem_pestat] mean and std.dev: (122.47, 58.76)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 382)
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (260, 283, 306)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (168, 398)
+[M::mem_pestat] mean and std.dev: (283.03, 36.06)
+[M::mem_pestat] low and high boundaries for proper pairs: (122, 444)
+[M::mem_pestat] skip orientation RF as there are not enough pairs
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation FF
+[M::mem_process_seqs] Processed 92594 reads in 5.311 CPU sec, 6.296 real sec
+[M::process] read 27130 sequences (2930040 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (32, 11033, 18, 5)
+[M::mem_pestat] analyzing insert size distribution for orientation FF...
+[M::mem_pestat] (25, 50, 75) percentile: (67, 124, 164)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 358)
+[M::mem_pestat] mean and std.dev: (105.28, 65.65)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 455)
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (243, 275, 302)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (125, 420)
+[M::mem_pestat] mean and std.dev: (269.64, 48.24)
+[M::mem_pestat] low and high boundaries for proper pairs: (66, 479)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (227, 3982, 4132)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 11942)
+[M::mem_pestat] mean and std.dev: (2944.89, 2266.04)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 15847)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation FF
+[M::mem_pestat] skip orientation RF
+[M::mem_process_seqs] Processed 92594 reads in 9.211 CPU sec, 10.126 real sec
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (6, 676, 7, 2)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (187, 253, 292)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 502)
+[M::mem_pestat] mean and std.dev: (230.49, 80.65)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 607)
+[M::mem_pestat] skip orientation RF as there are not enough pairs
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_process_seqs] Processed 27130 reads in 3.214 CPU sec, 3.770 real sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa mem -M -R @RG\tID:lane1\tSM:60A_Sc_DBVPG6044 ../../../../ref/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa.gz s_7_1.fastq.gz s_7_2.fastq.gz
+[main] Real time: 33.651 sec; CPU: 28.956 sec
++ samtools index lane1.sorted.bam
++ samtools stats lane1.sorted.bam
++ plot-bamstats -p plot/ lane1.stats.txt
+"plot/quals2.gp" line 674: warning: y2 axis range undefined or overflow
++ cd ../lane2
++ samtools sort -T temp -O bam -o lane2.sorted.bam -
++ samtools view -bS -
++ bwa mem -M -R '@RG\tID:lane2\tSM:60A_Sc_DBVPG6044' ../../../../ref/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa.gz s_7_1.fastq.gz s_7_2.fastq.gz
+[M::bwa_idx_load_from_disk] read 0 ALT contigs
+[M::process] read 92594 sequences (10000152 bp)...
+[M::process] read 92594 sequences (10000152 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (109, 40468, 1, 4)
+[M::mem_pestat] analyzing insert size distribution for orientation FF...
+[M::mem_pestat] (25, 50, 75) percentile: (79, 135, 182)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 388)
+[M::mem_pestat] mean and std.dev: (135.38, 67.90)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 491)
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (260, 283, 306)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (168, 398)
+[M::mem_pestat] mean and std.dev: (282.82, 36.57)
+[M::mem_pestat] low and high boundaries for proper pairs: (122, 444)
+[M::mem_pestat] skip orientation RF as there are not enough pairs
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation FF
+[M::mem_process_seqs] Processed 92594 reads in 5.557 CPU sec, 7.871 real sec
+[M::process] read 52940 sequences (5717520 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (85, 34581, 5, 3)
+[M::mem_pestat] analyzing insert size distribution for orientation FF...
+[M::mem_pestat] (25, 50, 75) percentile: (105, 166, 209)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 417)
+[M::mem_pestat] mean and std.dev: (158.47, 62.79)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 521)
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (258, 282, 305)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (164, 399)
+[M::mem_pestat] mean and std.dev: (281.15, 37.74)
+[M::mem_pestat] low and high boundaries for proper pairs: (117, 446)
+[M::mem_pestat] skip orientation RF as there are not enough pairs
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation FF
+[M::mem_process_seqs] Processed 92594 reads in 5.430 CPU sec, 6.307 real sec
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (7, 1408, 15, 4)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (195, 256, 295)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 495)
+[M::mem_pestat] mean and std.dev: (236.93, 82.17)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 595)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (332, 1901, 1957)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 5207)
+[M::mem_pestat] mean and std.dev: (1657.40, 1413.04)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 7310)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation RF
+[M::mem_process_seqs] Processed 52940 reads in 6.495 CPU sec, 10.013 real sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa mem -M -R @RG\tID:lane2\tSM:60A_Sc_DBVPG6044 ../../../../ref/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa.gz s_7_1.fastq.gz s_7_2.fastq.gz
+[main] Real time: 24.671 sec; CPU: 17.668 sec
++ samtools index lane2.sorted.bam
++ samtools stats lane2.sorted.bam
++ plot-bamstats -p plot2/ lane2.stats.txt
+"plot2/quals2.gp" line 674: warning: y2 axis range undefined or overflow
++ cd ..
++ pwd
+/home/manager/course_data/read_alignment/data/Exercise2/60A_Sc_DBVPG6044/library1
++ ls
+lane1
+lane2
++ picard MergeSamFiles I=lane1/lane1.sorted.bam I=lane2/lane2.sorted.bam O=library1.bam
+INFO	2022-10-08 13:37:42	MergeSamFiles	
+
+********** NOTE: Picard's command line syntax is changing.
+**********
+********** For more information, please see:
+********** 
+https://github.com/broadinstitute/picard/wiki/Command-Line-Syntax-Transition-For-Users-(Pre-Transition)
+**********
+********** The command line looks like this in the new syntax:
+**********
+**********    MergeSamFiles -I lane1/lane1.sorted.bam -I lane2/lane2.sorted.bam -O library1.bam
+**********
+
+
+13:37:43.081 INFO  NativeLibraryLoader - Loading libgkl_compression.so from jar:file:/home/manager/miniconda/envs/ngsbio/share/picard-slim-2.27.4-0/picard.jar!/com/intel/gkl/native/libgkl_compression.so
+[Sat Oct 08 13:37:43 BST 2022] MergeSamFiles INPUT=[lane1/lane1.sorted.bam, lane2/lane2.sorted.bam] OUTPUT=library1.bam    SORT_ORDER=coordinate ASSUME_SORTED=false MERGE_SEQUENCE_DICTIONARIES=false USE_THREADING=false VERBOSITY=INFO QUIET=false VALIDATION_STRINGENCY=STRICT COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=500000 CREATE_INDEX=false CREATE_MD5_FILE=false GA4GH_CLIENT_SECRETS=client_secrets.json USE_JDK_DEFLATER=false USE_JDK_INFLATER=false
+[Sat Oct 08 13:37:43 BST 2022] Executing as manager@ngs-vm on Linux 5.15.0-48-generic amd64; OpenJDK 64-Bit Server VM 11.0.1+13-LTS; Deflater: Intel; Inflater: Intel; Provider GCS is not available; Picard version: 2.27.4-SNAPSHOT
+INFO	2022-10-08 13:37:43	MergeSamFiles	Input files are in same order as output so sorting to temp directory is not needed.
+INFO	2022-10-08 13:37:53	MergeSamFiles	Finished reading inputs.
+[Sat Oct 08 13:37:53 BST 2022] picard.sam.MergeSamFiles done. Elapsed time: 0.17 minutes.
+Runtime.totalMemory()=519110656
++ picard MarkDuplicates I=library1.bam O=library1.markdup.bam M=library1.metrics.txt
+INFO	2022-10-08 13:37:54	MarkDuplicates	
+
+********** NOTE: Picard's command line syntax is changing.
+**********
+********** For more information, please see:
+********** 
+https://github.com/broadinstitute/picard/wiki/Command-Line-Syntax-Transition-For-Users-(Pre-Transition)
+**********
+********** The command line looks like this in the new syntax:
+**********
+**********    MarkDuplicates -I library1.bam -O library1.markdup.bam -M library1.metrics.txt
+**********
+
+
+13:37:54.898 INFO  NativeLibraryLoader - Loading libgkl_compression.so from jar:file:/home/manager/miniconda/envs/ngsbio/share/picard-slim-2.27.4-0/picard.jar!/com/intel/gkl/native/libgkl_compression.so
+[Sat Oct 08 13:37:54 BST 2022] MarkDuplicates INPUT=[library1.bam] OUTPUT=library1.markdup.bam METRICS_FILE=library1.metrics.txt    MAX_SEQUENCES_FOR_DISK_READ_ENDS_MAP=50000 MAX_FILE_HANDLES_FOR_READ_ENDS_MAP=8000 SORTING_COLLECTION_SIZE_RATIO=0.25 TAG_DUPLICATE_SET_MEMBERS=false REMOVE_SEQUENCING_DUPLICATES=false TAGGING_POLICY=DontTag CLEAR_DT=true DUPLEX_UMI=false FLOW_MODE=false FLOW_QUALITY_SUM_STRATEGY=false USE_END_IN_UNPAIRED_READS=false USE_UNPAIRED_CLIPPED_END=false UNPAIRED_END_UNCERTAINTY=0 FLOW_SKIP_FIRST_N_FLOWS=0 FLOW_Q_IS_KNOWN_END=false FLOW_EFFECTIVE_QUALITY_THRESHOLD=15 ADD_PG_TAG_TO_READS=true REMOVE_DUPLICATES=false ASSUME_SORTED=false DUPLICATE_SCORING_STRATEGY=SUM_OF_BASE_QUALITIES PROGRAM_RECORD_ID=MarkDuplicates PROGRAM_GROUP_NAME=MarkDuplicates READ_NAME_REGEX=<optimized capture of last three ':' separated fields as numeric values> OPTICAL_DUPLICATE_PIXEL_DISTANCE=100 MAX_OPTICAL_DUPLICATE_SET_SIZE=300000 VERBOSITY=INFO QUIET=false VALIDATION_STRINGENCY=STRICT COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=500000 CREATE_INDEX=false CREATE_MD5_FILE=false GA4GH_CLIENT_SECRETS=client_secrets.json USE_JDK_DEFLATER=false USE_JDK_INFLATER=false
+[Sat Oct 08 13:37:54 BST 2022] Executing as manager@ngs-vm on Linux 5.15.0-48-generic amd64; OpenJDK 64-Bit Server VM 11.0.1+13-LTS; Deflater: Intel; Inflater: Intel; Provider GCS is not available; Picard version: 2.27.4-SNAPSHOT
+INFO	2022-10-08 13:37:54	MarkDuplicates	Start of doWork freeMemory: 510255688; totalMemory: 519110656; maxMemory: 1037959168
+INFO	2022-10-08 13:37:54	MarkDuplicates	Reading input file and constructing read end information.
+INFO	2022-10-08 13:37:54	MarkDuplicates	Will retain up to 3760721 data points before spilling to disk.
+INFO	2022-10-08 13:38:00	MarkDuplicates	Read 507074 records. 0 pairs never matched.
+INFO	2022-10-08 13:38:00	MarkDuplicates	After buildSortedReadEndLists freeMemory: 426111824; totalMemory: 519110656; maxMemory: 1037959168
+INFO	2022-10-08 13:38:00	MarkDuplicates	Will retain up to 32436224 duplicate indices before spilling to disk.
+INFO	2022-10-08 13:38:01	MarkDuplicates	Traversing read pair information and detecting duplicates.
+INFO	2022-10-08 13:38:01	MarkDuplicates	Traversing fragment information and detecting duplicates.
+INFO	2022-10-08 13:38:01	MarkDuplicates	Sorting list of duplicate records.
+INFO	2022-10-08 13:38:01	MarkDuplicates	After generateDuplicateIndexes freeMemory: 372984248; totalMemory: 642174976; maxMemory: 1037959168
+INFO	2022-10-08 13:38:01	MarkDuplicates	Marking 12399 records as duplicates.
+INFO	2022-10-08 13:38:01	MarkDuplicates	Found 1705 optical duplicate clusters.
+INFO	2022-10-08 13:38:01	MarkDuplicates	Reads are assumed to be ordered by: coordinate
+INFO	2022-10-08 13:38:14	MarkDuplicates	Writing complete. Closing input iterator.
+INFO	2022-10-08 13:38:14	MarkDuplicates	Duplicate Index cleanup.
+INFO	2022-10-08 13:38:14	MarkDuplicates	Getting Memory Stats.
+INFO	2022-10-08 13:38:14	MarkDuplicates	Before output close freeMemory: 632109208; totalMemory: 642174976; maxMemory: 1037959168
+INFO	2022-10-08 13:38:14	MarkDuplicates	Closed outputs. Getting more Memory Stats.
+INFO	2022-10-08 13:38:14	MarkDuplicates	After output close freeMemory: 619828312; totalMemory: 629825536; maxMemory: 1037959168
+[Sat Oct 08 13:38:14 BST 2022] picard.sam.markduplicates.MarkDuplicates done. Elapsed time: 0.33 minutes.
+Runtime.totalMemory()=629825536
++ cd /home/manager/course_data/read_alignment/data/ref
++ gunzip Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa.gz
++ cd /home/manager/course_data/read_alignment/data/Exercise2/60A_Sc_DBVPG6044/library1
++ samtools view -C -T ../../../ref/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa -o library1.markdup.cram library1.markdup.bam
++ set +eu
++ set +x

@@ -1,33 +1,79 @@
-cd /home/manager/course_data/structural_variation
-cd data
-cd exercise1
+#!/bin/bash
+set -x
+set -eu
+
+### Section 1 - Introduction 
+
+cd ~/course_data/structural_variation/data
+#breakdancer-max -h
+dysgu --help
+minimap2 --help
+sniffles --help
+bedtools --help
+
+### Section 2 - Looking at Structural Variants in VCF
 pwd
+cd exercise1
 head ERR1015121.vcf
+#Exercises
+grep -c "<DEL>" ERR1015121.vcf
+grep "437148" ERR1015121.vcf
+grep -c "^IV" ERR1015121.vcf
+
+### Section 3 - Calling Structural Variants
 cd ../exercise2
+ls
 cat breakdancer.config
 breakdancer-max breakdancer.config > ERR1015121.breakdancer.out
-cat ERR1015121.breakdancer.out
-grep dels ERR1015121.breakdancer.out > ERR1015121.breakdancer.dels.out
-awk '{print $1"\t"$2"\t"$5"\t"$7"\t"$9}' ERR1015121.breakdancer.dels.out > ERR1015121.breakdancer.dels.bed
-#Test IGV
+head ERR1015121.breakdancer.out
+#Exercises
+grep "83065" ERR1015121.breakdancer.out
+grep "258766" ERR1015121.breakdancer.out
+grep DEL ERR1015121.breakdancer.out | awk '{print $1"\t"$2"\t"$5"\t"$7"\t"$9}' > breakdancer.dels.bed
+#Manual inpection with IGV
 cd ../exercise3
-ls -l ERR1015069.bam
-ls -l ERR1015069.bam.bai
-samtools view -bh -F 1294 ERR1015069.bam | samtools sort -O bam -T ERR1015069.temp -o ERR1015069.discordants.bam
-samtools index ERR1015069.discordants.bam
-samtools view -h ERR1015069.bam | extractSplitReads_BwaMem -i stdin | samtools view -b - | samtools sort -O bam -T ERR1015069.temp -o ERR1015069.splitters.bam
-samtools index ERR1015069.splitters.bam
-lumpyexpress -B ERR1015069.bam -S ERR1015069.splitters.bam -D ERR1015069.discordants.bam -o ERR1015069.vcf
+ls
+dysgu run ../ref/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa temp ERR1015069.bam > ERR1015069.vcf
+#Exercises
+bcftools view -H -i 'FILTER="PASS"' ERR1015069.vcf | wc -l
+grep 384221 ERR1015069.vcf
+grep 31115 ERR1015069.vcf
+
+### Section 4 - Calling Structural Variants from Long Reads
 cd ../exercise4
-ngmlr -t 2 -r Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa -q YPS128.filtered_subreads.10x.fastq.gz -o ERR1015069.sam
-samtools view -b -o ERR1015069.bam ERR1015069.sam
-samtools sort -o ERR1015069.sorted.bam ERR1015069.bam 
-samtools index ERR1015069.sorted.bam 
-sniffles -m ERR1015069.sorted.bam -v ERR1015069.vcf
-#Look in IGV
+ls
+#minimap2
+minimap2 -t 2 -x map-pb -a ../ref/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa YPS128.filtered_subreads.10x.fastq.gz | samtools view -b -o YPS128.filtered_subreads.10x.bam -
+samtools sort -T temp -o YPS128.filtered_subreads.10x.sorted.bam YPS128.filtered_subreads.10x.bam
+samtools calmd -b YPS128.filtered_subreads.10x.sorted.bam ../ref/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa > YPS128.filtered_subreads.10x.sorted.calmd.bam
+samtools index YPS128.filtered_subreads.10x.sorted.calmd.bam
+sniffles --help
+sniffles --input YPS128.filtered_subreads.10x.sorted.calmd.bam --vcf YPS128.filtered_subreads.10x.vcf
+#Manual inspect in IGV
+#Exercises
+#Insert commands
+
+### Section 5 - Bedtools
+bedtools --help
 cd ../exercise5
-bedtools
-#bedtools intersect...
-#bedtools intersect..
-#bedtools closest...
-#bedtools intersect...
+ls
+bedtools intersect -a ERR1015069.dels.vcf -b Saccharomyces_cerevisiae.R64-1-1.82.genes.gff3
+bedtools intersect -u -a ERR1015069.dels.vcf -b Saccharomyces_cerevisiae.R64-1-1.82.genes.gff3
+bedtools intersect -u -f 0.25 -a ERR1015069.dels.vcf -b Saccharomyces_cerevisiae.R64-1-1.82.genes.gff3
+#bedtools intersect -h
+#Exercises
+
+bedtools closest -d -a ERR1015069.dels.vcf -b Saccharomyces_cerevisiae.R64-1-1.82.genes.gff3
+bedtools closest -d -a ERR1015069.dels.vcf -b Saccharomyces_cerevisiae.R64-1-1.82.genes.gff3| grep XV | grep 43018 
+#bedtools closest -h
+#Exercises
+bedtools intersect -u -a ERR1015069.dels.vcf -b Saccharomyces_cerevisiae.R64-1-1.82.genes.gff3  | wc -l
+bedtools intersect -v -a ERR1015069.dels.vcf -b Saccharomyces_cerevisiae.R64-1-1.82.genes.gff3  | wc -l
+bedtools intersect -u -f 0.5 -a ERR1015069.dels.vcf -b Saccharomyces_cerevisiae.R64-1-1.82.genes.gff3  | wc -l
+bedtools intersect -wb -a ERR1015069.dels.vcf -b Saccharomyces_cerevisiae.R64-1-1.82.genes.gff3 | grep 811446
+bedtools closest -d -a ERR1015069.dels.vcf -b Saccharomyces_cerevisiae.R64-1-1.82.genes.gff3| grep IV | grep 384220
+bedtools intersect -u -a ERR1015069.dels.vcf -b ERR1015121.dels.vcf | wc -l
+bedtools intersect -u -r -f 0.9 -a ERR1015069.dels.vcf -b ERR1015121.dels.vcf | wc -l
+
+set +eu
+set +x

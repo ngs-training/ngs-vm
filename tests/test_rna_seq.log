@@ -1,0 +1,696 @@
++ set -eu
++ cd /home/manager/course_data/rna_seq/
++ ls data/MT1_1.fastq.gz data/MT1_2.fastq.gz data/MT2_1.fastq.gz data/MT2_2.fastq.gz data/SBP1_1.fastq.gz data/SBP1_2.fastq.gz data/SBP2_1.fastq.gz data/SBP2_2.fastq.gz data/SBP3_1.fastq.gz data/SBP3_2.fastq.gz
+data/MT1_1.fastq.gz
+data/MT1_2.fastq.gz
+data/MT2_1.fastq.gz
+data/MT2_2.fastq.gz
+data/SBP1_1.fastq.gz
+data/SBP1_2.fastq.gz
+data/SBP2_1.fastq.gz
+data/SBP2_2.fastq.gz
+data/SBP3_1.fastq.gz
+data/SBP3_2.fastq.gz
++ head
++ zcat data/MT1_1.fastq.gz
+@HS18_08296:8:1101:1352:48181#4/1
+GTTTGCTATCGGTCTCCTACAAATATTTAGNTTTATGTGAAATGTATCACACGAATTTGTGCTCCAATCTCAAAGNACACGACTCGAAGGNGAAAAAACA
++
+;?D@=BDEEEDCCBBFFFDFBADE@FDFEC!EED>EFDEEEF<F@AECEA?EEEAEDBCADE(CFFCBAC?EEB2!GEFDDBAA@5C+5D!E=5<CF'D4
+@HS18_08296:8:1101:1352:51473#4/1
+TATCGTTTGATATTTTGTATTTTTTTTCGGATTGTTTTTAGCATTTTTTATTTTTTTCATATCCTTTTTTTTGTTNATTTCCTTTATTATNTTCTTTTTT
++
+A@=DEBDEBAC?CEAEC@BFED?EEF5)(1*E32D?0/1(0/(./9EB-<EEFDEE7(.9-F-C'-,9-CED6D*!@6F-D++C++C++C!D+>+AAE4D
+@HS18_08296:8:1101:1352:52807#4/1
+CACAAAACGAATCTCGAGAAGAATCTGGTTATTCCACTTTTATCGATTAAAAAAATAAAACCGTTTCTTATCGTANGTTAAATTATGTAANTTGAGAAGA
++ hisat2-build -h
+HISAT2 version 2.2.1 by Daehwan Kim (infphilo@gmail.com, http://www.ccb.jhu.edu/people/infphilo)
+Usage: hisat2-build [options]* <reference_in> <ht2_index_base>
+    reference_in            comma-separated list of files with ref sequences
+    hisat2_index_base       write ht2 data to files with this dir/basename
+Options:
+    -c                      reference sequences given on cmd line (as
+                            <reference_in>)
+    --large-index           force generated index to be 'large', even if ref
+                            has fewer than 4 billion nucleotides
+    -a/--noauto             disable automatic -p/--bmax/--dcv memory-fitting
+    -p <int>                number of threads
+    --bmax <int>            max bucket sz for blockwise suffix-array builder
+    --bmaxdivn <int>        max bucket sz as divisor of ref len (default: 4)
+    --dcv <int>             diff-cover period for blockwise (default: 1024)
+    --nodc                  disable diff-cover (algorithm becomes quadratic)
+    -r/--noref              don't build .3/.4.ht2 (packed reference) portion
+    -3/--justref            just build .3/.4.ht2 (packed reference) portion
+    -o/--offrate <int>      SA is sampled every 2^offRate BWT chars (default: 5)
+    -t/--ftabchars <int>    # of chars consumed in initial lookup (default: 10)
+    --localoffrate <int>    SA (local) is sampled every 2^offRate BWT chars (default: 3)
+    --localftabchars <int>  # of chars consumed in initial lookup in a local index (default: 6)
+    --snp <path>            SNP file name
+    --haplotype <path>      haplotype file name
+    --ss <path>             Splice site file name
+    --exon <path>           Exon file name
+    --repeat-ref <path>     Repeat reference file name
+    --repeat-info <path>    Repeat information file name
+    --repeat-snp <path>     Repeat snp file name
+    --repeat-haplotype <path>   Repeat haplotype file name
+    --seed <int>            seed for random number generator
+    -q/--quiet              disable verbose output (for debugging)
+    -h/--help               print detailed description of tool and its options
+    --usage                 print this usage message
+    --version               print version information and quit
++ hisat2-build data/PccAS_v3_genome.fa data/PccAS_v3_hisat2.idx
+Settings:
+  Output files: "data/PccAS_v3_hisat2.idx.*.ht2"
+  Line rate: 6 (line is 64 bytes)
+  Lines per side: 1 (side is 64 bytes)
+  Offset rate: 4 (one in 16)
+  FTable chars: 10
+  Strings: unpacked
+  Local offset rate: 3 (one in 8)
+  Local fTable chars: 6
+  Local sequence length: 57344
+  Local sequence overlap between two consecutive indexes: 1024
+  Endianness: little
+  Actual local endianness: little
+  Sanity checking: disabled
+  Assertions: disabled
+  Random seed: 0
+  Sizeofs: void*:8, int:4, long:8, size_t:8
+Input files DNA, FASTA:
+  data/PccAS_v3_genome.fa
+Reading reference sizes
+  Time reading reference sizes: 00:00:00
+Calculating joined length
+Writing header
+Reserving space for joined string
+Joining reference sequences
+  Time to join reference sequences: 00:00:00
+  Time to read SNPs and splice sites: 00:00:00
+Using parameters --bmax 3550939 --dcv 1024
+  Doing ahead-of-time memory usage test
+  Passed!  Constructing with these parameters: --bmax 3550939 --dcv 1024
+Constructing suffix-array element generator
+Building DifferenceCoverSample
+  Building sPrime
+  Building sPrimeOrder
+  V-Sorting samples
+  V-Sorting samples time: 00:00:00
+  Allocating rank array
+  Ranking v-sort output
+  Ranking v-sort output time: 00:00:00
+  Invoking Larsson-Sadakane on ranks
+  Invoking Larsson-Sadakane on ranks time: 00:00:00
+  Sanity-checking and returning
+Building samples
+Reserving space for 12 sample suffixes
+Generating random suffixes
+QSorting 12 sample offsets, eliminating duplicates
+QSorting sample offsets, eliminating duplicates time: 00:00:00
+Multikey QSorting 12 samples
+  (Using difference cover)
+  Multikey QSorting samples time: 00:00:00
+Calculating bucket sizes
+Splitting and merging
+  Splitting and merging time: 00:00:00
+Split 1, merged 7; iterating...
+Splitting and merging
+  Splitting and merging time: 00:00:00
+Split 1, merged 1; iterating...
+Splitting and merging
+  Splitting and merging time: 00:00:00
+Avg bucket size: 3.15639e+06 (target: 3550938)
+Converting suffix-array elements to index image
+Allocating ftab, absorbFtab
+Entering GFM loop
+Getting block 1 of 6
+  Reserving size (3550939) for bucket 1
+  Calculating Z arrays for bucket 1
+  Entering block accumulator loop for bucket 1:
+  bucket 1: 10%
+  bucket 1: 20%
+  bucket 1: 30%
+  bucket 1: 40%
+  bucket 1: 50%
+  bucket 1: 60%
+  bucket 1: 70%
+  bucket 1: 80%
+  bucket 1: 90%
+  bucket 1: 100%
+  Sorting block of length 3215333 for bucket 1
+  (Using difference cover)
+  Sorting block time: 00:00:01
+Returning block of 3215334 for bucket 1
+Getting block 2 of 6
+  Reserving size (3550939) for bucket 2
+  Calculating Z arrays for bucket 2
+  Entering block accumulator loop for bucket 2:
+  bucket 2: 10%
+  bucket 2: 20%
+  bucket 2: 30%
+  bucket 2: 40%
+  bucket 2: 50%
+  bucket 2: 60%
+  bucket 2: 70%
+  bucket 2: 80%
+  bucket 2: 90%
+  bucket 2: 100%
+  Sorting block of length 2947685 for bucket 2
+  (Using difference cover)
+  Sorting block time: 00:00:00
+Returning block of 2947686 for bucket 2
+Getting block 3 of 6
+  Reserving size (3550939) for bucket 3
+  Calculating Z arrays for bucket 3
+  Entering block accumulator loop for bucket 3:
+  bucket 3: 10%
+  bucket 3: 20%
+  bucket 3: 30%
+  bucket 3: 40%
+  bucket 3: 50%
+  bucket 3: 60%
+  bucket 3: 70%
+  bucket 3: 80%
+  bucket 3: 90%
+  bucket 3: 100%
+  Sorting block of length 3343862 for bucket 3
+  (Using difference cover)
+  Sorting block time: 00:00:00
+Returning block of 3343863 for bucket 3
+Getting block 4 of 6
+  Reserving size (3550939) for bucket 4
+  Calculating Z arrays for bucket 4
+  Entering block accumulator loop for bucket 4:
+  bucket 4: 10%
+  bucket 4: 20%
+  bucket 4: 30%
+  bucket 4: 40%
+  bucket 4: 50%
+  bucket 4: 60%
+  bucket 4: 70%
+  bucket 4: 80%
+  bucket 4: 90%
+  bucket 4: 100%
+  Sorting block of length 3457034 for bucket 4
+  (Using difference cover)
+  Sorting block time: 00:00:01
+Returning block of 3457035 for bucket 4
+Getting block 5 of 6
+  Reserving size (3550939) for bucket 5
+  Calculating Z arrays for bucket 5
+  Entering block accumulator loop for bucket 5:
+  bucket 5: 10%
+  bucket 5: 20%
+  bucket 5: 30%
+  bucket 5: 40%
+  bucket 5: 50%
+  bucket 5: 60%
+  bucket 5: 70%
+  bucket 5: 80%
+  bucket 5: 90%
+  bucket 5: 100%
+  Sorting block of length 3410402 for bucket 5
+  (Using difference cover)
+  Sorting block time: 00:00:00
+Returning block of 3410403 for bucket 5
+Getting block 6 of 6
+  Reserving size (3550939) for bucket 6
+  Calculating Z arrays for bucket 6
+  Entering block accumulator loop for bucket 6:
+  bucket 6: 10%
+  bucket 6: 20%
+  bucket 6: 30%
+  bucket 6: 40%
+  bucket 6: 50%
+  bucket 6: 60%
+  bucket 6: 70%
+  bucket 6: 80%
+  bucket 6: 90%
+  bucket 6: 100%
+  Sorting block of length 2564019 for bucket 6
+  (Using difference cover)
+  Sorting block time: 00:00:00
+Returning block of 2564020 for bucket 6
+Exited GFM loop
+fchr[A]: 0
+fchr[C]: 7246038
+fchr[G]: 9491973
+fchr[T]: 11721992
+fchr[$]: 18938340
+Exiting GFM::buildToDisk()
+Returning from initFromVector
+Wrote 10507717 bytes to primary GFM file: data/PccAS_v3_hisat2.idx.1.ht2
+Wrote 4734592 bytes to secondary GFM file: data/PccAS_v3_hisat2.idx.2.ht2
+Re-opening _in1 and _in2 as input streams
+Returning from GFM constructor
+Returning from initFromVector
+Wrote 8363425 bytes to primary GFM file: data/PccAS_v3_hisat2.idx.5.ht2
+Wrote 4819488 bytes to secondary GFM file: data/PccAS_v3_hisat2.idx.6.ht2
+Re-opening _in5 and _in5 as input streams
+Returning from HGFM constructor
+Headers:
+    len: 18938340
+    gbwtLen: 18938341
+    nodes: 18938341
+    sz: 4734585
+    gbwtSz: 4734586
+    lineRate: 6
+    offRate: 4
+    offMask: 0xfffffff0
+    ftabChars: 10
+    eftabLen: 0
+    eftabSz: 0
+    ftabLen: 1048577
+    ftabSz: 4194308
+    offsLen: 1183647
+    offsSz: 4734588
+    lineSz: 64
+    sideSz: 64
+    sideGbwtSz: 48
+    sideGbwtLen: 192
+    numSides: 98638
+    numLines: 98638
+    gbwtTotLen: 6312832
+    gbwtTotSz: 6312832
+    reverse: 0
+    linearFM: Yes
+Total time for call to driver() for forward index: 00:00:07
++ ls data/PccAS_v3_hisat2.idx.1.ht2 data/PccAS_v3_hisat2.idx.2.ht2 data/PccAS_v3_hisat2.idx.3.ht2 data/PccAS_v3_hisat2.idx.4.ht2 data/PccAS_v3_hisat2.idx.5.ht2 data/PccAS_v3_hisat2.idx.6.ht2 data/PccAS_v3_hisat2.idx.7.ht2 data/PccAS_v3_hisat2.idx.8.ht2
+data/PccAS_v3_hisat2.idx.1.ht2
+data/PccAS_v3_hisat2.idx.2.ht2
+data/PccAS_v3_hisat2.idx.3.ht2
+data/PccAS_v3_hisat2.idx.4.ht2
+data/PccAS_v3_hisat2.idx.5.ht2
+data/PccAS_v3_hisat2.idx.6.ht2
+data/PccAS_v3_hisat2.idx.7.ht2
+data/PccAS_v3_hisat2.idx.8.ht2
++ hisat2 -h
+HISAT2 version 2.2.1 by Daehwan Kim (infphilo@gmail.com, www.ccb.jhu.edu/people/infphilo)
+Usage: 
+  hisat2 [options]* -x <ht2-idx> {-1 <m1> -2 <m2> | -U <r>} [-S <sam>]
+
+  <ht2-idx>  Index filename prefix (minus trailing .X.ht2).
+  <m1>       Files with #1 mates, paired with files in <m2>.
+             Could be gzip'ed (extension: .gz) or bzip2'ed (extension: .bz2).
+  <m2>       Files with #2 mates, paired with files in <m1>.
+             Could be gzip'ed (extension: .gz) or bzip2'ed (extension: .bz2).
+  <r>        Files with unpaired reads.
+             Could be gzip'ed (extension: .gz) or bzip2'ed (extension: .bz2).
+  <sam>      File for SAM output (default: stdout)
+
+  <m1>, <m2>, <r> can be comma-separated lists (no whitespace) and can be
+  specified many times.  E.g. '-U file1.fq,file2.fq -U file3.fq'.
+
+Options (defaults in parentheses):
+
+ Input:
+  -q                 query input files are FASTQ .fq/.fastq (default)
+  --qseq             query input files are in Illumina's qseq format
+  -f                 query input files are (multi-)FASTA .fa/.mfa
+  -r                 query input files are raw one-sequence-per-line
+  -c                 <m1>, <m2>, <r> are sequences themselves, not files
+  -s/--skip <int>    skip the first <int> reads/pairs in the input (none)
+  -u/--upto <int>    stop after first <int> reads/pairs (no limit)
+  -5/--trim5 <int>   trim <int> bases from 5'/left end of reads (0)
+  -3/--trim3 <int>   trim <int> bases from 3'/right end of reads (0)
+  --phred33          qualities are Phred+33 (default)
+  --phred64          qualities are Phred+64
+  --int-quals        qualities encoded as space-delimited integers
+
+ Presets:                 Same as:
+   --fast                 --no-repeat-index
+   --sensitive            --bowtie2-dp 1 -k 30 --score-min L,0,-0.5
+   --very-sensitive       --bowtie2-dp 2 -k 50 --score-min L,0,-1
+
+ Alignment:
+  --bowtie2-dp <int> use Bowtie2's dynamic programming alignment algorithm (0) - 0: no dynamic programming, 1: conditional dynamic programming, and 2: unconditional dynamic programming (slowest)
+  --n-ceil <func>    func for max # non-A/C/G/Ts permitted in aln (L,0,0.15)
+  --ignore-quals     treat all quality values as 30 on Phred scale (off)
+  --nofw             do not align forward (original) version of read (off)
+  --norc             do not align reverse-complement version of read (off)
+  --no-repeat-index  do not use repeat index
+
+ Spliced Alignment:
+  --pen-cansplice <int>              penalty for a canonical splice site (0)
+  --pen-noncansplice <int>           penalty for a non-canonical splice site (12)
+  --pen-canintronlen <func>          penalty for long introns (G,-8,1) with canonical splice sites
+  --pen-noncanintronlen <func>       penalty for long introns (G,-8,1) with noncanonical splice sites
+  --min-intronlen <int>              minimum intron length (20)
+  --max-intronlen <int>              maximum intron length (500000)
+  --known-splicesite-infile <path>   provide a list of known splice sites
+  --novel-splicesite-outfile <path>  report a list of splice sites
+  --novel-splicesite-infile <path>   provide a list of novel splice sites
+  --no-temp-splicesite               disable the use of splice sites found
+  --no-spliced-alignment             disable spliced alignment
+  --rna-strandness <string>          specify strand-specific information (unstranded)
+  --tmo                              reports only those alignments within known transcriptome
+  --dta                              reports alignments tailored for transcript assemblers
+  --dta-cufflinks                    reports alignments tailored specifically for cufflinks
+  --avoid-pseudogene                 tries to avoid aligning reads to pseudogenes (experimental option)
+  --no-templatelen-adjustment        disables template length adjustment for RNA-seq reads
+
+ Scoring:
+  --mp <int>,<int>   max and min penalties for mismatch; lower qual = lower penalty <6,2>
+  --sp <int>,<int>   max and min penalties for soft-clipping; lower qual = lower penalty <2,1>
+  --no-softclip      no soft-clipping
+  --np <int>         penalty for non-A/C/G/Ts in read/ref (1)
+  --rdg <int>,<int>  read gap open, extend penalties (5,3)
+  --rfg <int>,<int>  reference gap open, extend penalties (5,3)
+  --score-min <func> min acceptable alignment score w/r/t read length
+                     (L,0.0,-0.2)
+
+ Reporting:
+  -k <int>           It searches for at most <int> distinct, primary alignments for each read. Primary alignments mean 
+                     alignments whose alignment score is equal to or higher than any other alignments. The search terminates 
+                     when it cannot find more distinct valid alignments, or when it finds <int>, whichever happens first. 
+                     The alignment score for a paired-end alignment equals the sum of the alignment scores of 
+                     the individual mates. Each reported read or pair alignment beyond the first has the SAM ‘secondary’ bit 
+                     (which equals 256) set in its FLAGS field. For reads that have more than <int> distinct, 
+                     valid alignments, hisat2 does not guarantee that the <int> alignments reported are the best possible 
+                     in terms of alignment score. Default: 5 (linear index) or 10 (graph index).
+                     Note: HISAT2 is not designed with large values for -k in mind, and when aligning reads to long, 
+                     repetitive genomes, large -k could make alignment much slower.
+  --max-seeds <int>  HISAT2, like other aligners, uses seed-and-extend approaches. HISAT2 tries to extend seeds to 
+                     full-length alignments. In HISAT2, --max-seeds is used to control the maximum number of seeds that 
+                     will be extended. For DNA-read alignment (--no-spliced-alignment), HISAT2 extends up to these many seeds
+                     and skips the rest of the seeds. For RNA-read alignment, HISAT2 skips extending seeds and reports 
+                     no alignments if the number of seeds is larger than the number specified with the option, 
+                     to be compatible with previous versions of HISAT2. Large values for --max-seeds may improve alignment 
+                     sensitivity, but HISAT2 is not designed with large values for --max-seeds in mind, and when aligning 
+                     reads to long, repetitive genomes, large --max-seeds could make alignment much slower. 
+                     The default value is the maximum of 5 and the value that comes with -k times 2.
+  -a/--all           HISAT2 reports all alignments it can find. Using the option is equivalent to using both --max-seeds 
+                     and -k with the maximum value that a 64-bit signed integer can represent (9,223,372,036,854,775,807).
+  --repeat           report alignments to repeat sequences directly
+
+ Paired-end:
+  -I/--minins <int>  minimum fragment length (0), only valid with --no-spliced-alignment
+  -X/--maxins <int>  maximum fragment length (500), only valid with --no-spliced-alignment
+  --fr/--rf/--ff     -1, -2 mates align fw/rev, rev/fw, fw/fw (--fr)
+  --no-mixed         suppress unpaired alignments for paired reads
+  --no-discordant    suppress discordant alignments for paired reads
+
+ Output:
+  -t/--time          print wall-clock time taken by search phases
+  --un <path>           write unpaired reads that didn't align to <path>
+  --al <path>           write unpaired reads that aligned at least once to <path>
+  --un-conc <path>      write pairs that didn't align concordantly to <path>
+  --al-conc <path>      write pairs that aligned concordantly at least once to <path>
+  (Note: for --un, --al, --un-conc, or --al-conc, add '-gz' to the option name, e.g.
+  --un-gz <path>, to gzip compress output, or add '-bz2' to bzip2 compress output.)
+  --summary-file <path> print alignment summary to this file.
+  --new-summary         print alignment summary in a new style, which is more machine-friendly.
+  --quiet               print nothing to stderr except serious errors
+  --met-file <path>     send metrics to file at <path> (off)
+  --met-stderr          send metrics to stderr (off)
+  --met <int>           report internal counters & metrics every <int> secs (1)
+  --no-head             suppress header lines, i.e. lines starting with @
+  --no-sq               suppress @SQ header lines
+  --rg-id <text>        set read group id, reflected in @RG line and RG:Z: opt field
+  --rg <text>           add <text> ("lab:value") to @RG line of SAM header.
+                        Note: @RG line only printed when --rg-id is set.
+  --omit-sec-seq        put '*' in SEQ and QUAL fields for secondary alignments.
+
+ Performance:
+  -o/--offrate <int> override offrate of index; must be >= index's offrate
+  -p/--threads <int> number of alignment threads to launch (1)
+  --reorder          force SAM output order to match order of input reads
+  --mm               use memory-mapped I/O for index; many 'hisat2's can share
+
+ Other:
+  --qc-filter        filter out reads that are bad according to QSEQ filter
+  --seed <int>       seed for random number generator (0)
+  --non-deterministic seed rand. gen. arbitrarily instead of using read attributes
+  --remove-chrname   remove 'chr' from reference names in alignment
+  --add-chrname      add 'chr' to reference names in alignment 
+  --version          print version information and quit
+  -h/--help          print this usage message
++ hisat2 --max-intronlen 10000 -x data/PccAS_v3_hisat2.idx -1 data/MT1_1.fastq.gz -2 data/MT1_2.fastq.gz -S data/MT1.sam
+1250000 reads; of these:
+  1250000 (100.00%) were paired; of these:
+    105654 (8.45%) aligned concordantly 0 times
+    329304 (26.34%) aligned concordantly exactly 1 time
+    815042 (65.20%) aligned concordantly >1 times
+    ----
+    105654 pairs aligned concordantly 0 times; of these:
+      1797 (1.70%) aligned discordantly 1 time
+    ----
+    103857 pairs aligned 0 times concordantly or discordantly; of these:
+      207714 mates make up the pairs; of these:
+        146078 (70.33%) aligned 0 times
+        19877 (9.57%) aligned exactly 1 time
+        41759 (20.10%) aligned >1 times
+94.16% overall alignment rate
++ samtools view -b -o data/MT1.bam data/MT1.sam
++ samtools sort -o data/MT1_sorted.bam data/MT1.bam
+[bam_sort_core] merging from 1 files and 1 in-memory blocks...
++ samtools index data/MT1_sorted.bam
++ ./data/map_SBP_samples.sh
+data/SBP1_1.fastq.gz
+Processing sample: SBP1
+1250000 reads; of these:
+  1250000 (100.00%) were paired; of these:
+    145999 (11.68%) aligned concordantly 0 times
+    1081182 (86.49%) aligned concordantly exactly 1 time
+    22819 (1.83%) aligned concordantly >1 times
+    ----
+    145999 pairs aligned concordantly 0 times; of these:
+      16916 (11.59%) aligned discordantly 1 time
+    ----
+    129083 pairs aligned 0 times concordantly or discordantly; of these:
+      258166 mates make up the pairs; of these:
+        170576 (66.07%) aligned 0 times
+        85122 (32.97%) aligned exactly 1 time
+        2468 (0.96%) aligned >1 times
+93.18% overall alignment rate
+data/SBP2_1.fastq.gz
+Processing sample: SBP2
+1250000 reads; of these:
+  1250000 (100.00%) were paired; of these:
+    211767 (16.94%) aligned concordantly 0 times
+    989483 (79.16%) aligned concordantly exactly 1 time
+    48750 (3.90%) aligned concordantly >1 times
+    ----
+    211767 pairs aligned concordantly 0 times; of these:
+      11868 (5.60%) aligned discordantly 1 time
+    ----
+    199899 pairs aligned 0 times concordantly or discordantly; of these:
+      399798 mates make up the pairs; of these:
+        312138 (78.07%) aligned 0 times
+        83336 (20.84%) aligned exactly 1 time
+        4324 (1.08%) aligned >1 times
+87.51% overall alignment rate
+[bam_sort_core] merging from 1 files and 1 in-memory blocks...
+data/SBP3_1.fastq.gz
+Processing sample: SBP3
+1250000 reads; of these:
+  1250000 (100.00%) were paired; of these:
+    227940 (18.24%) aligned concordantly 0 times
+    998973 (79.92%) aligned concordantly exactly 1 time
+    23087 (1.85%) aligned concordantly >1 times
+    ----
+    227940 pairs aligned concordantly 0 times; of these:
+      13939 (6.12%) aligned discordantly 1 time
+    ----
+    214001 pairs aligned 0 times concordantly or discordantly; of these:
+      428002 mates make up the pairs; of these:
+        335852 (78.47%) aligned 0 times
+        89285 (20.86%) aligned exactly 1 time
+        2865 (0.67%) aligned >1 times
+86.57% overall alignment rate
++ ls -al data/SBP1_sorted.bam data/SBP2_sorted.bam data/SBP3_sorted.bam
+-rw-rw-r-- 1 manager manager 189015368 Oct  8 15:18 data/SBP1_sorted.bam
+-rw-rw-r-- 1 manager manager 196016917 Oct  8 15:20 data/SBP2_sorted.bam
+-rw-rw-r-- 1 manager manager 192185183 Oct  8 15:22 data/SBP3_sorted.bam
++ samtools faidx data/PccAS_v3_genome.fa
++ kallisto index -i data/PccAS_v3_kallisto data/PccAS_v3_transcripts.fa
+
+[build] loading fasta file data/PccAS_v3_transcripts.fa
+[build] k-mer length: 31
+[build] counting k-mers ... done.
+[build] building target de Bruijn graph ...  done 
+[build] creating equivalence classes ...  done
+[build] target de Bruijn graph has 18077 contigs and contains 10192437 k-mers 
+
++ kallisto quant -i data/PccAS_v3_kallisto -o data/MT1 -b 100 data/MT1_1.fastq.gz data/MT1_2.fastq.gz
+
+[quant] fragment length distribution will be estimated from the data
+[index] k-mer length: 31
+[index] number of targets: 5,177
+[index] number of k-mers: 10,192,437
+[index] number of equivalence classes: 7,654
+[quant] running in paired-end mode
+[quant] will process pair 1: data/MT1_1.fastq.gz
+                             data/MT1_2.fastq.gz
+[quant] finding pseudoalignments for the reads ... done
+[quant] processed 1,250,000 reads, 168,298 reads pseudoaligned
+[quant] estimated average fragment length: 195.01
+[   em] quantifying the abundances ... done
+[   em] the Expectation-Maximization algorithm ran for 52 rounds
+[bstrp] running EM for the bootstrap: 1[bstrp] running EM for the bootstrap: 2[bstrp] running EM for the bootstrap: 3[bstrp] running EM for the bootstrap: 4[bstrp] running EM for the bootstrap: 5[bstrp] running EM for the bootstrap: 6[bstrp] running EM for the bootstrap: 7[bstrp] running EM for the bootstrap: 8[bstrp] running EM for the bootstrap: 9[bstrp] running EM for the bootstrap: 10[bstrp] running EM for the bootstrap: 11[bstrp] running EM for the bootstrap: 12[bstrp] running EM for the bootstrap: 13[bstrp] running EM for the bootstrap: 14[bstrp] running EM for the bootstrap: 15[bstrp] running EM for the bootstrap: 16[bstrp] running EM for the bootstrap: 17[bstrp] running EM for the bootstrap: 18[bstrp] running EM for the bootstrap: 19[bstrp] running EM for the bootstrap: 20[bstrp] running EM for the bootstrap: 21[bstrp] running EM for the bootstrap: 22[bstrp] running EM for the bootstrap: 23[bstrp] running EM for the bootstrap: 24[bstrp] running EM for the bootstrap: 25[bstrp] running EM for the bootstrap: 26[bstrp] running EM for the bootstrap: 27[bstrp] running EM for the bootstrap: 28[bstrp] running EM for the bootstrap: 29[bstrp] running EM for the bootstrap: 30[bstrp] running EM for the bootstrap: 31[bstrp] running EM for the bootstrap: 32[bstrp] running EM for the bootstrap: 33[bstrp] running EM for the bootstrap: 34[bstrp] running EM for the bootstrap: 35[bstrp] running EM for the bootstrap: 36[bstrp] running EM for the bootstrap: 37[bstrp] running EM for the bootstrap: 38[bstrp] running EM for the bootstrap: 39[bstrp] running EM for the bootstrap: 40[bstrp] running EM for the bootstrap: 41[bstrp] running EM for the bootstrap: 42[bstrp] running EM for the bootstrap: 43[bstrp] running EM for the bootstrap: 44[bstrp] running EM for the bootstrap: 45[bstrp] running EM for the bootstrap: 46[bstrp] running EM for the bootstrap: 47[bstrp] running EM for the bootstrap: 48[bstrp] running EM for the bootstrap: 49[bstrp] running EM for the bootstrap: 50[bstrp] running EM for the bootstrap: 51[bstrp] running EM for the bootstrap: 52[bstrp] running EM for the bootstrap: 53[bstrp] running EM for the bootstrap: 54[bstrp] running EM for the bootstrap: 55[bstrp] running EM for the bootstrap: 56[bstrp] running EM for the bootstrap: 57[bstrp] running EM for the bootstrap: 58[bstrp] running EM for the bootstrap: 59[bstrp] running EM for the bootstrap: 60[bstrp] running EM for the bootstrap: 61[bstrp] running EM for the bootstrap: 62[bstrp] running EM for the bootstrap: 63[bstrp] running EM for the bootstrap: 64[bstrp] running EM for the bootstrap: 65[bstrp] running EM for the bootstrap: 66[bstrp] running EM for the bootstrap: 67[bstrp] running EM for the bootstrap: 68[bstrp] running EM for the bootstrap: 69[bstrp] running EM for the bootstrap: 70[bstrp] running EM for the bootstrap: 71[bstrp] running EM for the bootstrap: 72[bstrp] running EM for the bootstrap: 73[bstrp] running EM for the bootstrap: 74[bstrp] running EM for the bootstrap: 75[bstrp] running EM for the bootstrap: 76[bstrp] running EM for the bootstrap: 77[bstrp] running EM for the bootstrap: 78[bstrp] running EM for the bootstrap: 79[bstrp] running EM for the bootstrap: 80[bstrp] running EM for the bootstrap: 81[bstrp] running EM for the bootstrap: 82[bstrp] running EM for the bootstrap: 83[bstrp] running EM for the bootstrap: 84[bstrp] running EM for the bootstrap: 85[bstrp] running EM for the bootstrap: 86[bstrp] running EM for the bootstrap: 87[bstrp] running EM for the bootstrap: 88[bstrp] running EM for the bootstrap: 89[bstrp] running EM for the bootstrap: 90[bstrp] running EM for the bootstrap: 91[bstrp] running EM for the bootstrap: 92[bstrp] running EM for the bootstrap: 93[bstrp] running EM for the bootstrap: 94[bstrp] running EM for the bootstrap: 95[bstrp] running EM for the bootstrap: 96[bstrp] running EM for the bootstrap: 97[bstrp] running EM for the bootstrap: 98[bstrp] running EM for the bootstrap: 99[bstrp] running EM for the bootstrap: 100
+
++ ls data/MT1
+abundance.h5
+abundance.tsv
+run_info.json
++ head data/MT1/abundance.tsv
+target_id	length	eff_length	est_counts	tpm
+PCHAS_0100100	903	708.99	5	24.0333
+PCHAS_0100200	894	699.99	0	0
+PCHAS_0100300	903	708.99	0	0
+PCHAS_0100400	2061	1866.99	1	1.82533
+PCHAS_0100500	921	726.99	1	4.68765
+PCHAS_0100600	3846	3651.99	0	0
+PCHAS_0100651	423	234.782	0	0
+PCHAS_0100700	606	412.836	3	24.7644
+PCHAS_0100800	450	260.165	0	0
++ grep PCHAS_0100100 data/MT1/abundance.tsv
+PCHAS_0100100	903	708.99	5	24.0333
++ awk '-F\t' '$1=="PCHAS_0100100" {print $5}' data/MT1/abundance.tsv
+24.0333
++ kallisto quant -i data/PccAS_v3_kallisto -o data/MT2 -b 100 data/MT2_1.fastq.gz data/MT2_2.fastq.gz
+
+[quant] fragment length distribution will be estimated from the data
+[index] k-mer length: 31
+[index] number of targets: 5,177
+[index] number of k-mers: 10,192,437
+[index] number of equivalence classes: 7,654
+[quant] running in paired-end mode
+[quant] will process pair 1: data/MT2_1.fastq.gz
+                             data/MT2_2.fastq.gz
+[quant] finding pseudoalignments for the reads ... done
+[quant] processed 1,250,000 reads, 341,149 reads pseudoaligned
+[quant] estimated average fragment length: 183.302
+[   em] quantifying the abundances ... done
+[   em] the Expectation-Maximization algorithm ran for 52 rounds
+[bstrp] running EM for the bootstrap: 1[bstrp] running EM for the bootstrap: 2[bstrp] running EM for the bootstrap: 3[bstrp] running EM for the bootstrap: 4[bstrp] running EM for the bootstrap: 5[bstrp] running EM for the bootstrap: 6[bstrp] running EM for the bootstrap: 7[bstrp] running EM for the bootstrap: 8[bstrp] running EM for the bootstrap: 9[bstrp] running EM for the bootstrap: 10[bstrp] running EM for the bootstrap: 11[bstrp] running EM for the bootstrap: 12[bstrp] running EM for the bootstrap: 13[bstrp] running EM for the bootstrap: 14[bstrp] running EM for the bootstrap: 15[bstrp] running EM for the bootstrap: 16[bstrp] running EM for the bootstrap: 17[bstrp] running EM for the bootstrap: 18[bstrp] running EM for the bootstrap: 19[bstrp] running EM for the bootstrap: 20[bstrp] running EM for the bootstrap: 21[bstrp] running EM for the bootstrap: 22[bstrp] running EM for the bootstrap: 23[bstrp] running EM for the bootstrap: 24[bstrp] running EM for the bootstrap: 25[bstrp] running EM for the bootstrap: 26[bstrp] running EM for the bootstrap: 27[bstrp] running EM for the bootstrap: 28[bstrp] running EM for the bootstrap: 29[bstrp] running EM for the bootstrap: 30[bstrp] running EM for the bootstrap: 31[bstrp] running EM for the bootstrap: 32[bstrp] running EM for the bootstrap: 33[bstrp] running EM for the bootstrap: 34[bstrp] running EM for the bootstrap: 35[bstrp] running EM for the bootstrap: 36[bstrp] running EM for the bootstrap: 37[bstrp] running EM for the bootstrap: 38[bstrp] running EM for the bootstrap: 39[bstrp] running EM for the bootstrap: 40[bstrp] running EM for the bootstrap: 41[bstrp] running EM for the bootstrap: 42[bstrp] running EM for the bootstrap: 43[bstrp] running EM for the bootstrap: 44[bstrp] running EM for the bootstrap: 45[bstrp] running EM for the bootstrap: 46[bstrp] running EM for the bootstrap: 47[bstrp] running EM for the bootstrap: 48[bstrp] running EM for the bootstrap: 49[bstrp] running EM for the bootstrap: 50[bstrp] running EM for the bootstrap: 51[bstrp] running EM for the bootstrap: 52[bstrp] running EM for the bootstrap: 53[bstrp] running EM for the bootstrap: 54[bstrp] running EM for the bootstrap: 55[bstrp] running EM for the bootstrap: 56[bstrp] running EM for the bootstrap: 57[bstrp] running EM for the bootstrap: 58[bstrp] running EM for the bootstrap: 59[bstrp] running EM for the bootstrap: 60[bstrp] running EM for the bootstrap: 61[bstrp] running EM for the bootstrap: 62[bstrp] running EM for the bootstrap: 63[bstrp] running EM for the bootstrap: 64[bstrp] running EM for the bootstrap: 65[bstrp] running EM for the bootstrap: 66[bstrp] running EM for the bootstrap: 67[bstrp] running EM for the bootstrap: 68[bstrp] running EM for the bootstrap: 69[bstrp] running EM for the bootstrap: 70[bstrp] running EM for the bootstrap: 71[bstrp] running EM for the bootstrap: 72[bstrp] running EM for the bootstrap: 73[bstrp] running EM for the bootstrap: 74[bstrp] running EM for the bootstrap: 75[bstrp] running EM for the bootstrap: 76[bstrp] running EM for the bootstrap: 77[bstrp] running EM for the bootstrap: 78[bstrp] running EM for the bootstrap: 79[bstrp] running EM for the bootstrap: 80[bstrp] running EM for the bootstrap: 81[bstrp] running EM for the bootstrap: 82[bstrp] running EM for the bootstrap: 83[bstrp] running EM for the bootstrap: 84[bstrp] running EM for the bootstrap: 85[bstrp] running EM for the bootstrap: 86[bstrp] running EM for the bootstrap: 87[bstrp] running EM for the bootstrap: 88[bstrp] running EM for the bootstrap: 89[bstrp] running EM for the bootstrap: 90[bstrp] running EM for the bootstrap: 91[bstrp] running EM for the bootstrap: 92[bstrp] running EM for the bootstrap: 93[bstrp] running EM for the bootstrap: 94[bstrp] running EM for the bootstrap: 95[bstrp] running EM for the bootstrap: 96[bstrp] running EM for the bootstrap: 97[bstrp] running EM for the bootstrap: 98[bstrp] running EM for the bootstrap: 99[bstrp] running EM for the bootstrap: 100
+
++ kallisto quant -i data/PccAS_v3_kallisto -o data/SBP1 -b 100 data/SBP1_1.fastq.gz data/SBP1_2.fastq.gz
+
+[quant] fragment length distribution will be estimated from the data
+[index] k-mer length: 31
+[index] number of targets: 5,177
+[index] number of k-mers: 10,192,437
+[index] number of equivalence classes: 7,654
+[quant] running in paired-end mode
+[quant] will process pair 1: data/SBP1_1.fastq.gz
+                             data/SBP1_2.fastq.gz
+[quant] finding pseudoalignments for the reads ... done
+[quant] processed 1,250,000 reads, 1,017,818 reads pseudoaligned
+[quant] estimated average fragment length: 192.608
+[   em] quantifying the abundances ... done
+[   em] the Expectation-Maximization algorithm ran for 52 rounds
+[bstrp] running EM for the bootstrap: 1[bstrp] running EM for the bootstrap: 2[bstrp] running EM for the bootstrap: 3[bstrp] running EM for the bootstrap: 4[bstrp] running EM for the bootstrap: 5[bstrp] running EM for the bootstrap: 6[bstrp] running EM for the bootstrap: 7[bstrp] running EM for the bootstrap: 8[bstrp] running EM for the bootstrap: 9[bstrp] running EM for the bootstrap: 10[bstrp] running EM for the bootstrap: 11[bstrp] running EM for the bootstrap: 12[bstrp] running EM for the bootstrap: 13[bstrp] running EM for the bootstrap: 14[bstrp] running EM for the bootstrap: 15[bstrp] running EM for the bootstrap: 16[bstrp] running EM for the bootstrap: 17[bstrp] running EM for the bootstrap: 18[bstrp] running EM for the bootstrap: 19[bstrp] running EM for the bootstrap: 20[bstrp] running EM for the bootstrap: 21[bstrp] running EM for the bootstrap: 22[bstrp] running EM for the bootstrap: 23[bstrp] running EM for the bootstrap: 24[bstrp] running EM for the bootstrap: 25[bstrp] running EM for the bootstrap: 26[bstrp] running EM for the bootstrap: 27[bstrp] running EM for the bootstrap: 28[bstrp] running EM for the bootstrap: 29[bstrp] running EM for the bootstrap: 30[bstrp] running EM for the bootstrap: 31[bstrp] running EM for the bootstrap: 32[bstrp] running EM for the bootstrap: 33[bstrp] running EM for the bootstrap: 34[bstrp] running EM for the bootstrap: 35[bstrp] running EM for the bootstrap: 36[bstrp] running EM for the bootstrap: 37[bstrp] running EM for the bootstrap: 38[bstrp] running EM for the bootstrap: 39[bstrp] running EM for the bootstrap: 40[bstrp] running EM for the bootstrap: 41[bstrp] running EM for the bootstrap: 42[bstrp] running EM for the bootstrap: 43[bstrp] running EM for the bootstrap: 44[bstrp] running EM for the bootstrap: 45[bstrp] running EM for the bootstrap: 46[bstrp] running EM for the bootstrap: 47[bstrp] running EM for the bootstrap: 48[bstrp] running EM for the bootstrap: 49[bstrp] running EM for the bootstrap: 50[bstrp] running EM for the bootstrap: 51[bstrp] running EM for the bootstrap: 52[bstrp] running EM for the bootstrap: 53[bstrp] running EM for the bootstrap: 54[bstrp] running EM for the bootstrap: 55[bstrp] running EM for the bootstrap: 56[bstrp] running EM for the bootstrap: 57[bstrp] running EM for the bootstrap: 58[bstrp] running EM for the bootstrap: 59[bstrp] running EM for the bootstrap: 60[bstrp] running EM for the bootstrap: 61[bstrp] running EM for the bootstrap: 62[bstrp] running EM for the bootstrap: 63[bstrp] running EM for the bootstrap: 64[bstrp] running EM for the bootstrap: 65[bstrp] running EM for the bootstrap: 66[bstrp] running EM for the bootstrap: 67[bstrp] running EM for the bootstrap: 68[bstrp] running EM for the bootstrap: 69[bstrp] running EM for the bootstrap: 70[bstrp] running EM for the bootstrap: 71[bstrp] running EM for the bootstrap: 72[bstrp] running EM for the bootstrap: 73[bstrp] running EM for the bootstrap: 74[bstrp] running EM for the bootstrap: 75[bstrp] running EM for the bootstrap: 76[bstrp] running EM for the bootstrap: 77[bstrp] running EM for the bootstrap: 78[bstrp] running EM for the bootstrap: 79[bstrp] running EM for the bootstrap: 80[bstrp] running EM for the bootstrap: 81[bstrp] running EM for the bootstrap: 82[bstrp] running EM for the bootstrap: 83[bstrp] running EM for the bootstrap: 84[bstrp] running EM for the bootstrap: 85[bstrp] running EM for the bootstrap: 86[bstrp] running EM for the bootstrap: 87[bstrp] running EM for the bootstrap: 88[bstrp] running EM for the bootstrap: 89[bstrp] running EM for the bootstrap: 90[bstrp] running EM for the bootstrap: 91[bstrp] running EM for the bootstrap: 92[bstrp] running EM for the bootstrap: 93[bstrp] running EM for the bootstrap: 94[bstrp] running EM for the bootstrap: 95[bstrp] running EM for the bootstrap: 96[bstrp] running EM for the bootstrap: 97[bstrp] running EM for the bootstrap: 98[bstrp] running EM for the bootstrap: 99[bstrp] running EM for the bootstrap: 100
+
++ kallisto quant -i data/PccAS_v3_kallisto -o data/SBP2 -b 100 data/SBP2_1.fastq.gz data/SBP2_2.fastq.gz
+
+[quant] fragment length distribution will be estimated from the data
+[index] k-mer length: 31
+[index] number of targets: 5,177
+[index] number of k-mers: 10,192,437
+[index] number of equivalence classes: 7,654
+[quant] running in paired-end mode
+[quant] will process pair 1: data/SBP2_1.fastq.gz
+                             data/SBP2_2.fastq.gz
+[quant] finding pseudoalignments for the reads ... done
+[quant] processed 1,250,000 reads, 951,731 reads pseudoaligned
+[quant] estimated average fragment length: 196.444
+[   em] quantifying the abundances ... done
+[   em] the Expectation-Maximization algorithm ran for 59 rounds
+[bstrp] running EM for the bootstrap: 1[bstrp] running EM for the bootstrap: 2[bstrp] running EM for the bootstrap: 3[bstrp] running EM for the bootstrap: 4[bstrp] running EM for the bootstrap: 5[bstrp] running EM for the bootstrap: 6[bstrp] running EM for the bootstrap: 7[bstrp] running EM for the bootstrap: 8[bstrp] running EM for the bootstrap: 9[bstrp] running EM for the bootstrap: 10[bstrp] running EM for the bootstrap: 11[bstrp] running EM for the bootstrap: 12[bstrp] running EM for the bootstrap: 13[bstrp] running EM for the bootstrap: 14[bstrp] running EM for the bootstrap: 15[bstrp] running EM for the bootstrap: 16[bstrp] running EM for the bootstrap: 17[bstrp] running EM for the bootstrap: 18[bstrp] running EM for the bootstrap: 19[bstrp] running EM for the bootstrap: 20[bstrp] running EM for the bootstrap: 21[bstrp] running EM for the bootstrap: 22[bstrp] running EM for the bootstrap: 23[bstrp] running EM for the bootstrap: 24[bstrp] running EM for the bootstrap: 25[bstrp] running EM for the bootstrap: 26[bstrp] running EM for the bootstrap: 27[bstrp] running EM for the bootstrap: 28[bstrp] running EM for the bootstrap: 29[bstrp] running EM for the bootstrap: 30[bstrp] running EM for the bootstrap: 31[bstrp] running EM for the bootstrap: 32[bstrp] running EM for the bootstrap: 33[bstrp] running EM for the bootstrap: 34[bstrp] running EM for the bootstrap: 35[bstrp] running EM for the bootstrap: 36[bstrp] running EM for the bootstrap: 37[bstrp] running EM for the bootstrap: 38[bstrp] running EM for the bootstrap: 39[bstrp] running EM for the bootstrap: 40[bstrp] running EM for the bootstrap: 41[bstrp] running EM for the bootstrap: 42[bstrp] running EM for the bootstrap: 43[bstrp] running EM for the bootstrap: 44[bstrp] running EM for the bootstrap: 45[bstrp] running EM for the bootstrap: 46[bstrp] running EM for the bootstrap: 47[bstrp] running EM for the bootstrap: 48[bstrp] running EM for the bootstrap: 49[bstrp] running EM for the bootstrap: 50[bstrp] running EM for the bootstrap: 51[bstrp] running EM for the bootstrap: 52[bstrp] running EM for the bootstrap: 53[bstrp] running EM for the bootstrap: 54[bstrp] running EM for the bootstrap: 55[bstrp] running EM for the bootstrap: 56[bstrp] running EM for the bootstrap: 57[bstrp] running EM for the bootstrap: 58[bstrp] running EM for the bootstrap: 59[bstrp] running EM for the bootstrap: 60[bstrp] running EM for the bootstrap: 61[bstrp] running EM for the bootstrap: 62[bstrp] running EM for the bootstrap: 63[bstrp] running EM for the bootstrap: 64[bstrp] running EM for the bootstrap: 65[bstrp] running EM for the bootstrap: 66[bstrp] running EM for the bootstrap: 67[bstrp] running EM for the bootstrap: 68[bstrp] running EM for the bootstrap: 69[bstrp] running EM for the bootstrap: 70[bstrp] running EM for the bootstrap: 71[bstrp] running EM for the bootstrap: 72[bstrp] running EM for the bootstrap: 73[bstrp] running EM for the bootstrap: 74[bstrp] running EM for the bootstrap: 75[bstrp] running EM for the bootstrap: 76[bstrp] running EM for the bootstrap: 77[bstrp] running EM for the bootstrap: 78[bstrp] running EM for the bootstrap: 79[bstrp] running EM for the bootstrap: 80[bstrp] running EM for the bootstrap: 81[bstrp] running EM for the bootstrap: 82[bstrp] running EM for the bootstrap: 83[bstrp] running EM for the bootstrap: 84[bstrp] running EM for the bootstrap: 85[bstrp] running EM for the bootstrap: 86[bstrp] running EM for the bootstrap: 87[bstrp] running EM for the bootstrap: 88[bstrp] running EM for the bootstrap: 89[bstrp] running EM for the bootstrap: 90[bstrp] running EM for the bootstrap: 91[bstrp] running EM for the bootstrap: 92[bstrp] running EM for the bootstrap: 93[bstrp] running EM for the bootstrap: 94[bstrp] running EM for the bootstrap: 95[bstrp] running EM for the bootstrap: 96[bstrp] running EM for the bootstrap: 97[bstrp] running EM for the bootstrap: 98[bstrp] running EM for the bootstrap: 99[bstrp] running EM for the bootstrap: 100
+
++ kallisto quant -i data/PccAS_v3_kallisto -o data/SBP3 -b 100 data/SBP3_1.fastq.gz data/SBP3_2.fastq.gz
+
+[quant] fragment length distribution will be estimated from the data
+[index] k-mer length: 31
+[index] number of targets: 5,177
+[index] number of k-mers: 10,192,437
+[index] number of equivalence classes: 7,654
+[quant] running in paired-end mode
+[quant] will process pair 1: data/SBP3_1.fastq.gz
+                             data/SBP3_2.fastq.gz
+[quant] finding pseudoalignments for the reads ... done
+[quant] processed 1,250,000 reads, 966,663 reads pseudoaligned
+[quant] estimated average fragment length: 193.392
+[   em] quantifying the abundances ... done
+[   em] the Expectation-Maximization algorithm ran for 52 rounds
+[bstrp] running EM for the bootstrap: 1[bstrp] running EM for the bootstrap: 2[bstrp] running EM for the bootstrap: 3[bstrp] running EM for the bootstrap: 4[bstrp] running EM for the bootstrap: 5[bstrp] running EM for the bootstrap: 6[bstrp] running EM for the bootstrap: 7[bstrp] running EM for the bootstrap: 8[bstrp] running EM for the bootstrap: 9[bstrp] running EM for the bootstrap: 10[bstrp] running EM for the bootstrap: 11[bstrp] running EM for the bootstrap: 12[bstrp] running EM for the bootstrap: 13[bstrp] running EM for the bootstrap: 14[bstrp] running EM for the bootstrap: 15[bstrp] running EM for the bootstrap: 16[bstrp] running EM for the bootstrap: 17[bstrp] running EM for the bootstrap: 18[bstrp] running EM for the bootstrap: 19[bstrp] running EM for the bootstrap: 20[bstrp] running EM for the bootstrap: 21[bstrp] running EM for the bootstrap: 22[bstrp] running EM for the bootstrap: 23[bstrp] running EM for the bootstrap: 24[bstrp] running EM for the bootstrap: 25[bstrp] running EM for the bootstrap: 26[bstrp] running EM for the bootstrap: 27[bstrp] running EM for the bootstrap: 28[bstrp] running EM for the bootstrap: 29[bstrp] running EM for the bootstrap: 30[bstrp] running EM for the bootstrap: 31[bstrp] running EM for the bootstrap: 32[bstrp] running EM for the bootstrap: 33[bstrp] running EM for the bootstrap: 34[bstrp] running EM for the bootstrap: 35[bstrp] running EM for the bootstrap: 36[bstrp] running EM for the bootstrap: 37[bstrp] running EM for the bootstrap: 38[bstrp] running EM for the bootstrap: 39[bstrp] running EM for the bootstrap: 40[bstrp] running EM for the bootstrap: 41[bstrp] running EM for the bootstrap: 42[bstrp] running EM for the bootstrap: 43[bstrp] running EM for the bootstrap: 44[bstrp] running EM for the bootstrap: 45[bstrp] running EM for the bootstrap: 46[bstrp] running EM for the bootstrap: 47[bstrp] running EM for the bootstrap: 48[bstrp] running EM for the bootstrap: 49[bstrp] running EM for the bootstrap: 50[bstrp] running EM for the bootstrap: 51[bstrp] running EM for the bootstrap: 52[bstrp] running EM for the bootstrap: 53[bstrp] running EM for the bootstrap: 54[bstrp] running EM for the bootstrap: 55[bstrp] running EM for the bootstrap: 56[bstrp] running EM for the bootstrap: 57[bstrp] running EM for the bootstrap: 58[bstrp] running EM for the bootstrap: 59[bstrp] running EM for the bootstrap: 60[bstrp] running EM for the bootstrap: 61[bstrp] running EM for the bootstrap: 62[bstrp] running EM for the bootstrap: 63[bstrp] running EM for the bootstrap: 64[bstrp] running EM for the bootstrap: 65[bstrp] running EM for the bootstrap: 66[bstrp] running EM for the bootstrap: 67[bstrp] running EM for the bootstrap: 68[bstrp] running EM for the bootstrap: 69[bstrp] running EM for the bootstrap: 70[bstrp] running EM for the bootstrap: 71[bstrp] running EM for the bootstrap: 72[bstrp] running EM for the bootstrap: 73[bstrp] running EM for the bootstrap: 74[bstrp] running EM for the bootstrap: 75[bstrp] running EM for the bootstrap: 76[bstrp] running EM for the bootstrap: 77[bstrp] running EM for the bootstrap: 78[bstrp] running EM for the bootstrap: 79[bstrp] running EM for the bootstrap: 80[bstrp] running EM for the bootstrap: 81[bstrp] running EM for the bootstrap: 82[bstrp] running EM for the bootstrap: 83[bstrp] running EM for the bootstrap: 84[bstrp] running EM for the bootstrap: 85[bstrp] running EM for the bootstrap: 86[bstrp] running EM for the bootstrap: 87[bstrp] running EM for the bootstrap: 88[bstrp] running EM for the bootstrap: 89[bstrp] running EM for the bootstrap: 90[bstrp] running EM for the bootstrap: 91[bstrp] running EM for the bootstrap: 92[bstrp] running EM for the bootstrap: 93[bstrp] running EM for the bootstrap: 94[bstrp] running EM for the bootstrap: 95[bstrp] running EM for the bootstrap: 96[bstrp] running EM for the bootstrap: 97[bstrp] running EM for the bootstrap: 98[bstrp] running EM for the bootstrap: 99[bstrp] running EM for the bootstrap: 100
+
++ cat data/sleuth.R
+library("sleuth")
+s2c <- read.table("data/hiseq_info.txt", header = TRUE, stringsAsFactors=FALSE)
+
+sample_id <- c("MT1", "MT2", "SBP1", "SBP2", "SBP3")
+kal_dirs <- sapply(sample_id, function(id) file.path('data', id))
+s2c <- dplyr::select(s2c, sample = sample, condition)
+s2c <- dplyr::mutate(s2c, path = kal_dirs)
+t2g<-read.table("data/PccAS_v3.desc", header=TRUE, sep="\t")
+                   
+so <- sleuth_prep(s2c, ~ condition, extra_bootstrap_summary = TRUE, target_mapping = t2g)
+so <- sleuth_fit(so)
+so <- sleuth_fit(so, ~1, 'reduced')
+so <- sleuth_wt(so, 'conditionSBP', 'full')
+                   
+results_table <- sleuth_results(so, 'conditionSBP', test_type = 'wt')
+                   
+write.table(results_table, file="data/kallisto.results", quote=FALSE, sep="\t", row.names=FALSE)
+                   
+sleuth_live(so)
++ cat data/hiseq_info.txt
+sample	condition
+MT1	MT
+MT2	MT
+SBP1	SBP
+SBP2	SBP
+SBP3	SBP
++ cut -f1,2,3,4,5
++ head
++ awk -F '\t' '$4 < 0.01 && $5 > 0' data/kallisto.results
++ Rscript data/sleuth.R
+awk: cannot open data/kallisto.results (No such file or directory)
++ cut -f1,2,3,4,5
++ head
++ awk -F '\t' '$4 < 0.01 && $5 < 0' data/kallisto.results
+awk: cannot open data/kallisto.results (No such file or directory)
++ uniq
++ sort
++ awk -F '\t' '$4 < 0.01 && $5 < 0 {print $2}' data/kallisto.results
+awk: cannot open data/kallisto.results (No such file or directory)
++ awk -F '\t' '$4 < 0.01 && $5 < 0 {print $2}' data/kallisto.results
++ sort
++ uniq -c
+awk: cannot open data/kallisto.results (No such file or directory)
++ sort
++ uniq -c
++ sort
++ awk -F '\t' '$4 < 0.01 && $5 < 0 {print $2}' data/kallisto.results
+awk: cannot open data/kallisto.results (No such file or directory)
++ sort
++ uniq -c
++ sort -n
++ awk -F '\t' '$4 < 0.01 && $5 < 0 {print $2}' data/kallisto.results
+awk: cannot open data/kallisto.results (No such file or directory)
++ grep -c CIR
++ awk -F '\t' '$4 < 0.01 && $5 < 0 {print $2}' data/kallisto.results
+awk: cannot open data/kallisto.results (No such file or directory)
+0
+reading in kallisto results
+dropping unused factor levels
+.....
+normalizing est_counts
+4173 targets passed the filter
+normalizing tpm
+merging in metadata
+summarizing bootstraps
+.....
+fitting measurement error models
+shrinkage estimation
+14 NA values were found during variance shrinkage estimation due to mean observation values outside of the range used for the LOESS fit.
+The LOESS fit will be repeated using exact computation of the fitted surface to extrapolate the missing values.
+These are the target ids with NA values: PCHAS_0103100, PCHAS_0114700, PCHAS_0200035, PCHAS_0608000, PCHAS_0800055, PCHAS_0827600, PCHAS_1010400, PCHAS_1039800, PCHAS_1113900, PCHAS_1219400, PCHAS_1364300, PCHAS_1401000, PCHAS_1458900, PCHAS_1301600
+computing variance of betas
+fitting measurement error models
+shrinkage estimation
+computing variance of betas
+Loading required package: shiny
+
+Listening on http://127.0.0.1:42427

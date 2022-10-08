@@ -1,0 +1,1329 @@
++ set -eu
++ pwd
+/home/manager/ngs-vm/tests
++ ls -l
+total 724
+-rwxrwxr-x 1 manager manager   2314 Oct  7 23:36 make-test.py
+-rwxrwxr-x 1 manager manager   3880 Oct  7 23:36 test_assembly.sh
+-rw-rw-r-- 1 manager manager     51 Oct  8 12:09 test_chip_seq.log
+-rwxrwxr-x 1 manager manager   3457 Oct  8 12:04 test_chip_seq.sh
+-rw-rw-r-- 1 manager manager  44349 Oct  7 23:36 test_data_formats.log
+-rwxrwxr-x 1 manager manager   1993 Oct  7 23:36 test_data_formats.sh
+-rwxrwxr-x 1 manager manager   2622 Oct  7 23:36 test_read_alignment.sh
+-rwxrwxr-x 1 manager manager   2528 Oct  7 23:36 test_rna_seq.sh
+-rwxrwxr-x 1 manager manager    445 Oct  7 23:36 test_software.sh
+-rwxrwxr-x 1 manager manager   3229 Oct  7 23:36 test_structural_variation.sh
+-rw-rw-r-- 1 manager manager 627303 Oct  8 11:52 test_unix.log
+-rwxrwxr-x 1 manager manager   5408 Oct  8 11:51 test_unix.sh
+-rw-rw-r-- 1 manager manager  14206 Oct  7 23:36 test_variant_calling.log
+-rwxrwxr-x 1 manager manager   3178 Oct  7 23:36 test_variant_calling.sh
++ echo cd /home/manager/ngs-vm/tests
+cd /home/manager/ngs-vm/tests
++ cd /home/manager/course_data/chip_seq
++ cd data
++ ls Control.fastq.gz H3k36me3.fastq.gz PAX5.fastq.gz Pol2.fastq.gz
+Control.fastq.gz
+H3k36me3.fastq.gz
+PAX5.fastq.gz
+Pol2.fastq.gz
++ head
++ zcat PAX5.fastq.gz
+@ILLUMINA-EAS45_6:1:1:3:1267:0:1:0
+CCTGCCATACTTTGCANATAACNACTCTCTTTTTGA
++
+BC?>??=?BA;3=B@=%8+>B9%9;=5828A;2?:?
+@ILLUMINA-EAS45_6:1:1:3:2025:0:1:1
+AAGCACAGGACTATTCTGTCTCATTTTCCAAATAGA
++
+ABCABBBCB@@CBCB?B@B?BA@A?A>=68999:59
+@ILLUMINA-EAS45_6:1:1:4:373:0:1:1
+AGGGTGACAGACCAAGAGTGTGGCCTTTGCCAGGCC
++ bowtie2 --help
+Bowtie 2 version 2.4.5 by Ben Langmead (langmea@cs.jhu.edu, www.cs.jhu.edu/~langmea)
+Usage: 
+  bowtie2 [options]* -x <bt2-idx> {-1 <m1> -2 <m2> | -U <r> | --interleaved <i> | -b <bam>} [-S <sam>]
+
+  <bt2-idx>  Index filename prefix (minus trailing .X.bt2).
+             NOTE: Bowtie 1 and Bowtie 2 indexes are not compatible.
+  <m1>       Files with #1 mates, paired with files in <m2>.
+             Could be gzip'ed (extension: .gz) or bzip2'ed (extension: .bz2).
+  <m2>       Files with #2 mates, paired with files in <m1>.
+             Could be gzip'ed (extension: .gz) or bzip2'ed (extension: .bz2).
+  <r>        Files with unpaired reads.
+             Could be gzip'ed (extension: .gz) or bzip2'ed (extension: .bz2).
+  <i>        Files with interleaved paired-end FASTQ/FASTA reads
+             Could be gzip'ed (extension: .gz) or bzip2'ed (extension: .bz2).
+  <bam>      Files are unaligned BAM sorted by read name.
+  <sam>      File for SAM output (default: stdout)
+
+  <m1>, <m2>, <r> can be comma-separated lists (no whitespace) and can be
+  specified many times.  E.g. '-U file1.fq,file2.fq -U file3.fq'.
+
+Options (defaults in parentheses):
+
+ Input:
+  -q                 query input files are FASTQ .fq/.fastq (default)
+  --tab5             query input files are TAB5 .tab5
+  --tab6             query input files are TAB6 .tab6
+  --qseq             query input files are in Illumina's qseq format
+  -f                 query input files are (multi-)FASTA .fa/.mfa
+  -r                 query input files are raw one-sequence-per-line
+  -F k:<int>,i:<int> query input files are continuous FASTA where reads
+                     are substrings (k-mers) extracted from a FASTA file <s>
+                     and aligned at offsets 1, 1+i, 1+2i ... end of reference
+  -c                 <m1>, <m2>, <r> are sequences themselves, not files
+  -s/--skip <int>    skip the first <int> reads/pairs in the input (none)
+  -u/--upto <int>    stop after first <int> reads/pairs (no limit)
+  -5/--trim5 <int>   trim <int> bases from 5'/left end of reads (0)
+  -3/--trim3 <int>   trim <int> bases from 3'/right end of reads (0)
+  --trim-to [3:|5:]<int> trim reads exceeding <int> bases from either 3' or 5' end
+                     If the read end is not specified then it defaults to 3 (0)
+  --phred33          qualities are Phred+33 (default)
+  --phred64          qualities are Phred+64
+  --int-quals        qualities encoded as space-delimited integers
+
+ Presets:                 Same as:
+  For --end-to-end:
+   --very-fast            -D 5 -R 1 -N 0 -L 22 -i S,0,2.50
+   --fast                 -D 10 -R 2 -N 0 -L 22 -i S,0,2.50
+   --sensitive            -D 15 -R 2 -N 0 -L 22 -i S,1,1.15 (default)
+   --very-sensitive       -D 20 -R 3 -N 0 -L 20 -i S,1,0.50
+
+  For --local:
+   --very-fast-local      -D 5 -R 1 -N 0 -L 25 -i S,1,2.00
+   --fast-local           -D 10 -R 2 -N 0 -L 22 -i S,1,1.75
+   --sensitive-local      -D 15 -R 2 -N 0 -L 20 -i S,1,0.75 (default)
+   --very-sensitive-local -D 20 -R 3 -N 0 -L 20 -i S,1,0.50
+
+ Alignment:
+  -N <int>           max # mismatches in seed alignment; can be 0 or 1 (0)
+  -L <int>           length of seed substrings; must be >3, <32 (22)
+  -i <func>          interval between seed substrings w/r/t read len (S,1,1.15)
+  --n-ceil <func>    func for max # non-A/C/G/Ts permitted in aln (L,0,0.15)
+  --dpad <int>       include <int> extra ref chars on sides of DP table (15)
+  --gbar <int>       disallow gaps within <int> nucs of read extremes (4)
+  --ignore-quals     treat all quality values as 30 on Phred scale (off)
+  --nofw             do not align forward (original) version of read (off)
+  --norc             do not align reverse-complement version of read (off)
+  --no-1mm-upfront   do not allow 1 mismatch alignments before attempting to
+                     scan for the optimal seeded alignments
+  --end-to-end       entire read must align; no clipping (on)
+   OR
+  --local            local alignment; ends might be soft clipped (off)
+
+ Scoring:
+  --ma <int>         match bonus (0 for --end-to-end, 2 for --local) 
+  --mp <int>         max penalty for mismatch; lower qual = lower penalty (6)
+  --np <int>         penalty for non-A/C/G/Ts in read/ref (1)
+  --rdg <int>,<int>  read gap open, extend penalties (5,3)
+  --rfg <int>,<int>  reference gap open, extend penalties (5,3)
+  --score-min <func> min acceptable alignment score w/r/t read length
+                     (G,20,8 for local, L,-0.6,-0.6 for end-to-end)
+
+ Reporting:
+  (default)          look for multiple alignments, report best, with MAPQ
+   OR
+  -k <int>           report up to <int> alns per read; MAPQ not meaningful
+   OR
+  -a/--all           report all alignments; very slow, MAPQ not meaningful
+
+ Effort:
+  -D <int>           give up extending after <int> failed extends in a row (15)
+  -R <int>           for reads w/ repetitive seeds, try <int> sets of seeds (2)
+
+ Paired-end:
+  -I/--minins <int>  minimum fragment length (0)
+  -X/--maxins <int>  maximum fragment length (500)
+  --fr/--rf/--ff     -1, -2 mates align fw/rev, rev/fw, fw/fw (--fr)
+  --no-mixed         suppress unpaired alignments for paired reads
+  --no-discordant    suppress discordant alignments for paired reads
+  --dovetail         concordant when mates extend past each other
+  --no-contain       not concordant when one mate alignment contains other
+  --no-overlap       not concordant when mates overlap at all
+
+ BAM:
+  --align-paired-reads
+                     Bowtie2 will, by default, attempt to align unpaired BAM reads.
+                     Use this option to align paired-end reads instead.
+  --preserve-tags    Preserve tags from the original BAM record by
+                     appending them to the end of the corresponding SAM output.
+
+ Output:
+  -t/--time          print wall-clock time taken by search phases
+  --un <path>        write unpaired reads that didn't align to <path>
+  --al <path>        write unpaired reads that aligned at least once to <path>
+  --un-conc <path>   write pairs that didn't align concordantly to <path>
+  --al-conc <path>   write pairs that aligned concordantly at least once to <path>
+    (Note: for --un, --al, --un-conc, or --al-conc, add '-gz' to the option name, e.g.
+    --un-gz <path>, to gzip compress output, or add '-bz2' to bzip2 compress output.)
+  --quiet            print nothing to stderr except serious errors
+  --met-file <path>  send metrics to file at <path> (off)
+  --met-stderr       send metrics to stderr (off)
+  --met <int>        report internal counters & metrics every <int> secs (1)
+  --no-unal          suppress SAM records for unaligned reads
+  --no-head          suppress header lines, i.e. lines starting with @
+  --no-sq            suppress @SQ header lines
+  --rg-id <text>     set read group id, reflected in @RG line and RG:Z: opt field
+  --rg <text>        add <text> ("lab:value") to @RG line of SAM header.
+                     Note: @RG line only printed when --rg-id is set.
+  --omit-sec-seq     put '*' in SEQ and QUAL fields for secondary alignments.
+  --sam-no-qname-trunc
+                     Suppress standard behavior of truncating readname at first whitespace 
+                     at the expense of generating non-standard SAM.
+  --xeq              Use '='/'X', instead of 'M,' to specify matches/mismatches in SAM record.
+  --soft-clipped-unmapped-tlen
+                     Exclude soft-clipped bases when reporting TLEN
+  --sam-append-comment
+                     Append FASTA/FASTQ comment to SAM record
+
+ Performance:
+  -p/--threads <int> number of alignment threads to launch (1)
+  --reorder          force SAM output order to match order of input reads
+  --mm               use memory-mapped I/O for index; many 'bowtie's can share
+
+ Other:
+  --qc-filter        filter out reads that are bad according to QSEQ filter
+  --seed <int>       seed for random number generator (0)
+  --non-deterministic
+                     seed rand. gen. arbitrarily instead of using read attributes
+  --version          print version information and quit
+  -h/--help          print this usage message
++ mkdir bowtie_index
++ bowtie2-build genome/HS19.fa.gz bowtie_index/hs19
+Settings:
+  Output files: "bowtie_index/hs19.*.bt2"
+  Line rate: 6 (line is 64 bytes)
+  Lines per side: 1 (side is 64 bytes)
+  Offset rate: 4 (one in 16)
+  FTable chars: 10
+  Strings: unpacked
+  Max bucket size: default
+  Max bucket size, sqrt multiplier: default
+  Max bucket size, len divisor: 4
+  Difference-cover sample period: 1024
+  Endianness: little
+  Actual local endianness: little
+  Sanity checking: disabled
+  Assertions: disabled
+  Random seed: 0
+  Sizeofs: void*:8, int:4, long:8, size_t:8
+Input files DNA, FASTA:
+  genome/HS19.fa.gz
+Building a SMALL index
+Reading reference sizes
+  Time reading reference sizes: 00:00:01
+Calculating joined length
+Writing header
+Reserving space for joined string
+Joining reference sequences
+  Time to join reference sequences: 00:00:02
+bmax according to bmaxDivN setting: 56320155
+Using parameters --bmax 42240117 --dcv 1024
+  Doing ahead-of-time memory usage test
+  Passed!  Constructing with these parameters: --bmax 42240117 --dcv 1024
+Constructing suffix-array element generator
+Building DifferenceCoverSample
+  Building sPrime
+  Building sPrimeOrder
+  V-Sorting samples
+  V-Sorting samples time: 00:00:04
+  Allocating rank array
+  Ranking v-sort output
+  Ranking v-sort output time: 00:00:01
+  Invoking Larsson-Sadakane on ranks
+  Invoking Larsson-Sadakane on ranks time: 00:00:02
+  Sanity-checking and returning
+Building samples
+Reserving space for 12 sample suffixes
+Generating random suffixes
+QSorting 12 sample offsets, eliminating duplicates
+QSorting sample offsets, eliminating duplicates time: 00:00:00
+Multikey QSorting 12 samples
+  (Using difference cover)
+  Multikey QSorting samples time: 00:00:00
+Calculating bucket sizes
+Splitting and merging
+  Splitting and merging time: 00:00:00
+Split 1, merged 7; iterating...
+Splitting and merging
+  Splitting and merging time: 00:00:00
+Split 1, merged 1; iterating...
+Splitting and merging
+  Splitting and merging time: 00:00:00
+Split 1, merged 1; iterating...
+Splitting and merging
+  Splitting and merging time: 00:00:00
+Avg bucket size: 3.21829e+07 (target: 42240116)
+Converting suffix-array elements to index image
+Allocating ftab, absorbFtab
+Entering Ebwt loop
+Getting block 1 of 7
+  Reserving size (42240117) for bucket 1
+  Calculating Z arrays for bucket 1
+  Entering block accumulator loop for bucket 1:
+  bucket 1: 10%
+  bucket 1: 20%
+  bucket 1: 30%
+  bucket 1: 40%
+  bucket 1: 50%
+  bucket 1: 60%
+  bucket 1: 70%
+  bucket 1: 80%
+  bucket 1: 90%
+  bucket 1: 100%
+  Sorting block of length 36033021 for bucket 1
+  (Using difference cover)
+  Sorting block time: 00:00:07
+Returning block of 36033022 for bucket 1
+Getting block 2 of 7
+  Reserving size (42240117) for bucket 2
+  Calculating Z arrays for bucket 2
+  Entering block accumulator loop for bucket 2:
+  bucket 2: 10%
+  bucket 2: 20%
+  bucket 2: 30%
+  bucket 2: 40%
+  bucket 2: 50%
+  bucket 2: 60%
+  bucket 2: 70%
+  bucket 2: 80%
+  bucket 2: 90%
+  bucket 2: 100%
+  Sorting block of length 41153056 for bucket 2
+  (Using difference cover)
+  Sorting block time: 00:00:08
+Returning block of 41153057 for bucket 2
+Getting block 3 of 7
+  Reserving size (42240117) for bucket 3
+  Calculating Z arrays for bucket 3
+  Entering block accumulator loop for bucket 3:
+  bucket 3: 10%
+  bucket 3: 20%
+  bucket 3: 30%
+  bucket 3: 40%
+  bucket 3: 50%
+  bucket 3: 60%
+  bucket 3: 70%
+  bucket 3: 80%
+  bucket 3: 90%
+  bucket 3: 100%
+  Sorting block of length 5471709 for bucket 3
+  (Using difference cover)
+  Sorting block time: 00:00:01
+Returning block of 5471710 for bucket 3
+Getting block 4 of 7
+  Reserving size (42240117) for bucket 4
+  Calculating Z arrays for bucket 4
+  Entering block accumulator loop for bucket 4:
+  bucket 4: 10%
+  bucket 4: 20%
+  bucket 4: 30%
+  bucket 4: 40%
+  bucket 4: 50%
+  bucket 4: 60%
+  bucket 4: 70%
+  bucket 4: 80%
+  bucket 4: 90%
+  bucket 4: 100%
+  Sorting block of length 39341942 for bucket 4
+  (Using difference cover)
+  Sorting block time: 00:00:09
+Returning block of 39341943 for bucket 4
+Getting block 5 of 7
+  Reserving size (42240117) for bucket 5
+  Calculating Z arrays for bucket 5
+  Entering block accumulator loop for bucket 5:
+  bucket 5: 10%
+  bucket 5: 20%
+  bucket 5: 30%
+  bucket 5: 40%
+  bucket 5: 50%
+  bucket 5: 60%
+  bucket 5: 70%
+  bucket 5: 80%
+  bucket 5: 90%
+  bucket 5: 100%
+  Sorting block of length 38999019 for bucket 5
+  (Using difference cover)
+  Sorting block time: 00:00:08
+Returning block of 38999020 for bucket 5
+Getting block 6 of 7
+  Reserving size (42240117) for bucket 6
+  Calculating Z arrays for bucket 6
+  Entering block accumulator loop for bucket 6:
+  bucket 6: 10%
+  bucket 6: 20%
+  bucket 6: 30%
+  bucket 6: 40%
+  bucket 6: 50%
+  bucket 6: 60%
+  bucket 6: 70%
+  bucket 6: 80%
+  bucket 6: 90%
+  bucket 6: 100%
+  Sorting block of length 33634443 for bucket 6
+  (Using difference cover)
+  Sorting block time: 00:00:07
+Returning block of 33634444 for bucket 6
+Getting block 7 of 7
+  Reserving size (42240117) for bucket 7
+  Calculating Z arrays for bucket 7
+  Entering block accumulator loop for bucket 7:
+  bucket 7: 10%
+  bucket 7: 20%
+  bucket 7: 30%
+  bucket 7: 40%
+  bucket 7: 50%
+  bucket 7: 60%
+  bucket 7: 70%
+  bucket 7: 80%
+  bucket 7: 90%
+  bucket 7: 100%
+  Sorting block of length 30647425 for bucket 7
+  (Using difference cover)
+  Sorting block time: 00:00:06
+Returning block of 30647426 for bucket 7
+Exited Ebwt loop
+fchr[A]: 0
+fchr[C]: 65570891
+fchr[G]: 112595303
+fchr[T]: 159611865
+fchr[$]: 225280621
+Exiting Ebwt::buildToDisk()
+Returning from initFromVector
+Wrote 79288482 bytes to primary EBWT file: bowtie_index/hs19.1.bt2.tmp
+Wrote 56320160 bytes to secondary EBWT file: bowtie_index/hs19.2.bt2.tmp
+Re-opening _in1 and _in2 as input streams
+Returning from Ebwt constructor
+Headers:
+    len: 225280621
+    bwtLen: 225280622
+    sz: 56320156
+    bwtSz: 56320156
+    lineRate: 6
+    offRate: 4
+    offMask: 0xfffffff0
+    ftabChars: 10
+    eftabLen: 20
+    eftabSz: 80
+    ftabLen: 1048577
+    ftabSz: 4194308
+    offsLen: 14080039
+    offsSz: 56320156
+    lineSz: 64
+    sideSz: 64
+    sideBwtSz: 48
+    sideBwtLen: 192
+    numSides: 1173337
+    numLines: 1173337
+    ebwtTotLen: 75093568
+    ebwtTotSz: 75093568
+    color: 0
+    reverse: 0
+Total time for call to driver() for forward index: 00:01:46
+Reading reference sizes
+  Time reading reference sizes: 00:00:01
+Calculating joined length
+Writing header
+Reserving space for joined string
+Joining reference sequences
+  Time to join reference sequences: 00:00:02
+  Time to reverse reference sequence: 00:00:00
+bmax according to bmaxDivN setting: 56320155
+Using parameters --bmax 42240117 --dcv 1024
+  Doing ahead-of-time memory usage test
+  Passed!  Constructing with these parameters: --bmax 42240117 --dcv 1024
+Constructing suffix-array element generator
+Building DifferenceCoverSample
+  Building sPrime
+  Building sPrimeOrder
+  V-Sorting samples
+  V-Sorting samples time: 00:00:04
+  Allocating rank array
+  Ranking v-sort output
+  Ranking v-sort output time: 00:00:01
+  Invoking Larsson-Sadakane on ranks
+  Invoking Larsson-Sadakane on ranks time: 00:00:02
+  Sanity-checking and returning
+Building samples
+Reserving space for 12 sample suffixes
+Generating random suffixes
+QSorting 12 sample offsets, eliminating duplicates
+QSorting sample offsets, eliminating duplicates time: 00:00:00
+Multikey QSorting 12 samples
+  (Using difference cover)
+  Multikey QSorting samples time: 00:00:00
+Calculating bucket sizes
+Splitting and merging
+  Splitting and merging time: 00:00:00
+Split 2, merged 7; iterating...
+Splitting and merging
+  Splitting and merging time: 00:00:00
+Split 2, merged 1; iterating...
+Splitting and merging
+  Splitting and merging time: 00:00:00
+Avg bucket size: 3.21829e+07 (target: 42240116)
+Converting suffix-array elements to index image
+Allocating ftab, absorbFtab
+Entering Ebwt loop
+Getting block 1 of 7
+  Reserving size (42240117) for bucket 1
+  Calculating Z arrays for bucket 1
+  Entering block accumulator loop for bucket 1:
+  bucket 1: 10%
+  bucket 1: 20%
+  bucket 1: 30%
+  bucket 1: 40%
+  bucket 1: 50%
+  bucket 1: 60%
+  bucket 1: 70%
+  bucket 1: 80%
+  bucket 1: 90%
+  bucket 1: 100%
+  Sorting block of length 19652098 for bucket 1
+  (Using difference cover)
+  Sorting block time: 00:00:05
+Returning block of 19652099 for bucket 1
+Getting block 2 of 7
+  Reserving size (42240117) for bucket 2
+  Calculating Z arrays for bucket 2
+  Entering block accumulator loop for bucket 2:
+  bucket 2: 10%
+  bucket 2: 20%
+  bucket 2: 30%
+  bucket 2: 40%
+  bucket 2: 50%
+  bucket 2: 60%
+  bucket 2: 70%
+  bucket 2: 80%
+  bucket 2: 90%
+  bucket 2: 100%
+  Sorting block of length 36906706 for bucket 2
+  (Using difference cover)
+  Sorting block time: 00:00:07
+Returning block of 36906707 for bucket 2
+Getting block 3 of 7
+  Reserving size (42240117) for bucket 3
+  Calculating Z arrays for bucket 3
+  Entering block accumulator loop for bucket 3:
+  bucket 3: 10%
+  bucket 3: 20%
+  bucket 3: 30%
+  bucket 3: 40%
+  bucket 3: 50%
+  bucket 3: 60%
+  bucket 3: 70%
+  bucket 3: 80%
+  bucket 3: 90%
+  bucket 3: 100%
+  Sorting block of length 36393887 for bucket 3
+  (Using difference cover)
+  Sorting block time: 00:00:07
+Returning block of 36393888 for bucket 3
+Getting block 4 of 7
+  Reserving size (42240117) for bucket 4
+  Calculating Z arrays for bucket 4
+  Entering block accumulator loop for bucket 4:
+  bucket 4: 10%
+  bucket 4: 20%
+  bucket 4: 30%
+  bucket 4: 40%
+  bucket 4: 50%
+  bucket 4: 60%
+  bucket 4: 70%
+  bucket 4: 80%
+  bucket 4: 90%
+  bucket 4: 100%
+  Sorting block of length 27310451 for bucket 4
+  (Using difference cover)
+  Sorting block time: 00:00:05
+Returning block of 27310452 for bucket 4
+Getting block 5 of 7
+  Reserving size (42240117) for bucket 5
+  Calculating Z arrays for bucket 5
+  Entering block accumulator loop for bucket 5:
+  bucket 5: 10%
+  bucket 5: 20%
+  bucket 5: 30%
+  bucket 5: 40%
+  bucket 5: 50%
+  bucket 5: 60%
+  bucket 5: 70%
+  bucket 5: 80%
+  bucket 5: 90%
+  bucket 5: 100%
+  Sorting block of length 39586166 for bucket 5
+  (Using difference cover)
+  Sorting block time: 00:00:08
+Returning block of 39586167 for bucket 5
+Getting block 6 of 7
+  Reserving size (42240117) for bucket 6
+  Calculating Z arrays for bucket 6
+  Entering block accumulator loop for bucket 6:
+  bucket 6: 10%
+  bucket 6: 20%
+  bucket 6: 30%
+  bucket 6: 40%
+  bucket 6: 50%
+  bucket 6: 60%
+  bucket 6: 70%
+  bucket 6: 80%
+  bucket 6: 90%
+  bucket 6: 100%
+  Sorting block of length 37811174 for bucket 6
+  (Using difference cover)
+  Sorting block time: 00:00:07
+Returning block of 37811175 for bucket 6
+Getting block 7 of 7
+  Reserving size (42240117) for bucket 7
+  Calculating Z arrays for bucket 7
+  Entering block accumulator loop for bucket 7:
+  bucket 7: 10%
+  bucket 7: 20%
+  bucket 7: 30%
+  bucket 7: 40%
+  bucket 7: 50%
+  bucket 7: 60%
+  bucket 7: 70%
+  bucket 7: 80%
+  bucket 7: 90%
+  bucket 7: 100%
+  Sorting block of length 27620133 for bucket 7
+  (Using difference cover)
+  Sorting block time: 00:00:06
+Returning block of 27620134 for bucket 7
+Exited Ebwt loop
+fchr[A]: 0
+fchr[C]: 65570891
+fchr[G]: 112595303
+fchr[T]: 159611865
+fchr[$]: 225280621
+Exiting Ebwt::buildToDisk()
+Returning from initFromVector
+Wrote 79288482 bytes to primary EBWT file: bowtie_index/hs19.rev.1.bt2.tmp
+Wrote 56320160 bytes to secondary EBWT file: bowtie_index/hs19.rev.2.bt2.tmp
+Re-opening _in1 and _in2 as input streams
+Returning from Ebwt constructor
+Headers:
+    len: 225280621
+    bwtLen: 225280622
+    sz: 56320156
+    bwtSz: 56320156
+    lineRate: 6
+    offRate: 4
+    offMask: 0xfffffff0
+    ftabChars: 10
+    eftabLen: 20
+    eftabSz: 80
+    ftabLen: 1048577
+    ftabSz: 4194308
+    offsLen: 14080039
+    offsSz: 56320156
+    lineSz: 64
+    sideSz: 64
+    sideBwtSz: 48
+    sideBwtLen: 192
+    numSides: 1173337
+    numLines: 1173337
+    ebwtTotLen: 75093568
+    ebwtTotSz: 75093568
+    color: 0
+    reverse: 1
+Total time for backward call to driver() for mirror index: 00:01:42
+Renaming bowtie_index/hs19.3.bt2.tmp to bowtie_index/hs19.3.bt2
+Renaming bowtie_index/hs19.4.bt2.tmp to bowtie_index/hs19.4.bt2
+Renaming bowtie_index/hs19.1.bt2.tmp to bowtie_index/hs19.1.bt2
+Renaming bowtie_index/hs19.2.bt2.tmp to bowtie_index/hs19.2.bt2
+Renaming bowtie_index/hs19.rev.1.bt2.tmp to bowtie_index/hs19.rev.1.bt2
+Renaming bowtie_index/hs19.rev.2.bt2.tmp to bowtie_index/hs19.rev.2.bt2
++ ls -l bowtie_index
+total 319880
+-rw-rw-r-- 1 manager manager 79288482 Oct  8 12:11 hs19.1.bt2
+-rw-rw-r-- 1 manager manager 56320160 Oct  8 12:11 hs19.2.bt2
+-rw-rw-r-- 1 manager manager      359 Oct  8 12:09 hs19.3.bt2
+-rw-rw-r-- 1 manager manager 56320156 Oct  8 12:09 hs19.4.bt2
+-rw-rw-r-- 1 manager manager 79288482 Oct  8 12:13 hs19.rev.1.bt2
+-rw-rw-r-- 1 manager manager 56320160 Oct  8 12:13 hs19.rev.2.bt2
++ bowtie2 -k 1 -x bowtie_index/hs19 PAX5.fastq.gz -S PAX5.sam
+2299232 reads; of these:
+  2299232 (100.00%) were unpaired; of these:
+    178445 (7.76%) aligned 0 times
+    2120787 (92.24%) aligned exactly 1 time
+    0 (0.00%) aligned >1 times
+92.24% overall alignment rate
++ head -n 10 PAX5.sam
+@HD	VN:1.5	SO:unsorted	GO:query
+@SQ	SN:chr1	LN:249250621
+@PG	ID:bowtie2	PN:bowtie2	VN:2.4.5	CL:"/home/manager/miniconda/envs/ngsbio/bin/bowtie2-align-s --wrapper basic-0 -k 1 -x bowtie_index/hs19 PAX5.fastq.gz -S PAX5.sam"
+ILLUMINA-EAS45_6:1:1:3:1267:0:1:0	4	*	0	0	*	*	0	0	CCTGCCATACTTTGCANATAACNACTCTCTTTTTGA	BC?>??=?BA;3=B@=%8+>B9%9;=5828A;2?:?	YT:Z:UU
+ILLUMINA-EAS45_6:1:1:3:2025:0:1:1	0	chr1	115679594	255	36M	*	0	0	AAGCACAGGACTATTCTGTCTCATTTTCCAAATAGA	ABCABBBCB@@CBCB?B@B?BA@A?A>=68999:59	AS:i:0	XN:i:0	XM:i:0	XO:i:0	XG:i:0	NM:i:0	MD:Z:36	YT:Z:UU
+ILLUMINA-EAS45_6:1:1:4:373:0:1:1	0	chr1	95186168	255	36M	*	0	0	AGGGTGACAGACCAAGAGTGTGGCCTTTGCCAGGCC	B9@B;ABAB@BABBBAA<9?94+>@B>@A9B=<=<B	AS:i:0	XN:i:0	XM:i:0	XO:i:0	XG:i:0	NM:i:0	MD:Z:36	YT:Z:UU
+ILLUMINA-EAS45_6:1:1:4:2008:0:1:1	0	chr1	102651881	255	36M	*	0	0	TATTTTTGTCTCACTCTCATTTTGAGGTTTTGGCTT	B:CCCCC@AAB@A@A=A@?BBA@67?949<:96969	AS:i:0	XN:i:0	XM:i:0	XO:i:0	XG:i:0	NM:i:0	MD:Z:36	YT:Z:UU
+ILLUMINA-EAS45_6:1:1:4:259:0:1:0	16	chr1	164610408	255	36M	*	0	0	CCATGGCCATGTGCCACAGCAGACTTGTGATACTGA	#####################='07>AB@8>(-84A	AS:i:0	XN:i:0	XM:i:0	XO:i:0	XG:i:0	NM:i:0	MD:Z:36	YT:Z:UU
+ILLUMINA-EAS45_6:1:1:4:1824:0:1:1	16	chr1	89894846	255	36M	*	0	0	CAAGTCCCCTTTTTTTGGTTTTTCATTTCTCAATCT	BABAABBBBA6ABBACBBC?CBBCCCABCCCCCBCB	AS:i:0	XN:i:0	XM:i:0	XO:i:0	XG:i:0	NM:i:0	MD:Z:36	YT:Z:UU
+HWI-EAS295_7:90630:1:0:1510:0:1:1	16	chr1	204344374	255	36M	*	0	0	ATCCTGTATATCCAGTTGTCTGTTAGACAGCATCTA	:3B@2B?@BBBCBCB:4B4A@CBBCC;?@CCB<?BB	AS:i:-5	XN:i:0	XM:i:1	XO:i:0	XG:i:0	NM:i:1	MD:Z:35C0	YT:Z:UU
++ samtools view -bSo PAX5.bam PAX5.sam
++ samtools sort -T PAX5.temp.bam -o PAX5.sorted.bam PAX5.bam
++ samtools index PAX5.sorted.bam
++ fetchChromSizes hg19
+INFO: trying CURL  for database hg19
+url: http://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/hg19.chrom.sizes
++ awk '$1 !~ /[_.]/' genome/hg19.all.chrom.sizes
++ genomeCoverageBed -bg -ibam PAX5.sorted.bam -g genome/hg19.chrom.sizes
+
+*****
+*****WARNING: Genome (-g) files are ignored when BAM input is provided. 
+*****
++ bedGraphToBigWig PAX5.bedgraph genome/hg19.chrom.sizes PAX5.bw
++ head
++ zcat Control.fastq.gz
+@HWI-EAS149_30EMPAAXX:1:1:1490:140
+GTGCTTTGCCTACCTACCTAGTCAC
++
+<44<<6644-<64<4<40<444<4-
+@HWI-EAS149_30EMPAAXX:1:1:1544:168
+GATATTTCTGATAGGTAGCAAATGA
++
+<<<<<<<<<<<<<96<<9<<<<<<<
+@HWI-EAS149_30EMPAAXX:1:1:1738:66
+GTGATACATGGTCTTCAATTGTCTT
++ bowtie2 -k 1 -x bowtie_index/hs19 Control.fastq.gz -S Control.sam
+2386401 reads; of these:
+  2386401 (100.00%) were unpaired; of these:
+    83939 (3.52%) aligned 0 times
+    2302462 (96.48%) aligned exactly 1 time
+    0 (0.00%) aligned >1 times
+96.48% overall alignment rate
++ samtools view -bSo Control.bam Control.sam
++ samtools sort -T Control.temp.bam -o Control.sorted.bam Control.bam
++ samtools index Control.sorted.bam
++ macs2 --help
+usage: macs2 [-h] [--version]
+             {callpeak,bdgpeakcall,bdgbroadcall,bdgcmp,bdgopt,cmbreps,bdgdiff,filterdup,predictd,pileup,randsample,refinepeak}
+             ...
+
+macs2 -- Model-based Analysis for ChIP-Sequencing
+
+positional arguments:
+  {callpeak,bdgpeakcall,bdgbroadcall,bdgcmp,bdgopt,cmbreps,bdgdiff,filterdup,predictd,pileup,randsample,refinepeak}
+    callpeak            Main MACS2 Function: Call peaks from alignment
+                        results.
+    bdgpeakcall         Call peaks from bedGraph output. Note: All regions on
+                        the same chromosome in the bedGraph file should be
+                        continuous so only bedGraph files from MACS2 are
+                        accpetable.
+    bdgbroadcall        Call broad peaks from bedGraph output. Note: All
+                        regions on the same chromosome in the bedGraph file
+                        should be continuous so only bedGraph files from MACS2
+                        are accpetable.
+    bdgcmp              Deduct noise by comparing two signal tracks in
+                        bedGraph. Note: All regions on the same chromosome in
+                        the bedGraph file should be continuous so only
+                        bedGraph files from MACS2 are accpetable.
+    bdgopt              Operations on score column of bedGraph file. Note: All
+                        regions on the same chromosome in the bedGraph file
+                        should be continuous so only bedGraph files from MACS2
+                        are accpetable.
+    cmbreps             Combine BEDGraphs of scores from replicates. Note: All
+                        regions on the same chromosome in the bedGraph file
+                        should be continuous so only bedGraph files from MACS2
+                        are accpetable.
+    bdgdiff             Differential peak detection based on paired four
+                        bedgraph files. Note: All regions on the same
+                        chromosome in the bedGraph file should be continuous
+                        so only bedGraph files from MACS2 are accpetable.
+    filterdup           Remove duplicate reads at the same position, then save
+                        the rest alignments to BED or BEDPE file. If you use '
+                        --keep-dup all option', this script can be utilized to
+                        convert any acceptable format into BED or BEDPE
+                        format.
+    predictd            Predict d or fragment size from alignment results.
+                        *Will NOT filter duplicates*
+    pileup              Pileup aligned reads with a given extension size
+                        (fragment size or d in MACS language). Note there will
+                        be no step for duplicate reads filtering or sequencing
+                        depth scaling, so you may need to do certain pre/post-
+                        processing.
+    randsample          Randomly sample number/percentage of total reads.
+    refinepeak          (Experimental) Take raw reads alignment, refine peak
+                        summits and give scores measuring balance of
+                        waston/crick tags. Inspired by SPP.
+
+options:
+  -h, --help            show this help message and exit
+  --version             show program's version number and exit
+
+For command line options of each command, type: macs2 COMMAND -h
++ macs2 callpeak --help
+usage: macs2 callpeak [-h] -t TFILE [TFILE ...] [-c [CFILE ...]]
+                      [-f {AUTO,BAM,SAM,BED,ELAND,ELANDMULTI,ELANDEXPORT,BOWTIE,BAMPE,BEDPE}]
+                      [-g GSIZE] [-s TSIZE] [--keep-dup KEEPDUPLICATES]
+                      [--outdir OUTDIR] [-n NAME] [-B] [--verbose VERBOSE]
+                      [--trackline] [--SPMR] [--nomodel] [--shift SHIFT]
+                      [--extsize EXTSIZE] [--bw BW] [--d-min D_MIN]
+                      [-m MFOLD MFOLD] [--fix-bimodal] [-q QVALUE | -p PVALUE]
+                      [--scale-to {large,small}] [--down-sample] [--seed SEED]
+                      [--tempdir TEMPDIR] [--nolambda] [--slocal SMALLLOCAL]
+                      [--llocal LARGELOCAL] [--max-gap MAXGAP]
+                      [--min-length MINLEN] [--broad]
+                      [--broad-cutoff BROADCUTOFF] [--cutoff-analysis]
+                      [--call-summits] [--fe-cutoff FECUTOFF]
+                      [--buffer-size BUFFER_SIZE] [--to-large] [--ratio RATIO]
+
+options:
+  -h, --help            show this help message and exit
+
+Input files arguments:
+  -t TFILE [TFILE ...], --treatment TFILE [TFILE ...]
+                        ChIP-seq treatment file. If multiple files are given
+                        as '-t A B C', then they will all be read and pooled
+                        together. REQUIRED.
+  -c [CFILE ...], --control [CFILE ...]
+                        Control file. If multiple files are given as '-c A B
+                        C', they will be pooled to estimate ChIP-seq
+                        background noise.
+  -f {AUTO,BAM,SAM,BED,ELAND,ELANDMULTI,ELANDEXPORT,BOWTIE,BAMPE,BEDPE}, --format {AUTO,BAM,SAM,BED,ELAND,ELANDMULTI,ELANDEXPORT,BOWTIE,BAMPE,BEDPE}
+                        Format of tag file, "AUTO", "BED" or "ELAND" or
+                        "ELANDMULTI" or "ELANDEXPORT" or "SAM" or "BAM" or
+                        "BOWTIE" or "BAMPE" or "BEDPE". The default AUTO
+                        option will let MACS decide which format (except for
+                        BAMPE and BEDPE which should be implicitly set) the
+                        file is. Please check the definition in README. Please
+                        note that if the format is set as BAMPE or BEDPE,
+                        MACS2 will call its special Paired-end mode to call
+                        peaks by piling up the actual ChIPed fragments defined
+                        by both aligned ends, instead of predicting the
+                        fragment size first and extending reads. Also please
+                        note that the BEDPE only contains three columns, and
+                        is NOT the same BEDPE format used by BEDTOOLS.
+                        DEFAULT: "AUTO"
+  -g GSIZE, --gsize GSIZE
+                        Effective genome size. It can be 1.0e+9 or 1000000000,
+                        or shortcuts:'hs' for human (2.7e9), 'mm' for mouse
+                        (1.87e9), 'ce' for C. elegans (9e7) and 'dm' for
+                        fruitfly (1.2e8), Default:hs
+  -s TSIZE, --tsize TSIZE
+                        Tag size/read length. This will override the auto
+                        detected tag size. DEFAULT: Not set
+  --keep-dup KEEPDUPLICATES
+                        It controls the behavior towards duplicate tags at the
+                        exact same location -- the same coordination and the
+                        same strand. The 'auto' option makes MACS calculate
+                        the maximum tags at the exact same location based on
+                        binomal distribution using 1e-5 as pvalue cutoff; and
+                        the 'all' option keeps every tags. If an integer is
+                        given, at most this number of tags will be kept at the
+                        same location. Note, if you've used samtools or picard
+                        to flag reads as 'PCR/Optical duplicate' in bit 1024,
+                        MACS2 will still read them although the reads may be
+                        decided by MACS2 as duplicate later. If you plan to
+                        rely on samtools/picard/any other tool to filter
+                        duplicates, please remove those duplicate reads and
+                        save a new alignment file then ask MACS2 to keep all
+                        by '--keep-dup all'. The default is to keep one tag at
+                        the same location. Default: 1
+
+Output arguments:
+  --outdir OUTDIR       If specified all output files will be written to that
+                        directory. Default: the current working directory
+  -n NAME, --name NAME  Experiment name, which will be used to generate output
+                        file names. DEFAULT: "NA"
+  -B, --bdg             Whether or not to save extended fragment pileup, and
+                        local lambda tracks (two files) at every bp into a
+                        bedGraph file. DEFAULT: False
+  --verbose VERBOSE     Set verbose level of runtime message. 0: only show
+                        critical message, 1: show additional warning message,
+                        2: show process information, 3: show debug messages.
+                        DEFAULT:2
+  --trackline           Tells MACS to include trackline with bedGraph files.
+                        To include this trackline while displaying bedGraph at
+                        UCSC genome browser, can show name and description of
+                        the file as well. However my suggestion is to convert
+                        bedGraph to bigWig, then show the smaller and faster
+                        binary bigWig file at UCSC genome browser, as well as
+                        downstream analysis. Require -B to be set. Default:
+                        Not include trackline.
+  --SPMR                If True, MACS will SAVE signal per million reads for
+                        fragment pileup profiles. It won't interfere with
+                        computing pvalue/qvalue during peak calling, since
+                        internally MACS2 keeps using the raw pileup and
+                        scaling factors between larger and smaller dataset to
+                        calculate statistics measurements. If you plan to use
+                        the signal output in bedGraph to call peaks using
+                        bdgcmp and bdgpeakcall, you shouldn't use this option
+                        because you will end up with different results.
+                        However, this option is recommended for displaying
+                        normalized pileup tracks across many datasets. Require
+                        -B to be set. Default: False
+
+Shifting model arguments:
+  --nomodel             Whether or not to build the shifting model. If True,
+                        MACS will not build model. by default it means
+                        shifting size = 100, try to set extsize to change it.
+                        It's highly recommended that while you have many
+                        datasets to process and you plan to compare different
+                        conditions, aka differential calling, use both
+                        'nomodel' and 'extsize' to make signal files from
+                        different datasets comparable. DEFAULT: False
+  --shift SHIFT         (NOT the legacy --shiftsize option!) The arbitrary
+                        shift in bp. Use discretion while setting it other
+                        than default value. When NOMODEL is set, MACS will use
+                        this value to move cutting ends (5') towards 5'->3'
+                        direction then apply EXTSIZE to extend them to
+                        fragments. When this value is negative, ends will be
+                        moved toward 3'->5' direction. Recommended to keep it
+                        as default 0 for ChIP-Seq datasets, or -1 * half of
+                        EXTSIZE together with EXTSIZE option for detecting
+                        enriched cutting loci such as certain DNAseI-Seq
+                        datasets. Note, you can't set values other than 0 if
+                        format is BAMPE or BEDPE for paired-end data. DEFAULT:
+                        0.
+  --extsize EXTSIZE     The arbitrary extension size in bp. When nomodel is
+                        true, MACS will use this value as fragment size to
+                        extend each read towards 3' end, then pile them up.
+                        It's exactly twice the number of obsolete SHIFTSIZE.
+                        In previous language, each read is moved 5'->3'
+                        direction to middle of fragment by 1/2 d, then
+                        extended to both direction with 1/2 d. This is
+                        equivalent to say each read is extended towards 5'->3'
+                        into a d size fragment. DEFAULT: 200. EXTSIZE and
+                        SHIFT can be combined when necessary. Check SHIFT
+                        option.
+  --bw BW               Band width for picking regions to compute fragment
+                        size. This value is only used while building the
+                        shifting model. Tweaking this is not recommended.
+                        DEFAULT: 300
+  --d-min D_MIN         Minimum fragment size in basepair. Any predicted
+                        fragment size less than this will be excluded.
+                        DEFAULT: 20
+  -m MFOLD MFOLD, --mfold MFOLD MFOLD
+                        Select the regions within MFOLD range of high-
+                        confidence enrichment ratio against background to
+                        build model. Fold-enrichment in regions must be lower
+                        than upper limit, and higher than the lower limit. Use
+                        as "-m 10 30". This setting is only used while
+                        building the shifting model. Tweaking it is not
+                        recommended. DEFAULT:5 50
+  --fix-bimodal         Whether turn on the auto pair model process. If set,
+                        when MACS failed to build paired model, it will use
+                        the nomodel settings, the --exsize parameter to extend
+                        each tags towards 3' direction. Not to use this
+                        automate fixation is a default behavior now. DEFAULT:
+                        False
+
+Peak calling arguments:
+  -q QVALUE, --qvalue QVALUE
+                        Minimum FDR (q-value) cutoff for peak detection.
+                        DEFAULT: 0.05. -q, and -p are mutually exclusive.
+  -p PVALUE, --pvalue PVALUE
+                        Pvalue cutoff for peak detection. DEFAULT: not set.
+                        -q, and -p are mutually exclusive. If pvalue cutoff is
+                        set, qvalue will not be calculated and reported as -1
+                        in the final .xls file.
+  --scale-to {large,small}
+                        When set to 'small', scale the larger sample up to the
+                        smaller sample. When set to 'larger', scale the
+                        smaller sample up to the bigger sample. By default,
+                        scale to 'small'. This option replaces the obsolete '
+                        --to-large' option. The default behavior is
+                        recommended since it will lead to less significant
+                        p/q-values in general but more specific results. Keep
+                        in mind that scaling down will influence control/input
+                        sample more. DEFAULT: 'small', the choice is either
+                        'small' or 'large'.
+  --down-sample         When set, random sampling method will scale down the
+                        bigger sample. By default, MACS uses linear scaling.
+                        Warning: This option will make your result unstable
+                        and irreproducible since each time, random reads would
+                        be selected. Consider to use 'randsample' script
+                        instead. <not implmented>If used together with --SPMR,
+                        1 million unique reads will be randomly picked.</not
+                        implemented> Caution: due to the implementation, the
+                        final number of selected reads may not be as you
+                        expected! DEFAULT: False
+  --seed SEED           Set the random seed while down sampling data. Must be
+                        a non-negative integer in order to be effective.
+                        DEFAULT: not set
+  --tempdir TEMPDIR     Optional directory to store temp files. DEFAULT: /tmp
+  --nolambda            If True, MACS will use fixed background lambda as
+                        local lambda for every peak region. Normally, MACS
+                        calculates a dynamic local lambda to reflect the local
+                        bias due to the potential chromatin accessibility.
+  --slocal SMALLLOCAL   The small nearby region in basepairs to calculate
+                        dynamic lambda. This is used to capture the bias near
+                        the peak summit region. Invalid if there is no control
+                        data. If you set this to 0, MACS will skip slocal
+                        lambda calculation. *Note* that MACS will always
+                        perform a d-size local lambda calculation while the
+                        control data is available. The final local bias would
+                        be the maximum of the lambda value from d, slocal, and
+                        llocal size windows. While control is not available, d
+                        and slocal lambda won't be considered. DEFAULT: 1000
+  --llocal LARGELOCAL   The large nearby region in basepairs to calculate
+                        dynamic lambda. This is used to capture the surround
+                        bias. If you set this to 0, MACS will skip llocal
+                        lambda calculation. *Note* that MACS will always
+                        perform a d-size local lambda calculation while the
+                        control data is available. The final local bias would
+                        be the maximum of the lambda value from d, slocal, and
+                        llocal size windows. While control is not available, d
+                        and slocal lambda won't be considered. DEFAULT: 10000.
+  --max-gap MAXGAP      Maximum gap between significant sites to cluster them
+                        together. The DEFAULT value is the detected read
+                        length/tag size.
+  --min-length MINLEN   Minimum length of a peak. The DEFAULT value is the
+                        predicted fragment size d. Note, if you set a value
+                        smaller than the fragment size, it may have NO effect
+                        on the result. For BROAD peak calling, try to set a
+                        large value such as 500bps. You can also use '--
+                        cutoff-analysis' option with default setting, and
+                        check the column 'avelpeak' under different cutoff
+                        values to decide a reasonable minlen value.
+  --broad               If set, MACS will try to call broad peaks using the
+                        --broad-cutoff setting. Please tweak '--broad-cutoff'
+                        setting to control the peak calling behavior. At the
+                        meantime, either -q or -p cutoff will be used to
+                        define regions with 'stronger enrichment' inside of
+                        broad peaks. The maximum gap is expanded to 4 * MAXGAP
+                        (--max-gap parameter). As a result, MACS will output a
+                        'gappedPeak' and a 'broadPeak' file instead of
+                        'narrowPeak' file. Note, a broad peak will be reported
+                        even if there is no 'stronger enrichment' inside.
+                        DEFAULT: False
+  --broad-cutoff BROADCUTOFF
+                        Cutoff for broad region. This option is not available
+                        unless --broad is set. If -p is set, this is a pvalue
+                        cutoff, otherwise, it's a qvalue cutoff. Please note
+                        that in broad peakcalling mode, MACS2 uses this
+                        setting to control the overall peak calling behavior,
+                        then uses -q or -p setting to define regions inside
+                        broad region as 'stronger' enrichment. DEFAULT: 0.1
+  --cutoff-analysis     While set, MACS2 will analyze number or total length
+                        of peaks that can be called by different p-value
+                        cutoff then output a summary table to help user decide
+                        a better cutoff. The table will be saved in
+                        NAME_cutoff_analysis.txt file. Note, minlen and maxgap
+                        may affect the results. WARNING: May take ~30 folds
+                        longer time to finish. The result can be useful for
+                        users to decide a reasonable cutoff value. DEFAULT:
+                        False
+
+Post-processing options:
+  --call-summits        If set, MACS will use a more sophisticated signal
+                        processing approach to find subpeak summits in each
+                        enriched peak region. DEFAULT: False
+  --fe-cutoff FECUTOFF  When set, the value will be used to filter out peaks
+                        with low fold-enrichment. Note, MACS2 use 1.0 as
+                        pseudocount while calculating fold-enrichment.
+                        DEFAULT: 1.0
+
+Other options:
+  --buffer-size BUFFER_SIZE
+                        Buffer size for incrementally increasing internal
+                        array size to store reads alignment information. In
+                        most cases, you don't have to change this parameter.
+                        However, if there are large number of
+                        chromosomes/contigs/scaffolds in your alignment, it's
+                        recommended to specify a smaller buffer size in order
+                        to decrease memory usage (but it will take longer time
+                        to read alignment files). Minimum memory requested for
+                        reading an alignment file is about # of CHROMOSOME *
+                        BUFFER_SIZE * 8 Bytes. DEFAULT: 100000
+
+Obsolete options:
+  --to-large            Obsolete option. Please use '--scale-to large'
+                        instead.
+  --ratio RATIO         Obsolete option. Originally designed to normalize
+                        treatment and control with customized ratio, now it
+                        won't have any effect.
++ macs2 callpeak -t PAX5.sorted.bam -c Control.sorted.bam --format BAM --name PAX5 --gsize 138000000 --pvalue 1e-3 --call-summits
+INFO  @ Sat, 08 Oct 2022 12:14:50: 
+# Command line: callpeak -t PAX5.sorted.bam -c Control.sorted.bam --format BAM --name PAX5 --gsize 138000000 --pvalue 1e-3 --call-summits
+# ARGUMENTS LIST:
+# name = PAX5
+# format = BAM
+# ChIP-seq file = ['PAX5.sorted.bam']
+# control file = ['Control.sorted.bam']
+# effective genome size = 1.38e+08
+# band width = 300
+# model fold = [5, 50]
+# pvalue cutoff = 1.00e-03
+# qvalue will not be calculated and reported as -1 in the final output.
+# The maximum gap between significant sites is assigned as the read length/tag size.
+# The minimum length of peaks is assigned as the predicted fragment length "d".
+# Larger dataset will be scaled towards smaller dataset.
+# Range for calculating regional lambda is: 1000 bps and 10000 bps
+# Broad region calling is off
+# Paired-End mode is off
+# Searching for subpeak summits is on
+ 
+INFO  @ Sat, 08 Oct 2022 12:14:50: #1 read tag files... 
+INFO  @ Sat, 08 Oct 2022 12:14:50: #1 read treatment tags... 
+INFO  @ Sat, 08 Oct 2022 12:14:51:  1000000 
+INFO  @ Sat, 08 Oct 2022 12:14:52:  2000000 
+INFO  @ Sat, 08 Oct 2022 12:14:52: 2120787 reads have been read. 
+INFO  @ Sat, 08 Oct 2022 12:14:52: #1.2 read input tags... 
+INFO  @ Sat, 08 Oct 2022 12:14:53:  1000000 
+INFO  @ Sat, 08 Oct 2022 12:14:54:  2000000 
+INFO  @ Sat, 08 Oct 2022 12:14:54: 2302462 reads have been read. 
+INFO  @ Sat, 08 Oct 2022 12:14:54: #1 tag size is determined as 36 bps 
+INFO  @ Sat, 08 Oct 2022 12:14:54: #1 tag size = 36.0 
+INFO  @ Sat, 08 Oct 2022 12:14:54: #1  total tags in treatment: 2120787 
+INFO  @ Sat, 08 Oct 2022 12:14:54: #1 user defined the maximum tags... 
+INFO  @ Sat, 08 Oct 2022 12:14:54: #1 filter out redundant tags at the same location and the same strand by allowing at most 1 tag(s) 
+INFO  @ Sat, 08 Oct 2022 12:14:54: #1  tags after filtering in treatment: 1821050 
+INFO  @ Sat, 08 Oct 2022 12:14:54: #1  Redundant rate of treatment: 0.14 
+INFO  @ Sat, 08 Oct 2022 12:14:54: #1  total tags in control: 2302462 
+INFO  @ Sat, 08 Oct 2022 12:14:54: #1 user defined the maximum tags... 
+INFO  @ Sat, 08 Oct 2022 12:14:54: #1 filter out redundant tags at the same location and the same strand by allowing at most 1 tag(s) 
+INFO  @ Sat, 08 Oct 2022 12:14:54: #1  tags after filtering in control: 2252725 
+INFO  @ Sat, 08 Oct 2022 12:14:54: #1  Redundant rate of control: 0.02 
+INFO  @ Sat, 08 Oct 2022 12:14:54: #1 finished! 
+INFO  @ Sat, 08 Oct 2022 12:14:54: #2 Build Peak Model... 
+INFO  @ Sat, 08 Oct 2022 12:14:54: #2 looking for paired plus/minus strand peaks... 
+INFO  @ Sat, 08 Oct 2022 12:14:55: #2 number of paired peaks: 2445 
+INFO  @ Sat, 08 Oct 2022 12:14:55: start model_add_line... 
+INFO  @ Sat, 08 Oct 2022 12:14:55: start X-correlation... 
+INFO  @ Sat, 08 Oct 2022 12:14:55: end of X-cor 
+INFO  @ Sat, 08 Oct 2022 12:14:55: #2 finished! 
+INFO  @ Sat, 08 Oct 2022 12:14:55: #2 predicted fragment length is 106 bps 
+INFO  @ Sat, 08 Oct 2022 12:14:55: #2 alternative fragment length(s) may be 106 bps 
+INFO  @ Sat, 08 Oct 2022 12:14:55: #2.2 Generate R script for model : PAX5_model.r 
+INFO  @ Sat, 08 Oct 2022 12:14:55: #3 Call peaks... 
+INFO  @ Sat, 08 Oct 2022 12:14:55: #3 Going to call summits inside each peak ... 
+INFO  @ Sat, 08 Oct 2022 12:14:55: #3 Call peaks with given -log10pvalue cutoff: 3.00000 ... 
+INFO  @ Sat, 08 Oct 2022 12:14:55: #3 Pre-compute pvalue-qvalue table... 
+INFO  @ Sat, 08 Oct 2022 12:15:01: #3 Call peaks for each chromosome... 
+INFO  @ Sat, 08 Oct 2022 12:15:04: #4 Write output xls file... PAX5_peaks.xls 
+INFO  @ Sat, 08 Oct 2022 12:15:04: #4 Write peak in narrowPeak format file... PAX5_peaks.narrowPeak 
+INFO  @ Sat, 08 Oct 2022 12:15:04: #4 Write summits bed file... PAX5_summits.bed 
+INFO  @ Sat, 08 Oct 2022 12:15:04: Done! 
++ head -10 PAX5_peaks.narrowPeak
+chr1	710543	710713	PAX5_peak_1	137	.	7.50382	13.7573	10.4708	97
+chr1	713977	714164	PAX5_peak_2	65	.	4.58567	6.55214	3.66458	71
+chr1	825682	825788	PAX5_peak_3	44	.	3.07074	4.46117	1.78876	61
+chr1	840090	840211	PAX5_peak_4	46	.	2.42617	4.69207	2.00056	102
+chr1	840616	840848	PAX5_peak_5a	64	.	3.08021	6.44076	3.57997	57
+chr1	840616	840848	PAX5_peak_5b	42	.	2.32508	4.25154	1.61534	152
+chr1	935569	935701	PAX5_peak_6	37	.	2.56399	3.78395	1.21638	49
+chr1	937685	937794	PAX5_peak_7	44	.	2.87585	4.44432	1.77714	27
+chr1	966602	966894	PAX5_peak_8	685	.	9.81261	68.5918	64.2664	158
+chr1	986094	986234	PAX5_peak_9	129	.	4.65561	12.9545	9.69987	72
++ head -n 10
++ zcat genome/gencode.v18.annotation.gtf.gz
+##description: evidence-based annotation of the human genome (GRCh37), version 18 (Ensembl 73)
+##provider: GENCODE
+##contact: gencode@sanger.ac.uk
+##format: gtf
+##date: 2013-09-02
+chr1	HAVANA	gene	11869	14412	.	+	.	gene_id "ENSG00000223972.4"; transcript_id "ENSG00000223972.4"; gene_type "pseudogene"; gene_status "KNOWN"; gene_name "DDX11L1"; transcript_type "pseudogene"; transcript_status "KNOWN"; transcript_name "DDX11L1"; level 2; havana_gene "OTTHUMG00000000961.2";
+chr1	HAVANA	transcript	11869	14409	.	+	.	gene_id "ENSG00000223972.4"; transcript_id "ENST00000456328.2"; gene_type "pseudogene"; gene_status "KNOWN"; gene_name "DDX11L1"; transcript_type "processed_transcript"; transcript_status "KNOWN"; transcript_name "DDX11L1-002"; level 2; tag "basic"; havana_gene "OTTHUMG00000000961.2"; havana_transcript "OTTHUMT00000362751.1";
+chr1	HAVANA	exon	11869	12227	.	+	.	gene_id "ENSG00000223972.4"; transcript_id "ENST00000456328.2"; gene_type "pseudogene"; gene_status "KNOWN"; gene_name "DDX11L1"; transcript_type "processed_transcript"; transcript_status "KNOWN"; transcript_name "DDX11L1-002"; exon_number 1;  exon_id "ENSE00002234944.1";  level 2; tag "basic"; havana_gene "OTTHUMG00000000961.2"; havana_transcript "OTTHUMT00000362751.1";
+chr1	HAVANA	exon	12613	12721	.	+	.	gene_id "ENSG00000223972.4"; transcript_id "ENST00000456328.2"; gene_type "pseudogene"; gene_status "KNOWN"; gene_name "DDX11L1"; transcript_type "processed_transcript"; transcript_status "KNOWN"; transcript_name "DDX11L1-002"; exon_number 2;  exon_id "ENSE00003582793.1";  level 2; tag "basic"; havana_gene "OTTHUMG00000000961.2"; havana_transcript "OTTHUMT00000362751.1";
+chr1	HAVANA	exon	13221	14409	.	+	.	gene_id "ENSG00000223972.4"; transcript_id "ENST00000456328.2"; gene_type "pseudogene"; gene_status "KNOWN"; gene_name "DDX11L1"; transcript_type "processed_transcript"; transcript_status "KNOWN"; transcript_name "DDX11L1-002"; exon_number 3;  exon_id "ENSE00002312635.1";  level 2; tag "basic"; havana_gene "OTTHUMG00000000961.2"; havana_transcript "OTTHUMT00000362751.1";
++ head -n 10
++ zcat -S genome/gencodev18.annotation.gtf
+gzip: invalid suffix 'genome/gencodev18.annotation.gtf'
++ bedtools
+bedtools is a powerful toolset for genome arithmetic.
+
+Version:   v2.30.0
+About:     developed in the quinlanlab.org and by many contributors worldwide.
+Docs:      http://bedtools.readthedocs.io/
+Code:      https://github.com/arq5x/bedtools2
+Mail:      https://groups.google.com/forum/#!forum/bedtools-discuss
+
+Usage:     bedtools <subcommand> [options]
+
+The bedtools sub-commands include:
+
+[ Genome arithmetic ]
+    intersect     Find overlapping intervals in various ways.
+    window        Find overlapping intervals within a window around an interval.
+    closest       Find the closest, potentially non-overlapping interval.
+    coverage      Compute the coverage over defined intervals.
+    map           Apply a function to a column for each overlapping interval.
+    genomecov     Compute the coverage over an entire genome.
+    merge         Combine overlapping/nearby intervals into a single interval.
+    cluster       Cluster (but don't merge) overlapping/nearby intervals.
+    complement    Extract intervals _not_ represented by an interval file.
+    shift         Adjust the position of intervals.
+    subtract      Remove intervals based on overlaps b/w two files.
+    slop          Adjust the size of intervals.
+    flank         Create new intervals from the flanks of existing intervals.
+    sort          Order the intervals in a file.
+    random        Generate random intervals in a genome.
+    shuffle       Randomly redistribute intervals in a genome.
+    sample        Sample random records from file using reservoir sampling.
+    spacing       Report the gap lengths between intervals in a file.
+    annotate      Annotate coverage of features from multiple files.
+
+[ Multi-way file comparisons ]
+    multiinter    Identifies common intervals among multiple interval files.
+    unionbedg     Combines coverage intervals from multiple BEDGRAPH files.
+
+[ Paired-end manipulation ]
+    pairtobed     Find pairs that overlap intervals in various ways.
+    pairtopair    Find pairs that overlap other pairs in various ways.
+
+[ Format conversion ]
+    bamtobed      Convert BAM alignments to BED (& other) formats.
+    bedtobam      Convert intervals to BAM records.
+    bamtofastq    Convert BAM records to FASTQ records.
+    bedpetobam    Convert BEDPE intervals to BAM records.
+    bed12tobed6   Breaks BED12 intervals into discrete BED6 intervals.
+
+[ Fasta manipulation ]
+    getfasta      Use intervals to extract sequences from a FASTA file.
+    maskfasta     Use intervals to mask sequences from a FASTA file.
+    nuc           Profile the nucleotide content of intervals in a FASTA file.
+
+[ BAM focused tools ]
+    multicov      Counts coverage from multiple BAMs at specific intervals.
+    tag           Tag BAM alignments based on overlaps with interval files.
+
+[ Statistical relationships ]
+    jaccard       Calculate the Jaccard statistic b/w two sets of intervals.
+    reldist       Calculate the distribution of relative distances b/w two files.
+    fisher        Calculate Fisher statistic b/w two feature files.
+
+[ Miscellaneous tools ]
+    overlap       Computes the amount of overlap from two intervals.
+    igv           Create an IGV snapshot batch script.
+    links         Create a HTML page of links to UCSC locations.
+    makewindows   Make interval "windows" across a genome.
+    groupby       Group by common cols. & summarize oth. cols. (~ SQL "groupBy")
+    expand        Replicate lines based on lists of values in columns.
+    split         Split a file into multiple files with equal records or base pairs.
+    summary       Statistical summary of intervals in a file.
+
+[ General Parameters ]
+     --cram-ref    Reference used by a CRAM input
+
+[ General help ]
+    --help        Print this help menu.
+    --version     What version of bedtools are you using?.
+    --contact     Feature requests, bugs, mailing lists, etc.
+
++ bedtools genomecov -i PAX5_peaks.narrowPeak -g genome/hg19.chrom.sizes
+chr1	0	248561847	249250621	0.997237
+chr1	1	603499	249250621	0.00242125
+chr1	2	67525	249250621	0.000270912
+chr1	3	15400	249250621	6.17852e-05
+chr1	4	963	249250621	3.86358e-06
+chr1	7	1387	249250621	5.56468e-06
+chr2	0	243199373	243199373	1
+chr3	0	198022430	198022430	1
+chr4	0	191154276	191154276	1
+chr5	0	180915260	180915260	1
+chr6	0	171115067	171115067	1
+chr7	0	159138663	159138663	1
+chrX	0	155270560	155270560	1
+chr8	0	146364022	146364022	1
+chr9	0	141213431	141213431	1
+chr10	0	135534747	135534747	1
+chr11	0	135006516	135006516	1
+chr12	0	133851895	133851895	1
+chr13	0	115169878	115169878	1
+chr14	0	107349540	107349540	1
+chr15	0	102531392	102531392	1
+chr16	0	90354753	90354753	1
+chr17	0	81195210	81195210	1
+chr18	0	78077248	78077248	1
+chr20	0	63025520	63025520	1
+chrY	0	59373566	59373566	1
+chr19	0	59128983	59128983	1
+chr22	0	51304566	51304566	1
+chr21	0	48129895	48129895	1
+chrM	0	16571	16571	1
+genome	0	3095005209	3095693983	0.999777
+genome	1	603499	3095693983	0.000194948
+genome	2	67525	3095693983	2.18126e-05
+genome	3	15400	3095693983	4.97465e-06
+genome	4	963	3095693983	3.11077e-07
+genome	7	1387	3095693983	4.48042e-07
++ awk '$3=="gene"'
++ zcat genome/gencode.v18.annotation.gtf.gz
++ head -10 genome/gencode.v18.annotation.genes.gtf
+chr1	HAVANA	gene	11869	14412	.	+	.	gene_id "ENSG00000223972.4"; transcript_id "ENSG00000223972.4"; gene_type "pseudogene"; gene_status "KNOWN"; gene_name "DDX11L1"; transcript_type "pseudogene"; transcript_status "KNOWN"; transcript_name "DDX11L1"; level 2; havana_gene "OTTHUMG00000000961.2";
+chr1	HAVANA	gene	14363	29806	.	-	.	gene_id "ENSG00000227232.4"; transcript_id "ENSG00000227232.4"; gene_type "pseudogene"; gene_status "KNOWN"; gene_name "WASH7P"; transcript_type "pseudogene"; transcript_status "KNOWN"; transcript_name "WASH7P"; level 2; havana_gene "OTTHUMG00000000958.1";
+chr1	HAVANA	gene	29554	31109	.	+	.	gene_id "ENSG00000243485.2"; transcript_id "ENSG00000243485.2"; gene_type "lincRNA"; gene_status "NOVEL"; gene_name "MIR1302-11"; transcript_type "lincRNA"; transcript_status "NOVEL"; transcript_name "MIR1302-11"; level 2; havana_gene "OTTHUMG00000000959.2";
+chr1	HAVANA	gene	34554	36081	.	-	.	gene_id "ENSG00000237613.2"; transcript_id "ENSG00000237613.2"; gene_type "lincRNA"; gene_status "KNOWN"; gene_name "FAM138A"; transcript_type "lincRNA"; transcript_status "KNOWN"; transcript_name "FAM138A"; level 2; havana_gene "OTTHUMG00000000960.1";
+chr1	HAVANA	gene	52473	54936	.	+	.	gene_id "ENSG00000268020.2"; transcript_id "ENSG00000268020.2"; gene_type "pseudogene"; gene_status "KNOWN"; gene_name "OR4G4P"; transcript_type "pseudogene"; transcript_status "KNOWN"; transcript_name "OR4G4P"; level 2; havana_gene "OTTHUMG00000185779.1";
+chr1	HAVANA	gene	62948	63887	.	+	.	gene_id "ENSG00000240361.1"; transcript_id "ENSG00000240361.1"; gene_type "pseudogene"; gene_status "KNOWN"; gene_name "OR4G11P"; transcript_type "pseudogene"; transcript_status "KNOWN"; transcript_name "OR4G11P"; level 2; havana_gene "OTTHUMG00000001095.2";
+chr1	HAVANA	gene	69091	70008	.	+	.	gene_id "ENSG00000186092.4"; transcript_id "ENSG00000186092.4"; gene_type "protein_coding"; gene_status "KNOWN"; gene_name "OR4F5"; transcript_type "protein_coding"; transcript_status "KNOWN"; transcript_name "OR4F5"; level 2; havana_gene "OTTHUMG00000001094.1";
+chr1	HAVANA	gene	89295	133566	.	-	.	gene_id "ENSG00000238009.2"; transcript_id "ENSG00000238009.2"; gene_type "lincRNA"; gene_status "NOVEL"; gene_name "RP11-34P13.7"; transcript_type "lincRNA"; transcript_status "NOVEL"; transcript_name "RP11-34P13.7"; level 2; havana_gene "OTTHUMG00000001096.2";
+chr1	HAVANA	gene	89551	91105	.	-	.	gene_id "ENSG00000239945.1"; transcript_id "ENSG00000239945.1"; gene_type "lincRNA"; gene_status "NOVEL"; gene_name "RP11-34P13.8"; transcript_type "lincRNA"; transcript_status "NOVEL"; transcript_name "RP11-34P13.8"; level 2; havana_gene "OTTHUMG00000001097.2";
+chr1	HAVANA	gene	131025	134836	.	+	.	gene_id "ENSG00000233750.3"; transcript_id "ENSG00000233750.3"; gene_type "pseudogene"; gene_status "KNOWN"; gene_name "CICP27"; transcript_type "pseudogene"; transcript_status "KNOWN"; transcript_name "CICP27"; level 1; tag "pseudo_consens"; havana_gene "OTTHUMG00000001257.3";
++ wc -l PAX5_peaks.narrowPeak
+3798 PAX5_peaks.narrowPeak
++ wc -l
++ bedtools intersect -a PAX5_peaks.narrowPeak -b genome/gencode.v18.annotation.genes.gtf
+2721
++ head
++ bedtools closest -a PAX5_peaks.narrowPeak -b genome/gencode.v18.annotation.genes.gtf
+chr1	710543	710713	PAX5_peak_1	137	.	7.50382	13.7573	10.4708	97	chr1	HAVANA	gene	536816	741274	.	-	.	gene_id "ENSG00000230021.2"; transcript_id "ENSG00000230021.2"; gene_type "lincRNA"; gene_status "NOVEL"; gene_name "RP5-857K21.4"; transcript_type "lincRNA"; transcript_status "NOVEL"; transcript_name "RP5-857K21.4"; level 2; tag "ncRNA_host"; havana_gene "OTTHUMG00000002331.4";
+chr1	710543	710713	PAX5_peak_1	137	.	7.50382	13.7573	10.4708	97	chr1	HAVANA	gene	700237	714006	.	-	.	gene_id "ENSG00000228327.2"; transcript_id "ENSG00000228327.2"; gene_type "lincRNA"; gene_status "NOVEL"; gene_name "RP11-206L10.2"; transcript_type "lincRNA"; transcript_status "NOVEL"; transcript_name "RP11-206L10.2"; level 2; havana_gene "OTTHUMG00000002406.1";
+chr1	713977	714164	PAX5_peak_2	65	.	4.58567	6.55214	3.66458	71	chr1	HAVANA	gene	536816	741274	.	-	.	gene_id "ENSG00000230021.2"; transcript_id "ENSG00000230021.2"; gene_type "lincRNA"; gene_status "NOVEL"; gene_name "RP5-857K21.4"; transcript_type "lincRNA"; transcript_status "NOVEL"; transcript_name "RP5-857K21.4"; level 2; tag "ncRNA_host"; havana_gene "OTTHUMG00000002331.4";
+chr1	713977	714164	PAX5_peak_2	65	.	4.58567	6.55214	3.66458	71	chr1	HAVANA	gene	700237	714006	.	-	.	gene_id "ENSG00000228327.2"; transcript_id "ENSG00000228327.2"; gene_type "lincRNA"; gene_status "NOVEL"; gene_name "RP11-206L10.2"; transcript_type "lincRNA"; transcript_status "NOVEL"; transcript_name "RP11-206L10.2"; level 2; havana_gene "OTTHUMG00000002406.1";
+chr1	713977	714164	PAX5_peak_2	65	.	4.58567	6.55214	3.66458	71	chr1	HAVANA	gene	714162	745440	.	+	.	gene_id "ENSG00000237491.3"; transcript_id "ENSG00000237491.3"; gene_type "lincRNA"; gene_status "NOVEL"; gene_name "RP11-206L10.9"; transcript_type "lincRNA"; transcript_status "NOVEL"; transcript_name "RP11-206L10.9"; level 2; havana_gene "OTTHUMG00000002404.4";
+chr1	825682	825788	PAX5_peak_3	44	.	3.07074	4.46117	1.78876	61	chr1	ENSEMBL	gene	818043	819983	.	+	.	gene_id "ENSG00000269308.1"; transcript_id "ENSG00000269308.1"; gene_type "protein_coding"; gene_status "NOVEL"; gene_name "AL645608.2"; transcript_type "protein_coding"; transcript_status "NOVEL"; transcript_name "AL645608.2"; level 3;
+chr1	840090	840211	PAX5_peak_4	46	.	2.42617	4.69207	2.00056	102	chr1	HAVANA	gene	840214	851356	.	+	.	gene_id "ENSG00000272438.1"; transcript_id "ENSG00000272438.1"; gene_type "lincRNA"; gene_status "NOVEL"; gene_name "RP11-54O7.16"; transcript_type "lincRNA"; transcript_status "NOVEL"; transcript_name "RP11-54O7.16"; level 2; havana_gene "OTTHUMG00000185550.1";
+chr1	840616	840848	PAX5_peak_5a	64	.	3.08021	6.44076	3.57997	57	chr1	HAVANA	gene	840214	851356	.	+	.	gene_id "ENSG00000272438.1"; transcript_id "ENSG00000272438.1"; gene_type "lincRNA"; gene_status "NOVEL"; gene_name "RP11-54O7.16"; transcript_type "lincRNA"; transcript_status "NOVEL"; transcript_name "RP11-54O7.16"; level 2; havana_gene "OTTHUMG00000185550.1";
+chr1	840616	840848	PAX5_peak_5b	42	.	2.32508	4.25154	1.61534	152	chr1	HAVANA	gene	840214	851356	.	+	.	gene_id "ENSG00000272438.1"; transcript_id "ENSG00000272438.1"; gene_type "lincRNA"; gene_status "NOVEL"; gene_name "RP11-54O7.16"; transcript_type "lincRNA"; transcript_status "NOVEL"; transcript_name "RP11-54O7.16"; level 2; havana_gene "OTTHUMG00000185550.1";
+chr1	935569	935701	PAX5_peak_6	37	.	2.56399	3.78395	1.21638	49	chr1	HAVANA	gene	934342	935552	.	-	.	gene_id "ENSG00000188290.6"; transcript_id "ENSG00000188290.6"; gene_type "protein_coding"; gene_status "KNOWN"; gene_name "HES4"; transcript_type "protein_coding"; transcript_status "KNOWN"; transcript_name "HES4"; level 2; havana_gene "OTTHUMG00000040758.2";
++ awk 'BEGIN {FS=OFS="\t"} { if($7=="+"){tss=$4-1} else { tss = $5 } print $1,tss, tss+1, ".", ".", $7, $9}' genome/gencode.v18.annotation.genes.gtf
++ sortBed -i genome/gencode.tss.bed
++ bedtools closest -a PAX5_peaks.narrowPeak -b genome/gencode.tss.sorted.bed
++ head PAX5_closestTSS.txt
+chr1	710543	710713	PAX5_peak_1	137	.	7.50382	13.7573	10.4708	97	chr1	714006	714007	.	.	-	gene_id "ENSG00000228327.2"; transcript_id "ENSG00000228327.2"; gene_type "lincRNA"; gene_status "NOVEL"; gene_name "RP11-206L10.2"; transcript_type "lincRNA"; transcript_status "NOVEL"; transcript_name "RP11-206L10.2"; level 2; havana_gene "OTTHUMG00000002406.1";
+chr1	713977	714164	PAX5_peak_2	65	.	4.58567	6.55214	3.66458	71	chr1	714006	714007	.	.	-	gene_id "ENSG00000228327.2"; transcript_id "ENSG00000228327.2"; gene_type "lincRNA"; gene_status "NOVEL"; gene_name "RP11-206L10.2"; transcript_type "lincRNA"; transcript_status "NOVEL"; transcript_name "RP11-206L10.2"; level 2; havana_gene "OTTHUMG00000002406.1";
+chr1	713977	714164	PAX5_peak_2	65	.	4.58567	6.55214	3.66458	71	chr1	714161	714162	.	.	+	gene_id "ENSG00000237491.3"; transcript_id "ENSG00000237491.3"; gene_type "lincRNA"; gene_status "NOVEL"; gene_name "RP11-206L10.9"; transcript_type "lincRNA"; transcript_status "NOVEL"; transcript_name "RP11-206L10.9"; level 2; havana_gene "OTTHUMG00000002404.4";
+chr1	825682	825788	PAX5_peak_3	44	.	3.07074	4.46117	1.78876	61	chr1	818042	818043	.	.	+	gene_id "ENSG00000269308.1"; transcript_id "ENSG00000269308.1"; gene_type "protein_coding"; gene_status "NOVEL"; gene_name "AL645608.2"; transcript_type "protein_coding"; transcript_status "NOVEL"; transcript_name "AL645608.2"; level 3;
+chr1	840090	840211	PAX5_peak_4	46	.	2.42617	4.69207	2.00056	102	chr1	840213	840214	.	.	+	gene_id "ENSG00000272438.1"; transcript_id "ENSG00000272438.1"; gene_type "lincRNA"; gene_status "NOVEL"; gene_name "RP11-54O7.16"; transcript_type "lincRNA"; transcript_status "NOVEL"; transcript_name "RP11-54O7.16"; level 2; havana_gene "OTTHUMG00000185550.1";
+chr1	840616	840848	PAX5_peak_5a	64	.	3.08021	6.44076	3.57997	57	chr1	840213	840214	.	.	+	gene_id "ENSG00000272438.1"; transcript_id "ENSG00000272438.1"; gene_type "lincRNA"; gene_status "NOVEL"; gene_name "RP11-54O7.16"; transcript_type "lincRNA"; transcript_status "NOVEL"; transcript_name "RP11-54O7.16"; level 2; havana_gene "OTTHUMG00000185550.1";
+chr1	840616	840848	PAX5_peak_5b	42	.	2.32508	4.25154	1.61534	152	chr1	840213	840214	.	.	+	gene_id "ENSG00000272438.1"; transcript_id "ENSG00000272438.1"; gene_type "lincRNA"; gene_status "NOVEL"; gene_name "RP11-54O7.16"; transcript_type "lincRNA"; transcript_status "NOVEL"; transcript_name "RP11-54O7.16"; level 2; havana_gene "OTTHUMG00000185550.1";
+chr1	935569	935701	PAX5_peak_6	37	.	2.56399	3.78395	1.21638	49	chr1	935552	935553	.	.	-	gene_id "ENSG00000188290.6"; transcript_id "ENSG00000188290.6"; gene_type "protein_coding"; gene_status "KNOWN"; gene_name "HES4"; transcript_type "protein_coding"; transcript_status "KNOWN"; transcript_name "HES4"; level 2; havana_gene "OTTHUMG00000040758.2";
+chr1	937685	937794	PAX5_peak_7	44	.	2.87585	4.44432	1.77714	27	chr1	935552	935553	.	.	-	gene_id "ENSG00000188290.6"; transcript_id "ENSG00000188290.6"; gene_type "protein_coding"; gene_status "KNOWN"; gene_name "HES4"; transcript_type "protein_coding"; transcript_status "KNOWN"; transcript_name "HES4"; level 2; havana_gene "OTTHUMG00000040758.2";
+chr1	966602	966894	PAX5_peak_8	685	.	9.81261	68.5918	64.2664	158	chr1	955502	955503	.	.	+	gene_id "ENSG00000188157.9"; transcript_id "ENSG00000188157.9"; gene_type "protein_coding"; gene_status "KNOWN"; gene_name "AGRN"; transcript_type "protein_coding"; transcript_status "KNOWN"; transcript_name "AGRN"; level 2; havana_gene "OTTHUMG00000040778.3";
++ sort -k5 -nr PAX5_summits.bed
++ awk 'BEGIN{FS=OFS="\t"}; NR < 301 { print $1, $2-30, $3+29 }' PAX5_summits.sorted.bed
++ gunzip genome/HS19.fa.gz
++ samtools faidx genome/HS19.fa
++ bedtools getfasta -fi genome/HS19.fa -bed PAX5_top300_summits.bed -fo PAX5_top300_summits.fa
++ meme PAX5_top300_summits.fa -o meme_out -dna -nmotifs 1 -minw 6 -maxw 20
+Writing results to output directory 'meme_out'.
+BACKGROUND: using background model of order 0
+PRIMARY (classic): n 300 p0 300 p1 0 p2 0
+SEQUENCE GROUP USAGE-- Starts/EM: p0; Trim: p0; pvalue: p0; nsites: p0,p1,p2
+SEEDS: maxwords 18000 highwater mark: seq 300 pos 54
+BALANCE: samples 300 chars 18000 nodes 1 chars/node 18000
+Initializing the motif probability tables for 2 to 300 sites...
+nsites = 2nsites = 3nsites = 4nsites = 5nsites = 6nsites = 7nsites = 8nsites = 9nsites = 10nsites = 11nsites = 12nsites = 13nsites = 14nsites = 15nsites = 16nsites = 17nsites = 18nsites = 19nsites = 20nsites = 21nsites = 22nsites = 23nsites = 24nsites = 25nsites = 26nsites = 27nsites = 28nsites = 29nsites = 30nsites = 31nsites = 32nsites = 33nsites = 34nsites = 35nsites = 36nsites = 37nsites = 38nsites = 39nsites = 40nsites = 41nsites = 42nsites = 43nsites = 44nsites = 45nsites = 46nsites = 47nsites = 48nsites = 49nsites = 50nsites = 51nsites = 52nsites = 53nsites = 54nsites = 55nsites = 56nsites = 57nsites = 58nsites = 59nsites = 60nsites = 61nsites = 62nsites = 63nsites = 64nsites = 65nsites = 66nsites = 67nsites = 68nsites = 69nsites = 70nsites = 71nsites = 72nsites = 73nsites = 74nsites = 75nsites = 76nsites = 77nsites = 78nsites = 79nsites = 80nsites = 81nsites = 82nsites = 83nsites = 84nsites = 85nsites = 86nsites = 87nsites = 88nsites = 89nsites = 90nsites = 91nsites = 92nsites = 93nsites = 94nsites = 95nsites = 96nsites = 97nsites = 98nsites = 99nsites = 100nsites = 101nsites = 102nsites = 103nsites = 104nsites = 105nsites = 106nsites = 107nsites = 108nsites = 109nsites = 110nsites = 111nsites = 112nsites = 113nsites = 114nsites = 115nsites = 116nsites = 117nsites = 118nsites = 119nsites = 120nsites = 121nsites = 122nsites = 123nsites = 124nsites = 125nsites = 126nsites = 127nsites = 128nsites = 129nsites = 130nsites = 131nsites = 132nsites = 133nsites = 134nsites = 135nsites = 136nsites = 137nsites = 138nsites = 139nsites = 140nsites = 141nsites = 142nsites = 143nsites = 144nsites = 145nsites = 146nsites = 147nsites = 148nsites = 149nsites = 150nsites = 151nsites = 152nsites = 153nsites = 154nsites = 155nsites = 156nsites = 157nsites = 158nsites = 159nsites = 160nsites = 161nsites = 162nsites = 163nsites = 164nsites = 165nsites = 166nsites = 167nsites = 168nsites = 169nsites = 170nsites = 171nsites = 172nsites = 173nsites = 174nsites = 175nsites = 176nsites = 177nsites = 178nsites = 179nsites = 180nsites = 181nsites = 182nsites = 183nsites = 184nsites = 185nsites = 186nsites = 187nsites = 188nsites = 189nsites = 190nsites = 191nsites = 192nsites = 193nsites = 194nsites = 195nsites = 196nsites = 197nsites = 198nsites = 199nsites = 200nsites = 201nsites = 202nsites = 203nsites = 204nsites = 205nsites = 206nsites = 207nsites = 208nsites = 209nsites = 210nsites = 211nsites = 212nsites = 213nsites = 214nsites = 215nsites = 216nsites = 217nsites = 218nsites = 219nsites = 220nsites = 221nsites = 222nsites = 223nsites = 224nsites = 225nsites = 226nsites = 227nsites = 228nsites = 229nsites = 230nsites = 231nsites = 232nsites = 233nsites = 234nsites = 235nsites = 236nsites = 237nsites = 238nsites = 239nsites = 240nsites = 241nsites = 242nsites = 243nsites = 244nsites = 245nsites = 246nsites = 247nsites = 248nsites = 249nsites = 250nsites = 251nsites = 252nsites = 253nsites = 254nsites = 255nsites = 256nsites = 257nsites = 258nsites = 259nsites = 260nsites = 261nsites = 262nsites = 263nsites = 264nsites = 265nsites = 266nsites = 267nsites = 268nsites = 269nsites = 270nsites = 271nsites = 272nsites = 273nsites = 274nsites = 275nsites = 276nsites = 277nsites = 278nsites = 279nsites = 280nsites = 281nsites = 282nsites = 283nsites = 284nsites = 285nsites = 286nsites = 287nsites = 288nsites = 289nsites = 290nsites = 291nsites = 292nsites = 293nsites = 294nsites = 295nsites = 296nsites = 297nsites = 298nsites = 299nsites = 300
+Done initializing.
+
+seqs=   300, min_w=  60, max_w=   60, total_size=    18000
+
+motif=1
+SEED DEPTHS: 2 4 8 16 32 64 128 256 300
+SEED WIDTHS: 6 8 11 15 20
+starts: w=6, seq=0, l=60				starts: w=6, seq=5, l=60				starts: w=6, seq=10, l=60				starts: w=6, seq=15, l=60				starts: w=6, seq=20, l=60				starts: w=6, seq=25, l=60				starts: w=6, seq=30, l=60				starts: w=6, seq=35, l=60				starts: w=6, seq=40, l=60				starts: w=6, seq=45, l=60				starts: w=6, seq=50, l=60				starts: w=6, seq=55, l=60				starts: w=6, seq=60, l=60				starts: w=6, seq=65, l=60				starts: w=6, seq=70, l=60				starts: w=6, seq=75, l=60				starts: w=6, seq=80, l=60				starts: w=6, seq=85, l=60				starts: w=6, seq=90, l=60				starts: w=6, seq=95, l=60				starts: w=6, seq=100, l=60				starts: w=6, seq=105, l=60				starts: w=6, seq=110, l=60				starts: w=6, seq=115, l=60				starts: w=6, seq=120, l=60				starts: w=6, seq=125, l=60				starts: w=6, seq=130, l=60				starts: w=6, seq=135, l=60				starts: w=6, seq=140, l=60				starts: w=6, seq=145, l=60				starts: w=6, seq=150, l=60				starts: w=6, seq=155, l=60				starts: w=6, seq=160, l=60				starts: w=6, seq=165, l=60				starts: w=6, seq=170, l=60				starts: w=6, seq=175, l=60				starts: w=6, seq=180, l=60				starts: w=6, seq=185, l=60				starts: w=6, seq=190, l=60				starts: w=6, seq=195, l=60				starts: w=6, seq=200, l=60				starts: w=6, seq=205, l=60				starts: w=6, seq=210, l=60				starts: w=6, seq=215, l=60				starts: w=6, seq=220, l=60				starts: w=6, seq=225, l=60				starts: w=6, seq=230, l=60				starts: w=6, seq=235, l=60				starts: w=6, seq=240, l=60				starts: w=6, seq=245, l=60				starts: w=6, seq=250, l=60				starts: w=6, seq=255, l=60				starts: w=6, seq=260, l=60				starts: w=6, seq=265, l=60				starts: w=6, seq=270, l=60				starts: w=6, seq=275, l=60				starts: w=6, seq=280, l=60				starts: w=6, seq=285, l=60				starts: w=6, seq=290, l=60				starts: w=6, seq=295, l=60				starts: w=8, seq=0, l=60				starts: w=8, seq=5, l=60				starts: w=8, seq=10, l=60				starts: w=8, seq=15, l=60				starts: w=8, seq=20, l=60				starts: w=8, seq=25, l=60				starts: w=8, seq=30, l=60				starts: w=8, seq=35, l=60				starts: w=8, seq=40, l=60				starts: w=8, seq=45, l=60				starts: w=8, seq=50, l=60				starts: w=8, seq=55, l=60				starts: w=8, seq=60, l=60				starts: w=8, seq=65, l=60				starts: w=8, seq=70, l=60				starts: w=8, seq=75, l=60				starts: w=8, seq=80, l=60				starts: w=8, seq=85, l=60				starts: w=8, seq=90, l=60				starts: w=8, seq=95, l=60				starts: w=8, seq=100, l=60				starts: w=8, seq=105, l=60				starts: w=8, seq=110, l=60				starts: w=8, seq=115, l=60				starts: w=8, seq=120, l=60				starts: w=8, seq=125, l=60				starts: w=8, seq=130, l=60				starts: w=8, seq=135, l=60				starts: w=8, seq=140, l=60				starts: w=8, seq=145, l=60				starts: w=8, seq=150, l=60				starts: w=8, seq=155, l=60				starts: w=8, seq=160, l=60				starts: w=8, seq=165, l=60				starts: w=8, seq=170, l=60				starts: w=8, seq=175, l=60				starts: w=8, seq=180, l=60				starts: w=8, seq=185, l=60				starts: w=8, seq=190, l=60				starts: w=8, seq=195, l=60				starts: w=8, seq=200, l=60				starts: w=8, seq=205, l=60				starts: w=8, seq=210, l=60				starts: w=8, seq=215, l=60				starts: w=8, seq=220, l=60				starts: w=8, seq=225, l=60				starts: w=8, seq=230, l=60				starts: w=8, seq=235, l=60				starts: w=8, seq=240, l=60				starts: w=8, seq=245, l=60				starts: w=8, seq=250, l=60				starts: w=8, seq=255, l=60				starts: w=8, seq=260, l=60				starts: w=8, seq=265, l=60				starts: w=8, seq=270, l=60				starts: w=8, seq=275, l=60				starts: w=8, seq=280, l=60				starts: w=8, seq=285, l=60				starts: w=8, seq=290, l=60				starts: w=8, seq=295, l=60				starts: w=11, seq=0, l=60				starts: w=11, seq=5, l=60				starts: w=11, seq=10, l=60				starts: w=11, seq=15, l=60				starts: w=11, seq=20, l=60				starts: w=11, seq=25, l=60				starts: w=11, seq=30, l=60				starts: w=11, seq=35, l=60				starts: w=11, seq=40, l=60				starts: w=11, seq=45, l=60				starts: w=11, seq=50, l=60				starts: w=11, seq=55, l=60				starts: w=11, seq=60, l=60				starts: w=11, seq=65, l=60				starts: w=11, seq=70, l=60				starts: w=11, seq=75, l=60				starts: w=11, seq=80, l=60				starts: w=11, seq=85, l=60				starts: w=11, seq=90, l=60				starts: w=11, seq=95, l=60				starts: w=11, seq=100, l=60				starts: w=11, seq=105, l=60				starts: w=11, seq=110, l=60				starts: w=11, seq=115, l=60				starts: w=11, seq=120, l=60				starts: w=11, seq=125, l=60				starts: w=11, seq=130, l=60				starts: w=11, seq=135, l=60				starts: w=11, seq=140, l=60				starts: w=11, seq=145, l=60				starts: w=11, seq=150, l=60				starts: w=11, seq=155, l=60				starts: w=11, seq=160, l=60				starts: w=11, seq=165, l=60				starts: w=11, seq=170, l=60				starts: w=11, seq=175, l=60				starts: w=11, seq=180, l=60				starts: w=11, seq=185, l=60				starts: w=11, seq=190, l=60				starts: w=11, seq=195, l=60				starts: w=11, seq=200, l=60				starts: w=11, seq=205, l=60				starts: w=11, seq=210, l=60				starts: w=11, seq=215, l=60				starts: w=11, seq=220, l=60				starts: w=11, seq=225, l=60				starts: w=11, seq=230, l=60				starts: w=11, seq=235, l=60				starts: w=11, seq=240, l=60				starts: w=11, seq=245, l=60				starts: w=11, seq=250, l=60				starts: w=11, seq=255, l=60				starts: w=11, seq=260, l=60				starts: w=11, seq=265, l=60				starts: w=11, seq=270, l=60				starts: w=11, seq=275, l=60				starts: w=11, seq=280, l=60				starts: w=11, seq=285, l=60				starts: w=11, seq=290, l=60				starts: w=11, seq=295, l=60				starts: w=15, seq=0, l=60				starts: w=15, seq=5, l=60				starts: w=15, seq=10, l=60				starts: w=15, seq=15, l=60				starts: w=15, seq=20, l=60				starts: w=15, seq=25, l=60				starts: w=15, seq=30, l=60				starts: w=15, seq=35, l=60				starts: w=15, seq=40, l=60				starts: w=15, seq=45, l=60				starts: w=15, seq=50, l=60				starts: w=15, seq=55, l=60				starts: w=15, seq=60, l=60				starts: w=15, seq=65, l=60				starts: w=15, seq=70, l=60				starts: w=15, seq=75, l=60				starts: w=15, seq=80, l=60				starts: w=15, seq=85, l=60				starts: w=15, seq=90, l=60				starts: w=15, seq=95, l=60				starts: w=15, seq=100, l=60				starts: w=15, seq=105, l=60				starts: w=15, seq=110, l=60				starts: w=15, seq=115, l=60				starts: w=15, seq=120, l=60				starts: w=15, seq=125, l=60				starts: w=15, seq=130, l=60				starts: w=15, seq=135, l=60				starts: w=15, seq=140, l=60				starts: w=15, seq=145, l=60				starts: w=15, seq=150, l=60				starts: w=15, seq=155, l=60				starts: w=15, seq=160, l=60				starts: w=15, seq=165, l=60				starts: w=15, seq=170, l=60				starts: w=15, seq=175, l=60				starts: w=15, seq=180, l=60				starts: w=15, seq=185, l=60				starts: w=15, seq=190, l=60				starts: w=15, seq=195, l=60				starts: w=15, seq=200, l=60				starts: w=15, seq=205, l=60				starts: w=15, seq=210, l=60				starts: w=15, seq=215, l=60				starts: w=15, seq=220, l=60				starts: w=15, seq=225, l=60				starts: w=15, seq=230, l=60				starts: w=15, seq=235, l=60				starts: w=15, seq=240, l=60				starts: w=15, seq=245, l=60				starts: w=15, seq=250, l=60				starts: w=15, seq=255, l=60				starts: w=15, seq=260, l=60				starts: w=15, seq=265, l=60				starts: w=15, seq=270, l=60				starts: w=15, seq=275, l=60				starts: w=15, seq=280, l=60				starts: w=15, seq=285, l=60				starts: w=15, seq=290, l=60				starts: w=15, seq=295, l=60				starts: w=20, seq=0, l=60				starts: w=20, seq=5, l=60				starts: w=20, seq=10, l=60				starts: w=20, seq=15, l=60				starts: w=20, seq=20, l=60				starts: w=20, seq=25, l=60				starts: w=20, seq=30, l=60				starts: w=20, seq=35, l=60				starts: w=20, seq=40, l=60				starts: w=20, seq=45, l=60				starts: w=20, seq=50, l=60				starts: w=20, seq=55, l=60				starts: w=20, seq=60, l=60				starts: w=20, seq=65, l=60				starts: w=20, seq=70, l=60				starts: w=20, seq=75, l=60				starts: w=20, seq=80, l=60				starts: w=20, seq=85, l=60				starts: w=20, seq=90, l=60				starts: w=20, seq=95, l=60				starts: w=20, seq=100, l=60				starts: w=20, seq=105, l=60				starts: w=20, seq=110, l=60				starts: w=20, seq=115, l=60				starts: w=20, seq=120, l=60				starts: w=20, seq=125, l=60				starts: w=20, seq=130, l=60				starts: w=20, seq=135, l=60				starts: w=20, seq=140, l=60				starts: w=20, seq=145, l=60				starts: w=20, seq=150, l=60				starts: w=20, seq=155, l=60				starts: w=20, seq=160, l=60				starts: w=20, seq=165, l=60				starts: w=20, seq=170, l=60				starts: w=20, seq=175, l=60				starts: w=20, seq=180, l=60				starts: w=20, seq=185, l=60				starts: w=20, seq=190, l=60				starts: w=20, seq=195, l=60				starts: w=20, seq=200, l=60				starts: w=20, seq=205, l=60				starts: w=20, seq=210, l=60				starts: w=20, seq=215, l=60				starts: w=20, seq=220, l=60				starts: w=20, seq=225, l=60				starts: w=20, seq=230, l=60				starts: w=20, seq=235, l=60				starts: w=20, seq=240, l=60				starts: w=20, seq=245, l=60				starts: w=20, seq=250, l=60				starts: w=20, seq=255, l=60				starts: w=20, seq=260, l=60				starts: w=20, seq=265, l=60				starts: w=20, seq=270, l=60				starts: w=20, seq=275, l=60				starts: w=20, seq=280, l=60				starts: w=20, seq=285, l=60				starts: w=20, seq=290, l=60				starts: w=20, seq=295, l=60				em: w=   6, psites=   2, iter=   0 em: w=   6, psites=   2, iter=  10 em: w=   6, psites=   2, iter=  20 em: w=   6, psites=   2, iter=  30 em: w=   6, psites=   2, iter=  40 em: w=   6, psites=   4, iter=   0 em: w=   6, psites=   4, iter=  10 em: w=   6, psites=   4, iter=  20 em: w=   6, psites=   4, iter=  30 em: w=   6, psites=   4, iter=  40 em: w=   6, psites=   8, iter=   0 em: w=   6, psites=   8, iter=  10 em: w=   6, psites=   8, iter=  20 em: w=   6, psites=   8, iter=  30 em: w=   6, psites=   8, iter=  40 em: w=   6, psites=  16, iter=   0 em: w=   6, psites=  16, iter=  10 em: w=   6, psites=  16, iter=  20 em: w=   6, psites=  16, iter=  30 em: w=   6, psites=  16, iter=  40 em: w=   6, psites=  32, iter=   0 em: w=   6, psites=  32, iter=  10 em: w=   6, psites=  32, iter=  20 em: w=   6, psites=  32, iter=  30 em: w=   6, psites=  32, iter=  40 em: w=   6, psites=  64, iter=   0 em: w=   6, psites=  64, iter=  10 em: w=   6, psites=  64, iter=  20 em: w=   6, psites=  64, iter=  30 em: w=   6, psites=  64, iter=  40 em: w=   6, psites= 128, iter=   0 em: w=   6, psites= 128, iter=  10 em: w=   6, psites= 128, iter=  20 em: w=   6, psites= 128, iter=  30 em: w=   6, psites= 128, iter=  40 em: w=   6, psites= 256, iter=   0 em: w=   6, psites= 256, iter=  10 em: w=   6, psites= 256, iter=  20 em: w=   6, psites= 256, iter=  30 em: w=   6, psites= 256, iter=  40 em: w=   6, psites= 300, iter=   0 em: w=   6, psites= 300, iter=  10 em: w=   6, psites= 300, iter=  20 em: w=   6, psites= 300, iter=  30 em: w=   6, psites= 300, iter=  40 em: w=   8, psites=   2, iter=   0 em: w=   8, psites=   2, iter=  10 em: w=   8, psites=   2, iter=  20 em: w=   8, psites=   2, iter=  30 em: w=   8, psites=   2, iter=  40 em: w=   8, psites=   4, iter=   0 em: w=   8, psites=   4, iter=  10 em: w=   8, psites=   4, iter=  20 em: w=   8, psites=   4, iter=  30 em: w=   8, psites=   4, iter=  40 em: w=   8, psites=   8, iter=   0 em: w=   8, psites=   8, iter=  10 em: w=   8, psites=   8, iter=  20 em: w=   8, psites=   8, iter=  30 em: w=   8, psites=   8, iter=  40 em: w=   8, psites=  16, iter=   0 em: w=   8, psites=  16, iter=  10 em: w=   8, psites=  16, iter=  20 em: w=   8, psites=  16, iter=  30 em: w=   8, psites=  16, iter=  40 em: w=   8, psites=  32, iter=   0 em: w=   8, psites=  32, iter=  10 em: w=   8, psites=  32, iter=  20 em: w=   8, psites=  32, iter=  30 em: w=   8, psites=  32, iter=  40 em: w=   8, psites=  64, iter=   0 em: w=   8, psites=  64, iter=  10 em: w=   8, psites=  64, iter=  20 em: w=   8, psites=  64, iter=  30 em: w=   8, psites=  64, iter=  40 em: w=   8, psites= 128, iter=   0 em: w=   8, psites= 128, iter=  10 em: w=   8, psites= 128, iter=  20 em: w=   8, psites= 128, iter=  30 em: w=   8, psites= 128, iter=  40 em: w=   8, psites= 256, iter=   0 em: w=   8, psites= 256, iter=  10 em: w=   8, psites= 256, iter=  20 em: w=   8, psites= 256, iter=  30 em: w=   8, psites= 256, iter=  40 em: w=   8, psites= 300, iter=   0 em: w=   8, psites= 300, iter=  10 em: w=   8, psites= 300, iter=  20 em: w=   8, psites= 300, iter=  30 em: w=   8, psites= 300, iter=  40 em: w=  11, psites=   2, iter=   0 em: w=  11, psites=   2, iter=  10 em: w=  11, psites=   2, iter=  20 em: w=  11, psites=   2, iter=  30 em: w=  11, psites=   4, iter=   0 em: w=  11, psites=   4, iter=  10 em: w=  11, psites=   4, iter=  20 em: w=  11, psites=   4, iter=  30 em: w=  11, psites=   4, iter=  40 em: w=  11, psites=   8, iter=   0 em: w=  11, psites=   8, iter=  10 em: w=  11, psites=   8, iter=  20 em: w=  11, psites=   8, iter=  30 em: w=  11, psites=   8, iter=  40 em: w=  11, psites=  16, iter=   0 em: w=  11, psites=  16, iter=  10 em: w=  11, psites=  16, iter=  20 em: w=  11, psites=  16, iter=  30 em: w=  11, psites=  16, iter=  40 em: w=  11, psites=  32, iter=   0 em: w=  11, psites=  32, iter=  10 em: w=  11, psites=  32, iter=  20 em: w=  11, psites=  32, iter=  30 em: w=  11, psites=  32, iter=  40 em: w=  11, psites=  64, iter=   0 em: w=  11, psites=  64, iter=  10 em: w=  11, psites=  64, iter=  20 em: w=  11, psites=  64, iter=  30 em: w=  11, psites=  64, iter=  40 em: w=  11, psites= 128, iter=   0 em: w=  11, psites= 128, iter=  10 em: w=  11, psites= 128, iter=  20 em: w=  11, psites= 128, iter=  30 em: w=  11, psites= 128, iter=  40 em: w=  11, psites= 256, iter=   0 em: w=  11, psites= 256, iter=  10 em: w=  11, psites= 256, iter=  20 em: w=  11, psites= 256, iter=  30 em: w=  11, psites= 256, iter=  40 em: w=  11, psites= 300, iter=   0 em: w=  11, psites= 300, iter=  10 em: w=  11, psites= 300, iter=  20 em: w=  11, psites= 300, iter=  30 em: w=  11, psites= 300, iter=  40 em: w=  15, psites=   2, iter=   0 em: w=  15, psites=   2, iter=  10 em: w=  15, psites=   4, iter=   0 em: w=  15, psites=   4, iter=  10 em: w=  15, psites=   4, iter=  20 em: w=  15, psites=   4, iter=  30 em: w=  15, psites=   4, iter=  40 em: w=  15, psites=   8, iter=   0 em: w=  15, psites=   8, iter=  10 em: w=  15, psites=   8, iter=  20 em: w=  15, psites=   8, iter=  30 em: w=  15, psites=   8, iter=  40 em: w=  15, psites=  16, iter=   0 em: w=  15, psites=  16, iter=  10 em: w=  15, psites=  16, iter=  20 em: w=  15, psites=  16, iter=  30 em: w=  15, psites=  16, iter=  40 em: w=  15, psites=  32, iter=   0 em: w=  15, psites=  32, iter=  10 em: w=  15, psites=  32, iter=  20 em: w=  15, psites=  32, iter=  30 em: w=  15, psites=  32, iter=  40 em: w=  15, psites=  64, iter=   0 em: w=  15, psites=  64, iter=  10 em: w=  15, psites=  64, iter=  20 em: w=  15, psites=  64, iter=  30 em: w=  15, psites=  64, iter=  40 em: w=  15, psites= 128, iter=   0 em: w=  15, psites= 128, iter=  10 em: w=  15, psites= 128, iter=  20 em: w=  15, psites= 128, iter=  30 em: w=  15, psites= 128, iter=  40 em: w=  15, psites= 256, iter=   0 em: w=  15, psites= 256, iter=  10 em: w=  15, psites= 256, iter=  20 em: w=  15, psites= 256, iter=  30 em: w=  15, psites= 256, iter=  40 em: w=  15, psites= 300, iter=   0 em: w=  15, psites= 300, iter=  10 em: w=  15, psites= 300, iter=  20 em: w=  15, psites= 300, iter=  30 em: w=  15, psites= 300, iter=  40 em: w=  20, psites=   2, iter=   0 em: w=  20, psites=   4, iter=   0 em: w=  20, psites=   4, iter=  10 em: w=  20, psites=   4, iter=  20 em: w=  20, psites=   4, iter=  30 em: w=  20, psites=   4, iter=  40 em: w=  20, psites=   8, iter=   0 em: w=  20, psites=   8, iter=  10 em: w=  20, psites=   8, iter=  20 em: w=  20, psites=   8, iter=  30 em: w=  20, psites=   8, iter=  40 em: w=  20, psites=  16, iter=   0 em: w=  20, psites=  16, iter=  10 em: w=  20, psites=  16, iter=  20 em: w=  20, psites=  16, iter=  30 em: w=  20, psites=  16, iter=  40 em: w=  20, psites=  32, iter=   0 em: w=  20, psites=  32, iter=  10 em: w=  20, psites=  32, iter=  20 em: w=  20, psites=  32, iter=  30 em: w=  20, psites=  32, iter=  40 em: w=  20, psites=  64, iter=   0 em: w=  20, psites=  64, iter=  10 em: w=  20, psites=  64, iter=  20 em: w=  20, psites=  64, iter=  30 em: w=  20, psites= 128, iter=   0 em: w=  20, psites= 128, iter=  10 em: w=  20, psites= 128, iter=  20 em: w=  20, psites= 128, iter=  30 em: w=  20, psites= 128, iter=  40 em: w=  20, psites= 256, iter=   0 em: w=  20, psites= 256, iter=  10 em: w=  20, psites= 256, iter=  20 em: w=  20, psites= 256, iter=  30 em: w=  20, psites= 256, iter=  40 em: w=  20, psites= 300, iter=   0 em: w=  20, psites= 300, iter=  10 em: w=  20, psites= 300, iter=  20 em: w=  20, psites= 300, iter=  30 em: w=  20, psites= 300, iter=  40 
++ tomtom -o tomtom_out meme_out/meme.html motif_databases/JASPAR/JASPAR_CORE_2016_vertebrates.meme motif_databases/MOUSE/uniprobe_mouse.meme
++ firefox meme_out/meme.html
+Writing results to output directory 'tomtom_out'.
+Processing query 1 out of 1 
+Gtk-Message: 12:16:27.987: Failed to load module "canberra-gtk-module"
+Gtk-Message: 12:16:27.992: Failed to load module "canberra-gtk-module"
+# Computing q-values.
+#   Estimating pi_0 from all 1810 observed p-values.
+#   Estimating pi_0.
+# Minimal pi_zero = 1.00058
+#   Estimated pi_0=1
++ set +x
++ firefox tomtom_out/tomtom.html
+Gtk-Message: 12:16:30.229: Failed to load module "canberra-gtk-module"
+Gtk-Message: 12:16:30.235: Failed to load module "canberra-gtk-module"
+Missing chrome or resource URL: resource://gre/modules/UpdateListener.sys.mjs
+Missing chrome or resource URL: resource://gre/modules/UpdateListener.sys.mjs
+[2022-10-08T11:17:14Z ERROR viaduct::backend::ffi] Missing HTTP status
+[2022-10-08T11:17:14Z ERROR viaduct::backend::ffi] Missing HTTP status

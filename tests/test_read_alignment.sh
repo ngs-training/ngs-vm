@@ -1,20 +1,21 @@
+#!/bin/bash
 set -x
 set -eu
 
-#Introduction
-cd ~/course_data/read_alignment/data
+### Section 1 - Introduction 
+cd ~/course_data/read_alignment
 samtools --help
 #bwa
 #picard -h
-#igv &
+igv &
 
 
-#Performing Read Alignment
+### Section 2 - Performing Read Alignment
 pwd
-cd ref
+cd ~/course_data/read_alignment/data/ref
 zless GRCm38.68.dna.toplevel.chr7.fa.gz | head
-cd ../Exercise1/fastq/
-bwa index ../../ref/GRCm38.68.dna.toplevel.chr7.fa.gz
+bwa index GRCm38.68.dna.toplevel.chr7.fa.gz
+cd ../Exercise1/fastq
 bwa mem ../../ref/GRCm38.68.dna.toplevel.chr7.fa.gz md5638a_7_87000000_R1.fastq.gz md5638a_7_87000000_R2.fastq.gz > md5638.sam 
 samtools view -O BAM -o md5638.bam md5638.sam
 ls -lh md5638.sam md5638.bam
@@ -29,13 +30,14 @@ samtools index md5638.markdup.bam
 samtools stats md5638.markdup.bam > md5638.markdup.stats
 plot-bamstats -p md5638_plot/ md5638.markdup.stats
 
-#Alignment Visualisation
-#Tests need to be performed manually
+### Section 3 - Alignment Visualisation
+# Tests need to be performed manually
 
-#Alignment Workflows
+
+### Section 4 - Alignment Workflows
 cd ~/course_data/read_alignment/data/Exercise2/60A_Sc_DBVPG6044/library1
+bwa index ../../../ref/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa.gz
 cd lane1
-bwa index ../../../../ref/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa.gz
 bwa mem -M -R '@RG\tID:lane1\tSM:60A_Sc_DBVPG6044' ../../../../ref/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa.gz s_7_1.fastq.gz s_7_2.fastq.gz | samtools view -bS - | samtools sort -T temp -O bam -o lane1.sorted.bam -
 samtools index lane1.sorted.bam
 samtools stats lane1.sorted.bam > lane1.stats.txt
@@ -51,9 +53,10 @@ ls
 #picard MergeSamFiles
 picard MergeSamFiles I=lane1/lane1.sorted.bam I=lane2/lane2.sorted.bam O=library1.bam
 picard MarkDuplicates I=library1.bam O=library1.markdup.bam M=library1.metrics.txt
-#Visualise with IGV needs manually testing
-gunzip ../../../ref/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa.gz
-
+cd /home/manager/course_data/read_alignment/data/ref
+gunzip Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa.gz
+#Visualising with IGV requires manually testing
+cd ~/course_data/read_alignment/data/Exercise2/60A_Sc_DBVPG6044/library1
 samtools view -C -T ../../../ref/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa -o library1.markdup.cram library1.markdup.bam
 
 set +eu
